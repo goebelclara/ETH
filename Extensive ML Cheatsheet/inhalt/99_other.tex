@@ -1,0 +1,86 @@
+\section{Other}
+\subsection*{ML Models}
+\emph{Score} --- 
+The score is the derivative of the log-likelihood: $\Lambda = \frac{\partial}{\partial \boldsymbol{\theta}} log(p( \boldsymbol{x} | \boldsymbol{\theta})) = \frac{ \frac{\partial}{\partial \boldsymbol{\theta}} p( \boldsymbol{x} | \boldsymbol{\theta})}{ p( \boldsymbol{x} | \boldsymbol{\theta}) }$\\
+The expected score is given by: $\mathbb{E}(\Lambda) = \int p( \boldsymbol{x} | \boldsymbol{\theta}) \frac{ \frac{\partial}{\partial \boldsymbol{\theta}} p( \boldsymbol{x} | \boldsymbol{\theta})}{ p( \boldsymbol{x} | \boldsymbol{\theta}) } dx = \frac{\partial}{\partial \boldsymbol{\theta}} \int p( \boldsymbol{x} | \boldsymbol{\theta}) dx = \frac{\partial}{\partial \boldsymbol{\theta}} \times 1 = 0$
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Fisher information} --- 
+\begin{itemize}
+    \item $\boldsymbol{I} = \mathbb{E} [(\Lambda)^2] = \mathbb{E} [ ( \frac{\partial}{ \partial \boldsymbol{\theta} } log( p ( \boldsymbol{x} | \boldsymbol{\theta} ) ) )^2 ] = \mathbb{V} ( \frac{ \partial log( p(\boldsymbol{x} | \boldsymbol{\theta}) ) }{ \partial \boldsymbol{\theta}} )$ where $\Lambda$ is the score
+    \item Equality is given because $\mathbb{V}(x) = \mathbb{E}[(x-\mathbb{E}(x))^2] = \mathbb{E}[x^2]$ if $\mathbb{E}(x) = 0$, which is the case here, given that the expected score is $0$
+\end{itemize}
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Rao-Cramer bound} --- 
+\begin{itemize}
+    \item Shows that there does not exist an asymptotically unbiased parameter estimator
+    \item For each unbiased estimator, $\mathbb{E} [ ( \hat{\boldsymbol{\theta}} - \boldsymbol{\theta} )^2 ] \geq \frac{1}{I}$ where $I$ is the Fisher information
+    \item For estimators in general, $\frac{(\frac{\partial}{\partial \boldsymbol{\theta}} \textrm{bias} + 1)^2}{\boldsymbol{I}} + \textrm{bias}^2 \leq \mathbb{E}[(\hat{\boldsymbol{\theta}}-\boldsymbol{\theta})^2]$, so there is a trade-off if the bias derivative is negative and the squared bias is positive, whereby a biased estimator may produce better results than an unbiased estimator
+\end{itemize}
+Proof: 
+\begin{itemize}
+    \item Given Cauchy Schwarz inequality, we can say:
+    $\mathbb{E}[ (\Lambda - \mathbb{E}((\Lambda)) (\hat{\boldsymbol{\theta}} - \mathbb{E}(\hat{\boldsymbol{\theta}})) ]^2 \leq \mathbb{E}[(\Lambda - \mathbb{E}((\Lambda))^2] \mathbb{E}[(\hat{\boldsymbol{\theta}} - \mathbb{E}(\hat{\boldsymbol{\theta}}))^2]$ where $\Lambda$ is the score
+    \item We know that $\mathbb{E}(\Lambda) = 0$
+    \item Let's look at the LHS of the equation:
+    \begin{itemize}
+        \item Since $\mathbb{E}(\Lambda) = 0$, we can simplify to $\mathbb{E}[ \Lambda (\hat{\boldsymbol{\theta}} - \mathbb{E}(\hat{\boldsymbol{\theta}})) ] = \mathbb{E}[ \Lambda \hat{\boldsymbol{\theta}}] - \mathbb{E}[\Lambda] \mathbb{E}[\hat{\boldsymbol{\theta}}] = \mathbb{E}[ \Lambda \hat{\boldsymbol{\theta}}] - 0$
+        \item This can be developed to: $\mathbb{E}[ \Lambda \hat{\boldsymbol{\theta}}] = \int p( \boldsymbol{x} | \boldsymbol{\theta}) \frac{ \frac{\partial}{\partial \boldsymbol{\theta}} p( \boldsymbol{x} | \boldsymbol{\theta})}{ p( \boldsymbol{x} | \boldsymbol{\theta}) } \hat{\boldsymbol{\theta}} dx = \frac{\partial}{\partial \boldsymbol{\theta}} (\int p( \boldsymbol{x} | \boldsymbol{\theta}) \hat{\boldsymbol{\theta}} dx - \boldsymbol{\theta}) + 1$ where the last part ($- \boldsymbol{\theta}) + 1$) can be added, because $\frac{\partial}{\partial \boldsymbol{\theta}} -\boldsymbol{\theta} = -1$ and we compensate this with $+1$
+        \item This is equal to the derivative of the bias + 1: $\frac{\partial}{\partial \boldsymbol{\theta}} (\int p( \boldsymbol{x} | \boldsymbol{\theta}) \hat{\boldsymbol{\theta}} dx - \boldsymbol{\theta}) + 1 = \frac{\partial}{\partial \boldsymbol{\theta}} (\mathbb{E}[\hat{\boldsymbol{\theta}}] - \boldsymbol{\theta}) + 1 = \frac{\partial}{\partial \boldsymbol{\theta}} \textrm{bias} + 1$
+    \end{itemize}
+    \item Let's look at the RHS of the equation: Since $\mathbb{E}(\Lambda) = 0$, first term is $\mathbb{E}(\Lambda^2) = \boldsymbol{I}$
+    \item Then, we have: $(\frac{\partial}{\partial \boldsymbol{\theta}} \textrm{bias} + 1)^2 \leq \boldsymbol{I} \times \mathbb{E}[(\hat{\boldsymbol{\theta}}-\mathbb{E}(\hat{\boldsymbol{\theta}}))^2] = \boldsymbol{I} \times \mathbb{E}[(\hat{\boldsymbol{\theta}} - \boldsymbol{\theta} - \mathbb{E}(\hat{\boldsymbol{\theta}}) + \boldsymbol{\theta})^2] = ... = \boldsymbol{I} \times \mathbb{E}[(\hat{\boldsymbol{\theta}} - \boldsymbol{\theta})^2] - \textrm{bias}^2$
+    \item Then, we have $\frac{(\frac{\partial}{\partial \boldsymbol{\theta}} \textrm{bias} + 1)^2}{\boldsymbol{I}} + \textrm{bias}^2 \leq \mathbb{E}[(\hat{\boldsymbol{\theta}}-\boldsymbol{\theta})^2]$
+\end{itemize}
+
+{\color{black}\hrule height 0.001mm}
+
+\subsection*{Causal Models}
+
+\emph{Causal scenarios} --- 
+\begin{itemize}
+    \item Causal scenario without selection bias: $\mathcal{X}$ affects $\mathcal{Y}$ and there is no selection bias 
+    \begin{itemize}
+        \item Some features $\mathcal{X}_{\bot Y}$ do not causally affect $\mathcal{Y}$, but are affected by $\mathcal{W}$
+        \item Some features $\mathcal{X}_{\bot W}$ causally affect $\mathcal{Y}$, but are not affected by $\mathcal{W}$
+        \item Some features $\mathcal{X}_{W \& Y}$ causally affect $\mathcal{Y}$ and are affected by $\mathcal{W}$ as well as $\mathcal{X}_{\bot Y}$ and $\mathcal{X}_{\bot W}$
+    \end{itemize}
+    \item Anti causal scenario: We assume $\mathcal{Y}$ affects $\mathcal{X}$, rather than the other way around
+    \item Causal scenario with selection bias: $\mathcal{X}$ affects $\mathcal{Y}$ and there is a selection bias 
+\end{itemize}
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Counterfactual invariance} --- 
+\begin{itemize}
+    \item Counterfactual invariance: Results of estimator remain consistent across different counterfactual scenarios, i.e. if $\mathcal{Y}$ is affected by $\mathcal{X}$, and $\mathcal{X}$ is affected by $\mathcal{W}$, but $\mathcal{W}$ does not affect $\mathcal{Y}$, our estimator should be invariant to states of $\mathcal{W}$, i.e. $f(\mathcal{X}(\mathcal{W}_1)) = f(\mathcal{X}(\mathcal{W}_2))$
+    \item For counterfactual invariance, the following must hold:
+    \begin{itemize}
+        \item Causal scenario without selection bias: $f(\mathcal{X}) \bot \mathcal{W}$, i.e. estimate $f$ only depends on $\mathcal{X}_{\bot W}$
+        \item Anti causal scenario: $(f(\mathcal{X}) \bot \mathcal{W}) | \mathcal{Y}$, i.e. estimate $f$ only depends on $\mathcal{X}_{\bot W}$, provided $\mathcal{Y}$ is known
+        \item Causal scenario with selection bias: $(f(\mathcal{X}) \bot \mathcal{W}) | \mathcal{Y}$ as long as $\mathcal{X}_{\bot Y}$ and $\mathcal{X}_{W \& Y}$ do not influence $\mathcal{Y}$ whatsoever, i.e. $(\mathcal{Y} \bot \mathcal{X}) | \mathcal{X}_{\bot W}, \mathcal{W}$
+    \end{itemize}
+    \item For causal scenario without selection bias we need to show: $\mathcal{X}_{\bot W} \bot \mathcal{W}$
+    \item For anti causal scenario we need to show: $(\mathcal{X}_{\bot W} \bot \mathcal{W}) | \mathcal{Y}$
+    \item This can be shown via \emph{d-separation}
+\end{itemize}
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{D separation} --- 
+\begin{itemize}
+    \item Undirected path of $n$ nodes is d-separated, if it contains 3 nodes following any of the following forms and if this form is blocked: 
+    \begin{itemize}
+        \item Chain structure: $X \rightarrow Z \rightarrow Y$ or $Y \rightarrow Z \rightarrow X$ – is blocked, if we condition on $Z$, i.e. $Z$ is known
+        \item Fork structure: $X \leftarrow Z \rightarrow Y$ – is blocked, if we condition on $Z$, i.e. $Z$ is known
+        \item Collider structure: $X \rightarrow Z \leftarrow Y$ – is blocked, if we don't condition on $Z$ or any of its descendants
+    \end{itemize}
+    \item Random variables $X$ and $Y$ are conditionally independent if each path between them is d-separated\\
+    $\rightarrow$ as soon as we have one blocked triple on path, entire path is blocked\\
+    $\rightarrow$ as soon as one path is active, we cannot guarantee conditional independence
+    \item For causal scenario without selection bias we can show $\mathcal{X}_{\bot W} \bot \mathcal{W}$ since all paths are blocked 
+    \item For anti causal scenario we can show $(\mathcal{X}_{\bot W} \bot \mathcal{W}) | \mathcal{Y}$ since all paths are blocked, conditioned on $\mathcal{Y}$, i.e. if $\mathcal{Y}$ is observed
+\end{itemize}

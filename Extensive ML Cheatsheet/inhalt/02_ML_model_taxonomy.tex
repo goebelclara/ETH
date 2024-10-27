@@ -1,0 +1,109 @@
+\section{Model Taxonomy}
+\subsection*{Supervised vs. Unsupervised Learning}
+\hl{TBA}
+
+{\color{black}\hrule height 0.001mm}
+
+\subsection*{Active Learning}
+
+\emph{Active learning} ---
+\begin{itemize}
+    \item Assume:
+    \begin{itemize}
+        \item Domain space $\mathcal{X}$ 
+        \item Sample space $S \subseteq \mathcal{X}$
+        \item Labeled data $D_{n-1} {(x_i, y_i)}_{i < n}$
+        \item Target space $\mathcal{A} \subseteq \mathcal{X}$
+        \item We estimate $y_x = f_x + \epsilon_x$
+    \end{itemize}
+    \item We aim to find the next $x_n$ that gives us the most information about $f$ in $\mathcal{A}$
+    \item Information gain can be quantified as maximizing the conditional mutual information between $y_x$ and $f$: $IG [ f_x, y_x | D_{n-1} ] = H(D_{n-1}) - H(D_{n-1} | x_n)$ where $H(D_{n-1})$ is the uncertainty about $D$ before labeling $x_n$ and $H(D_{n-1} | x_n)$ is the uncertainty about $D$ after labeling $x_n$. We want to minimize the latter, i.e. we want to maximize the delta between the former and the latter
+    \item We pick $x_n = argmax_{x \in S} IG [ f_x, y_x | D_{n-1} ]$ 
+    \item To find a closed-form solution, we assume that f is a Gaussian process with a known mean and kernel function:
+    \begin{itemize}
+        \item $f \sim \mathcal{G}\mathcal{P} (\mu, k)$
+        \item $\boldsymbol{f} = (f_{x_1}, f_{x_2}, ...) \sim \mathcal{N} (\boldsymbol{\mu}, \boldsymbol{\Sigma})$ where elements in mean vector are $\mu_i = \mu(x_i)$ and elements in covariance matrix are $\Sigma_{ij} = k(x_i,x_j)$
+    \end{itemize}
+    \item Under this assumption, we can show that $IG [ f_x, y_x | D_{n-1} ] = \frac{1}{2} log( \frac{ \mathbb{V} (y_x | D_{n-1}) }{ \mathbb{V} (y_x | f_x, D_{n-1}) } )$
+\end{itemize}
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Safe Bayesian learning} ---
+\begin{itemize}
+    \item Bayesian approach to active learning
+    \item Assume:
+    \begin{itemize}
+        \item We have stochastic process $f^*$
+        \item We can iteratively choose points $x_1, ..., x_{n-1} \in \mathcal{X}$ and observe $y_i = f^*(x_1), ..., y_{n-1} = f^*(x_{n-1})$
+        \item Points should lie in safe area $S^*$ which is the set of $x \in \mathcal{X}$ such that another stochastic process $g^*(x) \geq 0$
+        \item For chosen points, we can also observe $z_i = g^*(x_1), ..., z_{n-1} = g^*(x_{n-1})$ which are measurements of confidence, indicating high confidence when above 0
+    \end{itemize}
+    \item We aim to find estimates of sample space $S$ and target space $\mathcal{A}$
+    \item To do so, we fit a Gaussian process on observed $\{(x_i,y_i)\}_{i<n}$ and $\{(x_i,z_i)\}_{i<n}$. Gaussian process over $f$ and $g$ induces two bounds respectively, which provide the $95\%$ confidence interval of $\mathbb{E}[f(x)]$ resp. $\mathbb{E}[g(x)]$:
+    \begin{itemize}
+        \item Upper bound function $u_n^f(x)$ resp. $u_n^g(x)$
+        \item Lower bound function $l_n^f(x)$ resp. $l_n^g(x)$
+    \end{itemize}
+    \item Gaussian process over $g$ allows to derive pessimistic and optimistic estimate of safe area:
+    \begin{itemize}
+        \item Pessimistic: $S_n = \{x: l_n^g(x) \geq 0\}$
+        \item Optimistic: $\hat{S}_n = \{x: u_n^g(x) \geq 0\}$
+    \end{itemize}
+    \item We then gather estimates, where upper bound of $f$ lies above baseline set by maximum value of lower bound of $f$: $\mathcal{A}_n = \{x \in \hat{S}_n : u_n^f(x) \geq max_{x' \in S_n} l_n^f(x')\}$
+    \item We can then perform active learning with sample space $S = S_n$ and target space $\mathcal{A} = \mathcal{A}_n$
+\end{itemize}
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Batch active learning} ---
+\begin{itemize}
+    \item Variant of active learning
+    \item Assume:
+    \begin{itemize}
+        \item Domain space $\mathcal{X}$ and distribution $P$ over $\mathcal{X}$
+        \item Oracle to unknown function $f: \mathcal{X} \rightarrow \mathcal{Y}$
+        \item Population set $\mathcal{X} = \{x_1, ..., x_m\} \subseteq \mathcal{X}$
+        \item Budget $b \leq m$
+    \end{itemize}
+    \item We aim to find next batch of data points $L \subseteq mathcal{X}$ subject to $|L| = b$ that gives us the most information
+    \item Suppose we know $Z = \{ (x,f(x)): x \in L \}$
+    \item 1-nearest-neighbor classifier $\hat{f}$ is fitted to $Z$
+    \item Let $B_\delta(x) = \{ x' \in \mathcal{X}: \| x - x' \| \leq \delta \}$ be the set of sufficiently close points to $x$
+    \begin{itemize}
+        \item We consider $B_\delta(x)$ pure if $f$ yields same results for all of $B_\delta(x)$
+    \end{itemize}
+    \item Impurity of $\delta$ is given by $\hat{\pi}(\delta) = P(\{{x \in \mathcal{X}: B_\delta(x) \textrm{ is not pure}}\})$
+    \item Let  $C(L,S) = \bigcup_{x \in L} B_\delta(x)$ be the union of all sets B
+    \begin{itemize}
+        \item $C = C_r \cup C_w = \{x \in C: \hat{f}(x) = f(x)\} \cup \{x \in C: \hat{f}(x) \neq f(x)\}$
+    \end{itemize}
+    \item We have $C_w \subseteq \{{x \in \mathcal{X}: B_\delta(x) \textrm{ is not pure}}\}$. Then, $P(C_w) \leq \hat{\pi}(\delta)$
+    \item $\{x: \hat{f}(x) \neq f(x)\} \subseteq C_w \cup C_r^C \subseteq \{{x \in \mathcal{X}: B_\delta(x) \textrm{ is not pure}}\} \cup C^C$
+    \item Then, we have $\mathcal{R}(\hat{f}) = P(\hat{f}(x) \neq f(x) \leq \hat{\pi}(\delta) + 1-P(C)$
+    \item We need to choose $L$ and $\delta$ such that $\mathcal{R}(\hat{f})$ is minimized
+    \item We approach this by minimizing the upper bound, by picking $\delta$ and choosing C that maximizes $P(C)$:
+    $argmax_{L \subseteq \mathcal{X}, |L| = b} P(\bigcup_{x \in L} B_\delta(x))$
+    \item Two challenges:
+    \begin{enumerate}
+        \item We don't know the distribution
+        \item Problem is NP-hard
+    \end{enumerate}
+    \item We address 1) by using the empirical distribution induced by $X$. Then, we have: $argmax_{L \subseteq \mathcal{X}, |L| = b} \frac{1}{|X|} | \{ x': \|x'-x\| \leq \delta, \textrm{ for some } x \in L \} |$
+    \item We address 2) with greedy algorithm:
+    \begin{itemize}
+        \item Input: $x \subseteq \mathcal{X}, b \in \mathbb{N}$
+        \item Output: $L \subseteq X \textrm{ of size } b$
+    \end{itemize}
+    \begin{enumerate}
+        \item $G = (x,E)$ where $E = \{ (x,x') : \| x - x' \| \leq \delta \}$
+        \item $L = \varnothing$
+        \item For $i = 1, ..., b$:
+        \begin{enumerate}
+            \item $\hat{x} \leftarrow argmax_{x \in \mathcal{X}} | \{ x': (x,x') \in E, x \in \mathcal{X} \} |$
+            \item $L \leftarrow L \cup {\hat{x}}$
+            \item $E \leftarrow E - (\{ \hat{x} \} \times (B_\delta(\hat{x}) \cap x))$
+        \end{enumerate}
+        \item Return $L$
+    \end{enumerate}
+\end{itemize}

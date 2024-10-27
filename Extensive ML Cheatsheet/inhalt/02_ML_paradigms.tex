@@ -1,0 +1,112 @@
+\section{ML Paradigms}
+\subsection*{Frequentism}
+\emph{Description} --- 
+\begin{itemize}
+    \item Parametric approach
+    \item $\boldsymbol{\theta}$ as fixed, unknown quantity, $\boldsymbol{X}$ as random, and known quantity
+    \item Makes point estimate
+    \item Focuses on maximizing likelihood $p(\boldsymbol{X}|\boldsymbol{\theta})$ to infer posterior $p(\boldsymbol{\theta}|\boldsymbol{X})$
+    \item Only requires differentiation methods
+    \item High variance, but low bias
+\end{itemize}
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{MLE estimator}
+\begin{itemize}
+    \item Maximizes log-likelihood: $\hat{\boldsymbol{\theta}} = argmax_{\boldsymbol{\theta}}(L) = argmax_{\boldsymbol{\theta}}(\prod_{i=1}^n p(\boldsymbol{x_i} | \boldsymbol{\theta})) = argmax_{\boldsymbol{\theta}}(\sum_{i=1}^n log(p(\boldsymbol{x_i} | \boldsymbol{\theta})))$
+    \item Advantages
+    \begin{itemize}
+        \item Consistent: $\hat{\boldsymbol{\theta}} \rightarrow \boldsymbol{\theta}$ as $n \rightarrow \infty$
+        \item Asymptotically normal: $\frac{1}{\sqrt{n}} (\hat{\boldsymbol{\theta}} - \boldsymbol{\theta})$ coverges to $\mathcal{N}(0 , \boldsymbol{J}^{-1} (\boldsymbol{\theta}) \boldsymbol{I}(\boldsymbol{\theta}) \boldsymbol{J}^{-1} (\boldsymbol{\theta}) )$ where $\boldsymbol{J} = -\mathbb{E}[ \frac{ \partial^2 log( p(\boldsymbol{x} | \boldsymbol{\theta}) ) }{ \partial \boldsymbol{\theta} \partial \boldsymbol{\theta}^\intercal } ]$ and where $\boldsymbol{I}$ is the Fisher information
+        \item Asymptotically efficient: $\hat{\boldsymbol{\theta}}$ minimizes $\mathbb{E} [ ( \hat{\boldsymbol{\theta}} - \boldsymbol{\theta} )^2 ]$ as $n \rightarrow \infty$ 
+        \begin{itemize}
+            \item Not necessarily the best estimator, especially for small samples in a multivariate context
+            \item (cf. Rao-Cramer bound)
+        \end{itemize}
+        \item Equivariant: If $\hat{\boldsymbol{\theta}}$ is MLE of $\boldsymbol{\theta}$, then $g(\hat{\boldsymbol{\theta}})$ is MLE of $g(\boldsymbol{\theta})$
+    \end{itemize}
+    \item Proofs of advantages
+    \begin{itemize}
+        \item Asymptotically normal: 
+        \begin{itemize}
+            \item We start with the score and set it to 0 for optimization with regard to $\boldsymbol{\theta}$: 
+            $\Lambda = \frac{\partial}{\partial \boldsymbol{\theta}} log(p( \boldsymbol{x} | \boldsymbol{\theta})) = 0$
+            \item With a Taylor expansion, we can show that $( \hat{\boldsymbol{\theta}} - \boldsymbol{\theta} ) \sqrt{n} = \frac{1}{\sqrt{n}} \Lambda [ -\frac{1}{n} \frac{\partial^2}{\partial \boldsymbol{\theta} \partial \boldsymbol{\theta}^\intercal} \sum_{i=1}^n log (p( x_i | \boldsymbol{\theta})) ]^{-1}$ where $\Lambda$ is the score 
+            \item We set $\boldsymbol{J} = [ -\frac{1}{n} \frac{\partial^2}{\partial \boldsymbol{\theta} \partial \boldsymbol{\theta}^\intercal} \sum_{i=1}^n log (p( x_i | \boldsymbol{\theta})) ]$
+            \item $\frac{1}{\sqrt{n}} \Lambda$ is a random vector with covariance matrix $\boldsymbol{I}$ and converges to the normal distribution $\sim \mathcal{N}(0,\boldsymbol{I})$
+            \item Then, $( \hat{\boldsymbol{\theta}} - \boldsymbol{\theta} ) \sqrt{n} = \boldsymbol{J}^{-1} \frac{1}{\sqrt{n}} \Lambda \sim \boldsymbol{J}^{-1}\mathcal{N}(0,\boldsymbol{I})$
+            \item $\mathbb{V}(\boldsymbol{J}^{-1} \frac{1}{\sqrt{n}} \Lambda) = \mathbb{E}[\boldsymbol{J}^{-1}  \boldsymbol{I} \boldsymbol{J}^{-1}]$ 
+            \item This equality is given because $\mathbb{V}(x) = \mathbb{E}[x-\mathbb{E}(x)] = \mathbb{E}[x]$ if $\mathbb{E}(x) = 0$, which is the case here, given that the expected score is $0$
+            \item So we have shown that $\hat{\boldsymbol{\theta}} - \boldsymbol{\theta} ) \sqrt{n} = \boldsymbol{J}^{-1} \frac{1}{\sqrt{n}} \Lambda \sim \mathcal{N}(0,\boldsymbol{J}^{-1}\boldsymbol{I}\boldsymbol{J}^{-1})$
+        \end{itemize}
+        \item Equivariant: 
+        \begin{itemize}
+            \item Let $t = g(\boldsymbol{\theta})$ and $h = g^{-1}$ 
+            \item Then, $\boldsymbol{\theta} = h(t) = h(g(\boldsymbol{\theta}))$
+            \item For all $t$ we have: $L(t) = \prod_i p(\boldsymbol{x^({i})} | h(t)) = p(\boldsymbol{x^({i})} | \boldsymbol{\theta}) = L(\boldsymbol{\theta})$
+            \item Hence, for all $t$ we can say: $L(t) = L(\boldsymbol{\theta})$ and $L(\hat{t}) = L(\hat{\boldsymbol{\theta})}$
+        \end{itemize}
+    \end{itemize}
+\end{itemize}
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{PAC estimator}
+\begin{itemize}
+    \item Generates probabilistic bounds for parameter $\boldsymbol{\theta}$ that is approximately known with a high probability:
+    \begin{itemize}
+        \item Probability of being correct: $1-\delta$
+        \item Degree of approximation: $\epsilon$
+    \end{itemize}
+    \item Given Hoeffding's inequality, the probability that the error is greater than $\epsilon$ is bounded
+\end{itemize}
+
+{\color{black}\hrule height 0.001mm}
+
+\subsection*{Bayesianism}
+\emph{Description} --- 
+\begin{itemize}
+    \item Parametric approach
+    \item $\boldsymbol{\theta}$ as random, unknown quantity, $\boldsymbol{X}$ as random, and known quantity
+    \item Makes estimate in form of distribution
+    \item Focuses on leveraging prior and likelihood to infer posterior: $p(\boldsymbol{\theta}|\boldsymbol{X}, \boldsymbol{y}) = \frac{p(\boldsymbol{\theta})p(\boldsymbol{y}|\boldsymbol{X}, \boldsymbol{\theta})}{p(\boldsymbol{y}|\boldsymbol{X})} = \frac{p(\boldsymbol{\theta})p(\boldsymbol{y}|\boldsymbol{X}, \boldsymbol{\theta})}{\int p(\boldsymbol{\theta}) p(\boldsymbol{y}|\boldsymbol{X}, \boldsymbol{\theta}) d\boldsymbol{\theta}} \propto p(\boldsymbol{\theta})p(\boldsymbol{y}|\boldsymbol{X}, \boldsymbol{\theta})$ 
+    \item Requires integration methods for normalizing constant in denominator, which can be intractable, in which case MAP estimator can provide an alternative
+    \item Low variance, but high bias 
+\end{itemize}
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Mean estimator}
+\begin{itemize}
+    \item Takes expected value and variance posterior
+    \item Returns estimate that reflects central tendency and overall uncertainty
+\end{itemize}
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{MAP estimator}
+\begin{itemize}
+    \item Maximizes posterior (i.e. takes point where posterior density is highest): $\hat{\boldsymbol{\theta}} = argmax_{\boldsymbol{\theta}}( p(\boldsymbol{\theta}|\boldsymbol{X}) )$
+    \item Returns single point estimate
+\end{itemize}
+
+{\color{black}\hrule height 0.001mm}
+
+\subsection*{Statistical Learning}
+\emph{Description} --- 
+\begin{itemize}
+    \item We want to minimize expected risk $\mathcal{R}(f) = \mathbb{E}_{X,Y}[1{f(X) \neq Y}]$, but this is difficult because
+    \begin{itemize}
+        \item We don't have access to the joint distribution of $X,Y$
+        \item We cannot find $f$, without any assumptions on its structure
+        \item It's unclear how to minimize the expected value
+    \end{itemize}
+    \item Therefore, we make following choices:
+    \begin{itemize}
+        \item We collect sample $Z$
+        \item We restrict space of possible choices of $f$ to a set $\mathcal{H}$
+        \item We use a loss function to approximate the expected value
+    \end{itemize}
+    \item With these choices, we approximate the expected risk via the empirical risk $\hat{\mathcal{R}}(f) = \hat{L}(Z,f) = \frac{1}{n} \sum_i L(y_i, f(x_i))$
+\end{itemize}

@@ -1,0 +1,53 @@
+\section{Bayesian Neural Networks}
+\subsection*{Setting}
+\begin{itemize}
+    \item In Bayesian setting, normalization constant is computationally intractable
+\end{itemize}
+
+{\color{black}\hrule height 0.001mm}
+
+\subsection*{Formulation}
+Since original setting is computationally intractable, we can turn to \emph{variational inference}:
+\begin{itemize}
+    \item Variational inference approximates true posterior $p(\boldsymbol{w}|\boldsymbol{D})$ by simpler, parametrized distribution $q(\boldsymbol{w}|\boldsymbol{\theta})$
+    \item We assume $q(\boldsymbol{w}|\boldsymbol{\theta}) \sim \mathcal{N}(\boldsymbol{\mu}, \sigma^2 \boldsymbol{I})$ with $\boldsymbol{\theta} = (\boldsymbol{\mu}, \sigma)$ 
+\end{itemize}
+
+{\color{black}\hrule height 0.001mm}
+
+\subsection*{Optimization}
+\emph{Parameters} --- Find parameters $\boldsymbol{\theta}$
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Objective function} --- 
+\begin{itemize}
+    \item Minimize KL divergence: $\boldsymbol{\theta}^* = argmin_{\boldsymbol{\theta}} KL [ q(\boldsymbol{w}|\boldsymbol{\theta}) | p(\boldsymbol{w}|\boldsymbol{D}) ] = argmin_{\boldsymbol{\theta}} \mathbb{E}_{w \sim q} log (q(\boldsymbol{w}|\boldsymbol{\theta})) - \mathbb{E}_{w \sim q} log (p(\boldsymbol{D}|\boldsymbol{w})) - \mathbb{E}_{w \sim q} log (p(\boldsymbol{w}))$\\
+    Proof:
+    \begin{itemize}
+        \item $argmin_{\boldsymbol{\theta}} KL [ q(\boldsymbol{w}|\boldsymbol{\theta}) | p(\boldsymbol{w}|\boldsymbol{D}) ] = argmin_{\boldsymbol{\theta}} \mathbb{E}_{w \sim q} [ log( \frac{q(\boldsymbol{w}|\boldsymbol{\theta})}{p(\boldsymbol{w}|\boldsymbol{D})} ) ] = argmin_{\boldsymbol{\theta}} \mathbb{E}_{w \sim q}[log( q(\boldsymbol{w}|\boldsymbol{\theta}) )] - \mathbb{E}_{w \sim q}[log( p(\boldsymbol{w}|\boldsymbol{D}) )] = argmin_{\boldsymbol{\theta}} \mathbb{E}_{w \sim q}[log( q(\boldsymbol{w}|\boldsymbol{\theta}) )] - \mathbb{E}_{w \sim q}[ \frac{p(\boldsymbol{D}|\boldsymbol{w}) \times p(\boldsymbol{w})}{ p(\boldsymbol{D}) } ] = argmin_{\boldsymbol{\theta}} \mathbb{E}_{w \sim q}log( q(\boldsymbol{w}|\boldsymbol{\theta}) ) - \mathbb{E}_{w \sim q} log (p(\boldsymbol{D}|\boldsymbol{w})) - \mathbb{E}_{w \sim q} log (p(\boldsymbol{w})) + \mathbb{E}_{w \sim q} log (p(\boldsymbol{D})) = argmin_{\boldsymbol{\theta}} \mathbb{E}_{w \sim q}log( q(\boldsymbol{w}|\boldsymbol{\theta}) ) - \mathbb{E}_{w \sim q} log (p(\boldsymbol{D}|\boldsymbol{w})) - \mathbb{E}_{w \sim q} log (p(\boldsymbol{w})) + \textrm{const.}$
+    \end{itemize}
+\end{itemize}
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Optimization} ---
+\begin{itemize}
+    \item To calculate gradient, we can leverage the \emph{reparametrization trick}
+    \item $\frac{\partial}{\partial \boldsymbol{\theta}} \mathbb{E}_{w \sim q} [ log( q(\boldsymbol{w}|\boldsymbol{\theta}) ) - log (p(\boldsymbol{D}|\boldsymbol{w})) - log (p(\boldsymbol{w})) ] = \frac{\partial}{\partial \boldsymbol{\theta}} \mathbb{E}_{w \sim q} [ F(\boldsymbol{w}, \boldsymbol{\theta}) ]$ can be reparametrized to:
+    \begin{itemize}
+        \item $\frac{\partial}{\partial \boldsymbol{\mu}} \mathbb{E}_{\epsilon \sim \mathcal{N}(0,\boldsymbol{I})} [ \frac{\partial}{\partial \boldsymbol{w}} F(\boldsymbol{w}, \boldsymbol{\theta}) + \frac{\partial}{\partial \boldsymbol{\mu}} F(\boldsymbol{w}, \boldsymbol{\theta}) ]$
+        \item $\frac{\partial}{\partial \sigma} \mathbb{E}_{\epsilon \sim \mathcal{N}(0,\boldsymbol{I})} [ \epsilon^\intercal \frac{\partial}{\partial \boldsymbol{w}} F(\boldsymbol{w}, \boldsymbol{\theta}) + \frac{\partial}{\partial \sigma} F(\boldsymbol{w}, \boldsymbol{\theta}) ]$
+    \end{itemize}
+    \item To optimize this, we can use gradient descent with the following algorithm:
+    \begin{enumerate}
+        \item Initialize $\boldsymbol{\mu}$ and $\sigma$
+        \item For $t = 1, 2, ...$
+        \begin{enumerate}
+            \item Sample $\epsilon \sim \mathcal{N}(0,\boldsymbol{I})$
+            \item Compute $F(\boldsymbol{w}, \boldsymbol{\theta})$
+            \item $\boldsymbol{\mu}_{t+1} \leftarrow \boldsymbol{\mu}_t - \eta_t [ \frac{\partial}{\partial \boldsymbol{w}} F(\boldsymbol{w}, \boldsymbol{\theta}) + \frac{\partial}{\partial \boldsymbol{\mu}} F(\boldsymbol{w}, \boldsymbol{\theta}) ] |_{\boldsymbol{\mu} = \boldsymbol{\mu}_t}$\\
+            \item $\sigma_{t+1} \leftarrow \sigma_t - \eta_t [ \epsilon^\intercal \frac{\partial}{\partial \boldsymbol{w}} F(\boldsymbol{w}, \boldsymbol{\theta}) + \frac{\partial}{\partial \sigma} F(\boldsymbol{w}, \boldsymbol{\theta}) ] |_{\sigma = \sigma_t}$
+        \end{enumerate}
+    \end{enumerate}
+\end{itemize}

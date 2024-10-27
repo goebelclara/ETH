@@ -1,0 +1,86 @@
+\section{PCA}
+\subsection*{Description}
+\emph{Task} --- Dimensionality reduction via projection, create uncorrelated features
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Description} --- 
+\begin{itemize}
+    \item Unsupervised
+    \item Non-parametric
+\end{itemize}
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Overview} --- 
+Identifies lower-dimensional subspace and projects data onto it such that the maximum amount of variance in the data is preserved. In lower-dimensional subspace:
+\begin{itemize}
+    \item Axes are called \emph{principal components}, where the first principal component is the axis accounting for the largest variance
+    \item Each axis is given by an eigenvector with \emph{loadings}, indicating how much each variable in the original data contributes to this eigenvector
+    \item Variance captured along each axis is given by the corresponding eigenvalue
+\end{itemize}
+
+{\color{black}\hrule height 0.001mm}
+
+\subsection*{Formulation}
+
+\begin{itemize}
+    \item Project data $\{\boldsymbol{x^{(i)}}\}_{i=1}^n \in \mathbb{R}^m$ onto space $\mathbb{R}^d$ spanned by orthonormal basis $\{\boldsymbol{u^{[j]}}\}_{j=1}^d \in \mathbb{R}^m$ where $d << m$
+    \item Each instance $\boldsymbol{x^{(i)}}$ is projected onto each basis vectors $\boldsymbol{u^{[j]}} \cdot \boldsymbol{x^{(i)}}$
+    \item Each basis vector $\boldsymbol{u^{[j]}}$ contains $m$ loadings $[u_i^{[j]}, ..., u_m^{[j]}]$, whose value indicates how important each feature $m$ is for the $j^{th}$ principal component
+    \item Mean of projected data for a given basis vector: $\boldsymbol{u^{[j]}} \cdot \overline{\boldsymbol{X}} = \boldsymbol{u^{[j]}} \cdot \frac{1}{n} \sum_{i=1}^n \boldsymbol{x^{(i)}}$
+    \item Variance of projected data for a given basis vector: $\frac{1}{n} \sum_{i=1}^n (\boldsymbol{u^{[j]}} \cdot \boldsymbol{x^{(i)}} - \boldsymbol{u^{[j]}} \cdot \overline{\boldsymbol{X}})^2 = \boldsymbol{u^{[j]}}^\intercal \boldsymbol{S} \boldsymbol{u^{[j]}}$ where $\boldsymbol{S}$ is the covariance matrix $\boldsymbol{S} = \frac{1}{n} \sum_{i=1}^n (\boldsymbol{x^{(i)}} - \overline{\boldsymbol{X}})(\boldsymbol{x^{(i)}} - \overline{\boldsymbol{X}})^\intercal = \frac{1}{n} \boldsymbol{X}^\intercal \boldsymbol{X}$
+\end{itemize}
+
+{\color{black}\hrule height 0.001mm}
+
+\subsection*{Optimization}
+\emph{Parameters} --- Find $\{\boldsymbol{u^{[j]}}\}_{j=1}^d$
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Objective function} --- 
+\begin{itemize}
+    \item Maximize variance $\sum_{j=1}^d \boldsymbol{u^{[j]}}^\intercal \boldsymbol{S} \boldsymbol{u^{[j]}}$ subject to orthonormal $\{\boldsymbol{u^{[j]}}\}_{j=1}^d$
+    \item Gives rise to Lagrangian formulation
+    \item Lagrangian formulation for $\boldsymbol{u^{[1]}}$ capturing the most variance: $\mathcal{L} = \boldsymbol{u^{[1]}}^\intercal \boldsymbol{S} \boldsymbol{u^{[1]}} - \lambda^{[1]} (\boldsymbol{u^{[1]}} \cdot \boldsymbol{u^{[1]}} - 1)$ where $\lambda^{[1]}$ captures the orthonormality constraint that $\boldsymbol{u^{[1]}} \cdot \boldsymbol{u^{[1]}} = 1$
+    \item Lagrangian formulation for $\boldsymbol{u^{[2]}}$ capturing the secondmost variance: $\mathcal{L} = \boldsymbol{u^{[2]}}^\intercal \boldsymbol{S} \boldsymbol{u^{[2]}} - \lambda^{[2]} (\boldsymbol{u^{[2]}} \cdot \boldsymbol{u^{[2]}} - 1) - \lambda^{[1][2]} (\boldsymbol{u^{[1]}} \cdot \boldsymbol{u^{[2]}} - 0)$ where $\lambda^{[1][2]}$ captures the orthogonality constraint that $\boldsymbol{u^{[1]}} \cdot \boldsymbol{u^{[2]}} = 0$
+\end{itemize}
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Optimization} --- 
+For $\boldsymbol{u^{[1]}}$: 
+\begin{itemize}
+    \item $\nabla_{\boldsymbol{u^{[1]}}} \mathcal{L} = 2 \boldsymbol{S} \boldsymbol{u^{[1]}} - 2 \lambda^{[1]} \boldsymbol{u^{[1]}} = 0$
+    \item $\Rightarrow \boldsymbol{S} \boldsymbol{u^{[1]}} = \lambda^{[1]} \boldsymbol{u^{[1]}}$
+    \item This is the eigenvector/eigenvalue equation, so $\boldsymbol{u^{[1]}}$ is the eigenvector of $\boldsymbol{S}$ and $\lambda^{[1]}$ is the associated eigenvalue
+    \item We see that the variance of the projected data is equal to $\lambda^{[1]}$:
+    $\boldsymbol{u^{[1]}}^\intercal \boldsymbol{S} \boldsymbol{u^{[1]}} = \boldsymbol{u^{[1]}}^\intercal \lambda^{[1]} \boldsymbol{u^{[1]}} = \lambda^{[1]} \boldsymbol{u^{[1]}}^\intercal \boldsymbol{u^{[1]}} = \lambda^{[1]} \times 1$
+\end{itemize}
+For $\boldsymbol{u^{[2]}}$: 
+\begin{itemize}
+    \item $\nabla_{\boldsymbol{u^{[2]}}} \mathcal{L} = 2 \boldsymbol{S} \boldsymbol{u^{[2]}} - 2 \lambda^{[2]} \boldsymbol{u^{[2]}} - \lambda^{[1][2]} \boldsymbol{u^{[1]}} = 0$
+    \item $\Rightarrow \boldsymbol{S} \boldsymbol{u^{[2]}} = \lambda^{[2]} \boldsymbol{u^{[2]}}$ \\
+    Proof: 
+    \begin{itemize}
+        \item Multiplying with $\boldsymbol{u^{[1]}}^\intercal$: $2 \boldsymbol{u^{[1]}}^\intercal \boldsymbol{S} \boldsymbol{u^{[2]}} - 2 \lambda^{[2]} \boldsymbol{u^{[1]}}^\intercal \boldsymbol{u^{[2]}} - \lambda^{[1][2]} \boldsymbol{u^{[1]}}^\intercal \boldsymbol{u^{[1]}} = 0$
+        \item $ = 2 \boldsymbol{u^{[1]}}^\intercal \boldsymbol{S} \boldsymbol{u^{[2]}} - 0 - \lambda^{[1][2]} \times 1 = 0$ because of orthogonality resp. orthonormality
+        \item $ = 2 \boldsymbol{u^{[2]}}^\intercal \boldsymbol{S} \boldsymbol{u^{[1]}} - \lambda^{[1][2]} = 0$ because the variance is a scalar and can be transposed and because the covariance matrix is symmetric
+        \item $ = 2 \boldsymbol{u^{[2]}}^\intercal \lambda^{[1]} \boldsymbol{u^{[1]}} - \lambda^{[1][2]} = 0$ after plugging in the first found basis vector
+        \item $ = 2 \lambda^{[1]} \times 0 - \lambda^{[1][2]} = 0$
+        \item $ = \lambda^{[1][2]} = 0$
+    \end{itemize}
+    \item [...] continue as for previous vector
+\end{itemize}
+In the end, we have a total projected variance of $\sum_{j=1}^d \lambda^{[j]}$
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Characteristics} --- 
+\begin{itemize}
+    \item Convex 
+    \item Has global minimum
+    \item Has unique or infinitely many solutions
+    \item Can be solved analytically
+\end{itemize}

@@ -1,0 +1,268 @@
+\section{Probability and Statistics}
+\subsection*{Terminology}
+\emph{Kolmogorov axioms} --- 
+Probability space defined by:
+\begin{itemize}
+    \item Sample space: All possible outcomes $\Omega = \{\omega_1,...,\omega_n\}$
+    \item Event space: All possible results, where an event is a subset of the sample space 
+    \item Probability measure: Function that assigns a probability to an event 
+\end{itemize}
+Axioms:
+\begin{itemize}
+    \item Event space must be a \emph{sigma algebra}:
+    \begin{itemize}
+        \item If $A$ is in sample space, its complement is also in sample space
+        \item If $A_1,...A_n$ are in sample space, their union is also in sample space
+    \end{itemize}
+    \item Probability measure must satisfy:
+    \begin{itemize}
+        \item $0 \leq \mathbb{P}(A) \leq 1$
+        \item $\mathbb{P}({\Omega}) = 1$
+        \item If $A_1,A_2,...$ are in sample space and do not intersect, then $\mathbb{P}(A_1 \cup A_2 \cup ...) = \int_{n=1}^{\infty} \mathbb{P}(A_n)$
+    \end{itemize}
+\end{itemize}
+Further properties:
+\begin{itemize}
+    \item All sets than can be formed from left and right inclusive interval $[0,a]$ are events. On that basis: $(b,1] = [0,b]^c \in$ event space.
+\end{itemize}
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Variables} --- 
+\begin{itemize}
+    \item Random variable:
+    \begin{itemize}
+        \item Discrete random variable: Characterized by pmf
+        \item Continuous random variable: Characterized by pdf
+    \end{itemize}
+    \item Independent random variables:
+    \begin{itemize}
+        \item $\mathbb{P}(A|B) = \mathbb{P}(A)$ and $\mathbb{P}(B|A) = \mathbb{P}(B)$
+        \item $\mathbb{E}(AB) = \mathbb{E}(A)\mathbb{E}(B)$
+        \item Correlation is 0 
+        \item $\mathbb{P}(A \cap B) = \mathbb{P}(A)\mathbb{P}(B)$
+        \item Functions of independent random variables are also independent
+    \end{itemize}
+    \item Conditionally independent random variables: Two random variables $\mathcal{X}$ and $\mathcal{Y}$ are conditionally independent, if there is a confounder $\mathcal{L}$ that causally affects both variables, but if we control for this confounder, the variables are not causally connected
+    \item I.I.D. random variables: Independent and from identical distribution
+\end{itemize}
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Events} --- 
+\begin{itemize}
+    \item Complement: $\mathbb{P}(A^C) = 1 - \mathbb{P}(A)$ and $\mathbb{P}(A \cup A^C) = \mathbb{P}(A)\mathbb{P}(A^C)$
+    \item Disjoint / mutually exclusive vs. joint / mutually inclusive
+    \item Subset $A \subset B$ with $\mathbb{P}(A) < \mathbb{P}(B)$
+\end{itemize}
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Probabilities} --- 
+\begin{itemize}
+    \item Marginal probability $\mathbb{P}(A)$: Probability for single variable: $p(\mathcal{X}) = \sum_{\mathcal{Y}}p(x,y)$ resp. $f(\mathcal{X}) = \int_{\mathcal{Y}}f(x,y)dy$
+    \item Joint probability $\mathbb{P}(A \cap B)$: Probability for combination of variables, given by all possible combinations resp. convolution of their pdfs 
+    \item Conditional probability $\mathbb{P}(A|B) = \frac{\mathbb{P}(A \cap B)}{\mathbb{P}(B)}$: Probability for variable, given other variable: $p(\mathcal{X}|\mathcal{Y}) = \frac{p(x,y)}{\sum_{\mathcal{X}}p(x,y)}$ resp. $f(\mathcal{X}|\mathcal{Y}) = \frac{f(x,y)}{\int_{\mathcal{X}}f(x,y)dy}$
+    \begin{itemize}
+        \item $\mathbb{P}(A|B) = 1 - \mathbb{P}(A^C|B)$
+        \item $\mathbb{P}(A_1|B) + \mathbb{P}(A_2|B) + ... = 1$
+    \end{itemize}
+    \item Bayesian terminology: 
+    \begin{itemize}
+        \item Prior $\mathbb{P}(\textrm{parameter})$
+        \item Posterior $\mathbb{P}(\textrm{parameter} | \textrm{data})$
+        \item Likelihood $\mathbb{P}(\textrm{data} | \textrm{parameter})$
+        \item Evidence $\mathbb{P}(\textrm{data})$
+    \end{itemize}
+    \item \emph{Bayes theorem}: $\textrm{Posterior } \mathbb{P}(A|B) = \frac{\textrm{Likelihood }\mathbb{P}(B|A) \times  \textrm{Prior }\mathbb{P}(A)}{\textrm{Evidence }\mathbb{P}(B)}$
+\end{itemize}
+
+{\color{black}\hrule height 0.001mm}
+
+\subsection*{Measures}
+\emph{Expected value} --- 
+$\mathbb{E}(\mathcal{X}) = \sum_{\mathcal{X}}x \times p(x)$ resp. $\mathbb{E}(\mathcal{X}) = \int_{-\infty}^{\infty}x \times f(x)dx$ with pmf resp. pdf --- Properties:
+\begin{multicols}{2}
+\begin{itemize}
+    \item $\mathbb{E}(\alpha)=\alpha$
+    \item $\mathbb{E}(\alpha\mathcal{X}+\beta)=\alpha\mathbb{E}(\mathcal{X})+\beta$
+    \item $\mathbb{E}(\alpha\mathcal{X} + \beta\mathcal{Y})=\alpha\mathbb{E}(\mathcal{X})+\beta\mathbb{E}(\mathcal{Y})$
+    \item For orthogonal variables:
+    $\mathbb{E}((\mathcal{X}+\mathcal{Y})^2)=\mathbb{E}(\mathcal{X}^2) + \mathbb{E}(\mathcal{Y}^2)$
+    \item For independent variables: $\mathbb{E}(\mathcal{X}\mathcal{Y})=\mathbb{E}(\mathcal{X})\mathbb{E}(\mathcal{Y})$
+    \item For vector $\boldsymbol{y} = \boldsymbol{A}\boldsymbol{x}$:\\$\mathbb{E}_y(\boldsymbol{A}\boldsymbol{x})=\boldsymbol{A}\mathbb{E}_X(\boldsymbol{x})$
+\end{itemize}
+\end{multicols}
+\emph{Cauchy Schwarz inequality}: $\mathbb{E}(\mathcal{X},\mathcal{Y})^2 \leq \mathbb{E}(\mathcal{X}^2)\mathbb{E}(\mathcal{Y}^2)$
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Standard deviation} --- $\sqrt{\mathbb{V}(\mathcal{X})}$
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Covariance} ---
+\begin{itemize}
+    \item Univariate variance of a random variable: $\mathbb{V}(\mathcal{X}) = \mathbb{E}((\mathcal{X}-\mathbb{E}(\mathcal{X}))^2) = \mathbb{E}(\mathcal{X}^2) - \mathbb{E}(\mathcal{X})^2$ where $\mathbb{E}(\mathcal{X}^2)$ is the unnormalized correlation resp. inner product
+    \item Univariate covariance of two random variables: $\textrm{Cov}(\mathcal{X}, \mathcal{Y}) = \mathbb{E}((\mathcal{X}-\mathbb{E}(\mathcal{X}))(\mathcal{Y}-\mathbb{E}(\mathcal{Y}))) = \mathbb{E}(\mathcal{X}\mathcal{Y}) - \mu_{\mathcal{X}} \mu_{\mathcal{Y}}$ where $\mathbb{E}(\mathcal{X}\mathcal{Y})$ is the unnormalized correlation resp. inner product
+    \item Multivariate covariance matrix of a vector: 
+    \begin{itemize}
+        \item $\boldsymbol{\Sigma} = \textrm{Cov}(\boldsymbol{\mathcal{X}}) = \mathbb{E}((\boldsymbol{\mathcal{X}}-\mathbb{E}(\boldsymbol{\mathcal{X}}))(\boldsymbol{\mathcal{X}}-\mathbb{E}(\boldsymbol{\mathcal{X}}))^\intercal) = \mathbb{E}(\boldsymbol{\mathcal{X}}\boldsymbol{\mathcal{X}}^\intercal) - \mathbb{E}(\boldsymbol{\mathcal{X}})\mathbb{E}(\boldsymbol{\mathcal{X}})^\intercal = \begin{bmatrix}
+        \textrm{Var}(\mathcal{X}_1) & ... & \textrm{Cov}(\mathcal{X}_1,\mathcal{X}_m) \\
+        ... & ... & ... \\
+        \textrm{Cov}(\mathcal{X}_m,\mathcal{X}_1) & ... & \textrm{Var}(\mathcal{X}_m)
+        \end{bmatrix}$ where $\boldsymbol{R} = \mathbb{E}(\boldsymbol{\mathcal{X}}\boldsymbol{\mathcal{X}}^\intercal)$ is the unnormalized correlation matrix
+        \item $\boldsymbol{\Sigma}$ and $\boldsymbol{R}$ are symmetric and psd
+        \item $\boldsymbol{\Sigma} = \boldsymbol{R} - \boldsymbol{\mu}_X \boldsymbol{\mu}_X^\intercal$
+    \end{itemize}
+\end{itemize}
+Properties - variance:
+\begin{multicols}{2}
+\begin{itemize}
+    \item $\mathbb{V}(\alpha)=0$
+    \item $\mathbb{V}(\alpha\mathcal{X}+\beta)=\alpha^2\mathbb{V}(\mathcal{X})$
+    \item $\mathbb{V}(\mathcal{X} + \mathcal{Y})=\mathbb{V}(\mathcal{X})+2\textrm{Cov}(\mathcal{X},\mathcal{Y})+\mathbb{V}(\mathcal{Y})$
+    \item For uncorrelated (and independent) variables: $\mathbb{V}(\mathcal{X} + \mathcal{Y})=\mathbb{V}(\mathcal{X})+\mathbb{V}(\mathcal{Y})$
+    \item For independent variables: $\mathbb{V}(\mathcal{X}\mathcal{Y})=\mathbb{E}((\mathcal{X}\mathcal{Y})^2)\mathbb{E}(\mathcal{X}\mathcal{Y})^2$
+    \item For vector $\boldsymbol{y} = \boldsymbol{A}\boldsymbol{x}$:\\ $\mathbb{V}_y = \boldsymbol{A}\mathbb{V}_X\boldsymbol{A}^\intercal$
+\end{itemize}
+\end{multicols}
+Properties - covariance:
+\begin{itemize}
+    \item $\textrm{Cov}(\mathcal{X},\mathcal{X}) = \mathbb{V}(\mathcal{X})$
+    \item $\textrm{Cov}((\alpha \mathcal{X} + \beta \mathcal{Y}),\mathcal{Z}) = \alpha \textrm{Cov}(\mathcal{X},\mathcal{Z}) + \beta \textrm{Cov}(\mathcal{Y},\mathcal{Z})$
+    \item If covariance of two random variables is 0, they are uncorrelated, but not necessarily independent. Then, $\mathbb{E}(\mathcal{X}\mathcal{Y})=\mathbb{E}(\mathcal{X})\mathbb{E}(\mathcal{Y})$
+    \item If covariance and unnormalized correlation of two random variables is 0, they are orthogonal, but not necessarily independent. Then, $\mathbb{E}(\mathcal{X}\mathcal{Y}) = 0$
+    \item For vector $\boldsymbol{y} = \boldsymbol{A}\boldsymbol{x}$:
+        \begin{itemize}
+            \item $\boldsymbol{\Sigma}_y = \boldsymbol{A}\boldsymbol{\Sigma}_X\boldsymbol{A}^\intercal$
+            \item $\boldsymbol{R}_y = \boldsymbol{A}\boldsymbol{R}_X\boldsymbol{A}^\intercal$
+        \end{itemize}
+\end{itemize}
+\emph{Cauchy Schwarz inequality}: \begin{itemize}
+    \item $\textrm{Cov}(\mathcal{X},\mathcal{Y})^2 \leq \mathbb{V}(\mathcal{X})\mathbb{V}(\mathcal{Y})$
+    \item $\mathbb{E}(\mathcal{X}\mathcal{Y})^2 \leq \mathbb{E}(\mathcal{X}^2)\mathbb{V}(\mathcal{Y}^2)$
+\end{itemize}
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Correlation} --- Normalized covariance
+\begin{itemize}
+    \item Univariate correlation of a random variable: $\textrm{Cor}(\mathcal{X}, \mathcal{Y}) = \frac{\textrm{Cov}(\mathcal{X}, \mathcal{Y})}{\sqrt{\mathbb{V}(\mathcal{X})} \sqrt{\mathbb{V}(\mathcal{Y})}}$ 
+    \item Multivariate correlation matrix of a vector: 
+    \begin{itemize}
+        \item $\boldsymbol{P} = \textrm{Cor}(\boldsymbol{\mathcal{X}}) = \begin{bmatrix}
+        1 & ... & \textrm{Cor}(\mathcal{X}_1,\mathcal{X}_m) \\
+        ... & ... & ... \\
+        \textrm{Cor}(\mathcal{X}_m,\mathcal{X}_1) & ... & 1
+        \end{bmatrix}$
+        \item $\boldsymbol{P}$ is symmetric and psd
+        \item Correlation is bounded between 0 and 1, given Cauchy Schwarz Inequality
+        \item If correlation of two random variables is 0, they are not necessarily independent
+    \end{itemize}
+\end{itemize}
+
+{\color{black}\hrule height 0.001mm}
+
+\subsection*{Probability Distributions}
+\emph{PMF, CDF, PDF} --- 
+\begin{itemize}
+    \item Cumulative density function $F(r)$ (CDF): $F(r) = p(x \leq r)$
+    \item Probability mass function $p(x)$ (PMF) for discrete random variables: $p(x)$
+    \item Probability density function (PDF) $f(x)$ for continuous random variables: $\int_{-\infty}^r f(x)dx = p(x \leq r) = F(r)$
+    \item Properties of CDF and PDF:
+    \begin{itemize}
+        \item Derivative of CDF returns PDF, integral of PDF returns CDF
+        \item Monotonically non-decreasing: If $s<r, F(s) < F(r)$
+        \item $lim_{r\rightarrow-\infty} F(r) = 0$
+        \item $lim_{r\rightarrow\infty} F(r) = 1$
+        \item Right-continuous: $lim_{s\rightarrow-r^+} F(s) = F(r)$
+        \item $lim_{s\rightarrow-r^-} F(s) = F(x < r) = F(s) - F(x = r)$
+        \item $\int_a^b f(x)dx = F(b)-F(a) = p(a < x \leq b)$
+        \item $\int_{-\infty}^\infty f(x)dx = 1$
+    \end{itemize}
+\end{itemize}
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Normal distribution} --- 
+$\mathcal{X} \sim \mathcal{N}(\mu, \sigma^2)$\\
+For univariate, PDF: $\frac{1}{\sqrt{2\pi\sigma}} exp(\frac{-(x-\mu)^2}{2\sigma^2})$\\
+For multivariate, PDF: $\frac{1}{{2\pi\sigma}^{n/2}} \frac{1}{|\boldsymbol{\Sigma}|^{1/2}} exp(-\frac{1}{2} (\boldsymbol{x}-\boldsymbol{\mu})^\intercal \boldsymbol{\Sigma}^{-1} (\boldsymbol{x}-\boldsymbol{\mu}))$ where the term in the exponent is a quadratic form
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Bernoulli distribution} --- trial with success (probability $p$) or failure (probability $1-p$)
+\begin{multicols}{2}
+\begin{itemize}
+    \item $\mathcal{X} \sim \textrm{Bernoulli}(p)$
+    \item PDF: $p(x) p^x (1-p)^x$
+    \item Mean: $\mathbb{E}(x) = p$
+    \item Variance: $\mathbb{V}(x) = p(1-p)$
+\end{itemize}
+\end{multicols}
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Binomial distribution} --- $n$ independent Bernoulli trials with $k$ successes
+\begin{multicols}{2}
+\begin{itemize}
+    \item $\mathcal{X} \sim \textrm{Bin}(n,p)$
+    \item PDF: $\binom{n}{k} p^k (1-p)^{n-k}$
+    \item Mean: $\mathbb{E}(x) = np$
+    \item Variance: $\mathbb{V}(x) = np(1-p)$
+\end{itemize}
+\end{multicols}
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Poisson distribution} ---
+\begin{multicols}{2}
+\begin{itemize}
+    \item $\mathcal{X} \sim \textrm{Pois}(\lambda)$
+    \item PDF: $e^{-\lambda} \frac{\lambda^x}{x!}$
+    \item Mean: $\mathbb{E}(x) = \lambda$
+    \item Variance: $\mathbb{V}(x) = \lambda$
+\end{itemize}
+\end{multicols}
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Beta distribution} ---
+\begin{multicols}{2}
+\begin{itemize}
+    \item $\mathcal{X} \sim \textrm{Beta}(\alpha,\beta)$
+    \item PDF: $\frac{\Gamma(\alpha+\beta)}{\Gamma(\alpha)+\Gamma(\beta)} x^{\alpha-1} (1-x)^{\beta-1}$
+    \item Mean: $\mathbb{E}(x) = \frac{\alpha}{\alpha+\beta}$
+    \item Variance: $\mathbb{V}(x) = \frac{\alpha\beta}{(\alpha+\beta)^2(\alpha+\beta+1)}$
+\end{itemize}
+\end{multicols}
+
+{\color{black}\hrule height 0.001mm}
+
+\subsection*{Laws of Large Numbers and Inqeualities}
+\emph{Laws of large numbers} --- Sample mean of iid variables converges to population mean as $n \rightarrow \infty$
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Jensen's inequality} --- Relates expected value of a convex function of a random variable to the convex function of the expected value of that random variable\\
+$\mathbb{E}(f(\mathcal{X})) \geq f(\mathbb{E}(\mathcal{X}))$
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Markov's inequality} --- $p(x \geq t) \leq \frac{\mathbb{E}(x)}{t}$\\
+Interesting only for $t \geq \mathbb{E}(x)$ because $p(x \geq t)$ must then be less than or equal to 1\\
+Generalizations:
+\begin{itemize}
+    \item $p(|x| \geq t) \leq \frac{\mathbb{E}(g(|x|))}{g(t)}$
+    \item $p(|x| \geq t) \leq \frac{\mathbb{E}(|x|^n)}{t^n}$
+\end{itemize}
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Chebychev's inequality} --- $p( |x - \mu_x| \geq \alpha | \sigma_x |) \leq \frac{1}{\alpha^2}$\\
+Interesting only for $\alpha > 1$\\
+Implications:
+\begin{itemize}
+    \item For n variables: $p( |S_n - \mu_x| \geq \epsilon) \leq \frac{\sigma_x^2}{n \epsilon^2}$ where $S_n$ is the sample mean
+\end{itemize}
