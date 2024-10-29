@@ -1,0 +1,8 @@
+
+.DS_Store
+*.DS_Store
+AML/Task1/.DS_Store
+AML/Task1/_old/*
+AML/Task1/other/*
+AML/Task1/.ipynb_checkpoints/*
+*.csv
