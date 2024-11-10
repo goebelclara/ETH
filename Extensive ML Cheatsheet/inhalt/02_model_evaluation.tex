@@ -52,16 +52,17 @@ Bootstrapping:
 \begin{itemize}
     \item Draw $B$ samples with replacement of size $n$ from data $\mathcal{Z}$: $\mathcal{Z}^{*b}$
     \item Compute estimate $S( \mathcal{Z}^{*b} )$ for each bootstrap sample
-    \item For each estimate, we can give a mean and variance:
+    \item For each estimate $S( \mathcal{Z}^{*b} )$, we can give a mean and variance:
     \begin{itemize}
         \item $\bar{S} = \frac{1}{B} \sum_b S( \mathcal{Z}^{*b} )$
         \item $\sigma^2(S) = \frac{1}{B-1} \sum_b ( S( \mathcal{Z}^{*b} ) - \bar{S})^2$
     \end{itemize}
-    \item Empirical loss given by: $\hat{\mathcal{R}}^{bs} = \frac{1}{n} \sum_{i\leq n} \frac{1}{| C^{-i} |} \sum_{b \in C^{-i}} LO(y_i - \hat{f}^{*b} (x_i))$ where $C^{-i}$ contains all bootstrap indices $b$ so that $\mathcal{Z}^{*b}$ does not contain $(x_i,y_i)$
-    \item Empirical loss of bootstrap uses training data to estimate $\hat{\mathcal{R}}$, i.e. it is generally too optimistic. We can correct this:
+    \item Empirical loss given by: $\hat{\mathcal{R}}(\mathcal{A}) = \frac{1}{B} \sum_{b=1}^B \frac{1}{n} \sum_{i=1}^n LO(y_i - \hat{f}^{*b} (x_i))$ 
+    \item Out-of-bag loss given by: $\hat{\mathcal{R}}^{bs} = \frac{1}{n} \sum_{i=1}^n \frac{1}{| C^{-i} |} \sum_{b \in C^{-i}} LO(y_i - \hat{f}^{*b} (x_i))$ where $C^{-i}$ contains all bootstrap indices $b$ so that $\mathcal{Z}^{*b}$ does not contain $(x_i,y_i)$
+    \item Empirical loss of bootstrap uses training data to estimate $\hat{\mathcal{R}}$, i.e. it is generally too optimistic. We can correct this by combining the empirical and out-of-bag loss:
     \begin{itemize}
         \item Probability that $(x_i,y_i)$ is not in sample $\mathcal{Z}^{*b}$ of size $n$ is given by $(1-\frac{1}{n})^n = \frac{1}{e} \textrm{ as } n \rightarrow \infty \approx \frac{1}{3}$
         \item Probability that $(x_i,y_i)$ is in sample $\mathcal{Z}^{*b}$ of size $n$ is given by $1 - \frac{1}{e} \textrm{ as } n \rightarrow \infty \approx \frac{2}{3}$
-        \item We then define: $\hat{\mathcal{R}}^{(0.632)} = 0.368 \hat{\mathcal{R}} + 0.632 \hat{\mathcal{R}}^{bs}$
+        \item We then define: $\hat{\mathcal{R}}^{(0.632)} = 0.368 \hat{\mathcal{R}}(\mathcal{A}) + 0.632 \hat{\mathcal{R}}^{bs}$
     \end{itemize}
 \end{itemize}

@@ -76,8 +76,9 @@
         \item Given multinomial series expansion, $\sum_\alpha [ \frac{ \boldsymbol{x^{(i)}}^\alpha \boldsymbol{x^{(j)}}^\alpha }{ \alpha! } ] = exp(\boldsymbol{x^{(i)}}^\intercal \boldsymbol{x^{(j)}})$
         \item $exp ( -\frac{1}{2} \|\boldsymbol{x^{(i)}}\|^2  -\frac{1}{2} \|\boldsymbol{x^{(j)}}\|^2 + \boldsymbol{x^{(i)}}^\intercal \boldsymbol{x^{(j)}}) = exp (- \frac{ \| \boldsymbol{x^{(i)}} - \boldsymbol{x^{(j)}} \|^2 }{ 2\sigma^2 } )$
     \end{itemize}
-    \item Length scale parameter $l$ controls how quickly the similarity decays with distance
+    \item Length scale parameter $l$ controls how quickly the similarity decays with distance: If $l$ is large, points with high distance still have high covariance
     \item Variance parameter $\sigma$ controls the vertical scale of the function
+    \item RBF kernel is stationary, meaning that only the relative distance between two points determines the value output by the kernel function
 \end{itemize}
 
 {\color{lightgray}\hrule height 0.001mm}
@@ -90,6 +91,14 @@
         \item Multiplication: $k_1 \times k_2$
         \item Scaling: $c \times k_1$ for $c > 0$
         \item Composition: $f(k_1)$ where $f$ is a polynomial with positive coefficients or the exponential function
+    \end{itemize}
+    \item Valid kernels:
+    \begin{itemize}
+        \item $k'(x_1,x_2) = c k(x_1,x_2)$, since $\varphi'(x) = \sqrt{c}\varphi(x)$
+        \item $k'(x_1,x_2) = f(x_1) k(x_1,x_2) f(x_2)$, since $\varphi'(x) = f(x)\varphi(x)$
+        \item $k'(x_1,x_2) = k_1(x_1,x_2) + k_2(x_1,x_2)$, since the requirements for a valid kernel are that its psd and symmetric, which is retained when two psd and symmetric matrices are added
+        \item $k'(x_1,x_2) = k_1(x_1,x_2) k_2(x_1,x_2)$, since new kernel is given by the $i^{th}$ feature value under feature map $\varphi_1$ multiplied by the $j^{th}$ feature value under feature map $\varphi_2$
+        \item $k'(x_1,x_2) = exp(k(x_1,x_2))$, since we can apply Taylor series expansion $\sum_{n=1}^r \frac{k(x_1,x_2)^r}{r!} = exp(k(x_1,x_2)) = k'(x_1,x_2)$ as $r \rightarrow \infty$ and we know that exponentiation, addition, and scaling produces valid new kernels from above
     \end{itemize}
 \end{itemize}
 
@@ -277,6 +286,11 @@ Value:
             $p(a_2 | a_1 = z) = \mathcal{N} (u_2 + \Sigma_{21} \Sigma_{11}^{-1} (z-u_1), \Sigma_{22} - \Sigma_{21} \Sigma_{11}^{-1} \Sigma_{12})$
         \end{itemize}
         \item Then, we get $p(y_{n+1}) = \mathcal{N} ( \boldsymbol{k}^\intercal \boldsymbol{C}_n^{-1} \boldsymbol{y}, c - \boldsymbol{k}^\intercal \boldsymbol{C}_n^{-1} \boldsymbol{k} )$
+    \end{itemize}
+    \item A new instance vector follows the distribution $p(\boldsymbol{y}_{*}) = \mathcal{N} ( \boldsymbol{K}_{*n} \boldsymbol{K}_{nn}^{-1} \boldsymbol{y}_{n}, \boldsymbol{K}_{**} - \boldsymbol{K}_{*n} \boldsymbol{K}_{nn}^{-1} \boldsymbol{K}_{n*} )$ where 
+    \begin{itemize}
+        \item Subscript $*$ indicates new instances, subscript $n$ indicates old instances
+        \item $\boldsymbol{K} $is the kernel matrix, e.g. $\boldsymbol{K}_{*n}$ has new instances on rows and old instances on columns 
     \end{itemize}
 \end{itemize}
 

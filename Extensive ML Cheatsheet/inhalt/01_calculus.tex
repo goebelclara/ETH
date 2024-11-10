@@ -94,18 +94,20 @@
 \begin{itemize}
     \item For a convex function: 
     \begin{itemize}
-        \item $f(\lambda x + (1-\lambda)y \leq \lambda f(x) + (1-\lambda) f(y)$
+        \item $f(\lambda x + (1-\lambda)y \leq \lambda f(x) + (1-\lambda) f(y)$ with $\lambda \in [0,1]$
         \item Hessian of stationary point(s) is psd
         \item Global minimum exists, but may not be unique
     \end{itemize}
     \item For a strictly convex function:
     \begin{itemize}
-        \item $f(\lambda x + (1-\lambda)y < \lambda f(x) + (1-\lambda) f(y)$
+        \item $f(\lambda x + (1-\lambda)y < \lambda f(x) + (1-\lambda) f(y)$ with $\lambda \in [0,1]$
         \item Hessian of stationary point is pd
         \item Unique global minimum exists 
     \end{itemize}
-    \item Sum of convex functions is also convex
-    \item Sum of convex and strictly convex function is strictly convex
+    \item Sum of convex functions $f_2(x) + f_1(x)$ is also convex, sum of convex and strictly convex function is strictly convex
+    \item Chain of convex functions $f_2(f_1(x))$, where outer function $f_2(x)$ is increasing, is also convex
+    \item Scalar multiple of convex function $\lambda f(x)$, where $\lambda \geq 0$, is also convex
+    \item Any norm is convex
 \end{itemize}
 
 {\color{lightgray}\hrule height 0.001mm}
@@ -134,6 +136,14 @@ Is function differentiable, continuous, and are relevant terms invertible?
     \item Lagrangian function: $\mathcal{L}(\boldsymbol{x},\lambda) = f(\boldsymbol{x}) + \lambda g(\boldsymbol{x})$, where $g(\boldsymbol{x})$ is an $(m-1)$ dimensional constraint surface and $\lambda$ is the Lagrange multiplier
     \item$\nabla_{\boldsymbol{x}} \mathcal{L} = \nabla_{\boldsymbol{x}} f(\boldsymbol{x}) + \lambda \nabla_{\boldsymbol{x}} g(\boldsymbol{x})$
     \item$\nabla_{\lambda} \mathcal{L} = g(\boldsymbol{x})$
+    \item Solution is feasible if it fulfills constraints and optimal, if no other feasible solution produces a lower error
+    \item Minimizing over Lagrangian $\mathcal{L}(\boldsymbol{x},\lambda) = f(\boldsymbol{x}) + \lambda g(\boldsymbol{x})$ corresponds to minimizing log-loss resp. negative likelihood:
+    \begin{itemize}
+        \item $\hat{\boldsymbol{x}} = argmax_\boldsymbol{x} p(\boldsymbol{D} |\boldsymbol{x}) \rho(\boldsymbol{x}) $ 
+        \item $= argmin_\boldsymbol{x} (- log p(\boldsymbol{D} |\boldsymbol{x}) + k(\boldsymbol{x}))$
+        \item where $k(\boldsymbol{x}) = -log \rho(\boldsymbol{x})$
+    \end{itemize}
+    $\mathcal{L}(\boldsymbol{x},\lambda) = f(\boldsymbol{x}) + \lambda g(\boldsymbol{x})$
 \end{itemize}\\
 For equality constraints: Minimize $f(\boldsymbol{x})$ subject to $g(\boldsymbol{x}) = 0$
 \begin{itemize}
@@ -158,7 +168,7 @@ For inequality constraints: Minimize $f(\boldsymbol{x})$ subject to $g(\boldsymb
     \end{itemize}
     \item To find $\boldsymbol{x^*}$ and $\lambda^*$: 
     \begin{itemize}
-        \item $\nabla_{\boldsymbol{x}} \matchcal{L} = 0$ subject to \emph{Karush Kuhn Tucker conditions}:
+        \item $\nabla_{\boldsymbol{x}} \mathcal{L} = 0$ subject to \emph{Karush Kuhn Tucker conditions}:
         \begin{itemize}
             \item $g(\boldsymbol{x}) \leq 0$
             \item $\lambda \geq 0$
@@ -179,25 +189,27 @@ For multiple constraints: Minimize $f(\boldsymbol{x})$ subject to $m$ inequality
         \item $\{\mu^{(i)}g^{(i)}(\boldsymbol{x}) = 0\}_{i=1}^m$
     \end{itemize}
 \end{itemize}\\
-Solving inequality constraints via duality – \emph{primal problem}:
+\emph{Primal problem}:
 \begin{itemize}
     \item $\textrm{min}_{\boldsymbol{x}} [\textrm{max}_{\boldsymbol{\lambda},\boldsymbol{\mu}} \mathcal{L}]$
     \item $\textrm{max}_{\boldsymbol{\lambda},\boldsymbol{\mu}} \mathcal{L} = f(\boldsymbol{x}) + \textrm{max}_{\boldsymbol{\lambda},\boldsymbol{\mu}} [\sum_{i=1}^m \mu^{(i)} g^{(i)}(\boldsymbol{x}) + \sum_{j=1}^p \lambda^{(j)} h^{(j)}(\boldsymbol{x})]$
     \item Second term gives rise to barrier function:
     \begin{itemize}
-        \item $= 0$ subject to constraints being met, given complementary slackness condition for inequality constraints and $h^{(j)}(\boldsymbol{x}) = 0$ for equality constraints, which implies that primal problem becomes $\textrm{min}_{\boldsymbol{x}}(f(\boldsymbol{x}))$
+        \item $= 0$ subject to constraints being met, given complementary slackness condition for inequality constraints and $h^{(j)}(\boldsymbol{x}) = 0$ for equality constraints, which implies that dual problem becomes $\textrm{min}_{\boldsymbol{x}}(f(\boldsymbol{x}))$
         \item $= \infty$ otherwise, which implies that primal problem cannot be solved
     \end{itemize}
 \end{itemize}
 Solving inequality constraints via duality – \emph{weak duality}:
 \begin{itemize}
-    \item Given minimax theorem, $\textrm{min}_{\boldsymbol{x}} [\textrm{max}_{\boldsymbol{\lambda},\boldsymbol{\mu}} \mathcal{L}] \geq \textrm{max}_{\boldsymbol{\lambda},\boldsymbol{\mu}} [\textrm{min}_{\boldsymbol{x}} \mathcal{L}]$, which gives a lower bound of minimum of primal problem
+    \item Weak duality always holds and gives a lower bound of minimum of primal problem
+    \item Given minimax theorem, $\textrm{min}_{\boldsymbol{x}} [\textrm{max}_{\boldsymbol{\lambda},\boldsymbol{\mu}} \mathcal{L}] = f(\boldsymbol{x}) \textrm{ (provided barrier function) } \geq \textrm{max}_{\boldsymbol{\lambda},\boldsymbol{\mu}} [\textrm{min}_{\boldsymbol{x}} \mathcal{L}]$
     \item $\textrm{min}_{\boldsymbol{x}} \mathcal{L}$ is an unconstrained optimization problem 
     \item $\textrm{max}_{\boldsymbol{\lambda},\boldsymbol{\mu}} [\textrm{min}_{\boldsymbol{x}} \mathcal{L}]$ is a concave maximization problem 
 \end{itemize}
 Solving inequality constraints via duality – \emph{strong duality}:
 \begin{itemize}
-    \item If constraint qualifications are fulfilled, $\textrm{min}_{\boldsymbol{x}} [\textrm{max}_{\boldsymbol{\lambda},\boldsymbol{\mu}} \mathcal{L}] = \textrm{max}_{\boldsymbol{\lambda},\boldsymbol{\mu}} [\textrm{min}_{\boldsymbol{x}} \mathcal{L}]$
+    \item Strong duality holds under certain conditions, for example \emph{Slater's condition} if there exists a solution that strictly fulfills all inequality constraints $\{g^{(i)}(\boldsymbol{x}) < 0\}_{i=1}^m$
+    \item Then, $\textrm{min}_{\boldsymbol{x}} [\textrm{max}_{\boldsymbol{\lambda},\boldsymbol{\mu}} \mathcal{L}] = \textrm{max}_{\boldsymbol{\lambda},\boldsymbol{\mu}} [\textrm{min}_{\boldsymbol{x}} \mathcal{L}]$
     \item $\textrm{min}_{\boldsymbol{x}} \mathcal{L}$ can be solved for general solution $\boldsymbol{x^*}$ in terms of $\boldsymbol{\lambda},\boldsymbol{\mu}$
     \item Plug $\boldsymbol{x^*}$ back into $\mathcal{L}$ and maximize to find solutions $\boldsymbol{\lambda^*},\boldsymbol{\mu^*}$
     \item Specify $\boldsymbol{x^*}$ based on $\boldsymbol{\lambda^*},\boldsymbol{\mu^*}$

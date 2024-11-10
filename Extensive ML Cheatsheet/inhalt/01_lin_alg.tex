@@ -318,13 +318,33 @@ $\boldsymbol{X}$ maps $\boldsymbol{b}$ from $\mathbb{R}^m$ to $\mathbb{R}^n$: $\
 
 {\color{lightgray}\hrule height 0.001mm}
 
-\emph{Projection matrices} ---
-Let $S$ be spanned by orthonormal $\{\boldsymbol{b_i}\}_{i=1}^n$, which are column vectors of the matrix $\boldsymbol{B} \in \mathbb{R}^{m \times n}$
+\emph{Projection matrices} ---\\
+Generally:
+\begin{itemize}
+    \item Projection matrix satisfies $\boldsymbol{P} = \boldsymbol{P}^2$
+    \item Proof:
+    \begin{itemize}
+        \item Let $S$ be spanned by $\{\boldsymbol{y_i}\}_{i=1}^n$, which are column vectors of the matrix $\boldsymbol{A} \in \mathbb{R}^{m \times n}$
+        \item Then, $\boldsymbol{A} \boldsymbol{c}$ are linear combinations of $\{\boldsymbol{y_i}\}_{i=1}^n$
+        \item A vector $(\boldsymbol{x} - \boldsymbol{A} \boldsymbol{c})$ is orthogonal to the columnspace of $\boldsymbol{A}$, if: $\textrm{columnspace}(\boldsymbol{A}) \cdot (\boldsymbol{x} - \boldsymbol{A} \boldsymbol{c}) = \boldsymbol{A}^\intercal (\boldsymbol{x} - \boldsymbol{A} \boldsymbol{c}) = \boldsymbol{A}^\intercal \boldsymbol{x} - \boldsymbol{A}^\intercal \boldsymbol{A} \boldsymbol{c} = 0$
+        \item Then, $\boldsymbol{c} = (\boldsymbol{A}^\intercal\boldsymbol{A})^{-1} \boldsymbol{A}^\intercal \boldsymbol{x}$ 
+        \item With this definition of $\boldsymbol{c}$, we have $\boldsymbol{A} (\boldsymbol{A}^\intercal\boldsymbol{A})^{-1} \boldsymbol{A}^\intercal$ as the projection matrix $\boldsymbol{P}$
+        \item $\boldsymbol{P}^2 = (\boldsymbol{A} (\boldsymbol{A}^\intercal\boldsymbol{A})^{-1} \boldsymbol{A}^\intercal) (\boldsymbol{A} (\boldsymbol{A}^\intercal\boldsymbol{A})^{-1} \boldsymbol{A}^\intercal) = \boldsymbol{A} (\boldsymbol{A}^\intercal\boldsymbol{A})^{-1} \boldsymbol{A}^\intercal = \boldsymbol{P}$
+    \end{itemize}
+\end{itemize}
+Via orthonormal basis: Let $S$ be spanned by orthonormal $\{\boldsymbol{b_i}\}_{i=1}^n$, which are column vectors of the matrix $\boldsymbol{B} \in \mathbb{R}^{m \times n}$
 \begin{itemize}
     \item Projection of $\boldsymbol{x}$ onto $S$ is given by: $\boldsymbol{u} = \sum_i (\boldsymbol{x} \cdot \boldsymbol{b_i}) \boldsymbol{b_i} = \sum_i \boldsymbol{b_i} \boldsymbol{b_i}^\intercal \boldsymbol{x} = \boldsymbol{B}\boldsymbol{B}^\intercal\boldsymbol{x} = \boldsymbol{C}\boldsymbol{x}$
     \item Projection of $\boldsymbol{x}$ onto $S^\bot$ is given by: $\boldsymbol{x} - \boldsymbol{u} = \boldsymbol{I}\boldsymbol{x} - \boldsymbol{C}\boldsymbol{x}$
 \end{itemize}
-
+Via SVD: Let $S$ be spanned by $\{\boldsymbol{y_i}\}_{i=1}^n$, which are column vectors of the matrix $\boldsymbol{A} \in \mathbb{R}^{m \times n}$
+\begin{itemize}
+    \item Projection of $\boldsymbol{x}$ onto $S$ is given by: $\boldsymbol{s} = \boldsymbol{A}\boldsymbol{A}^{\#}\boldsymbol{x}$ since $\boldsymbol{A}\boldsymbol{A}^{\#}$ is a projection matrix due to $\boldsymbol{A}\boldsymbol{A}^{\#} = (\boldsymbol{A}\boldsymbol{A}^{\#})^2$
+    \item $\boldsymbol{s} = \boldsymbol{U}_{+} \boldsymbol{U}_{+}^\intercal \boldsymbol{x}$ where $\boldsymbol{U}$ is obtained from SVD of $\boldsymbol{A}$
+    \item $\sum_{l=1}^m | \boldsymbol{u}_k \cdot \boldsymbol{y}_l |= \sigma_k^2$\\
+    Proof:
+    $\sum_{l=1}^m | \boldsymbol{u}_k \cdot \boldsymbol{y}_l |= \| \boldsymbol{u}_k^\intercal \boldsymbol{A} \| = \boldsymbol{u}_k^\intercal \boldsymbol{A} \boldsymbol{A}^\intercal \boldsymbol{u}_k = \boldsymbol{u}_k^\intercal \boldsymbol{U} \boldsymbol{S} \boldsymbol{V}^\intercal \boldsymbol{V} \boldsymbol{S}^\intercal \boldsymbol{U}^\intercal \boldsymbol{u}_k = \boldsymbol{e}_k^\intercal  \boldsymbol{S}  \boldsymbol{S}^\intercal \boldsymbol{e}_k = \sigma_k^2$
+\end{itemize}
 
 {\color{black}\hrule height 0.001mm}
 
@@ -343,7 +363,15 @@ Let $S$ be spanned by orthonormal $\{\boldsymbol{b_i}\}_{i=1}^n$, which are colu
         \item Is unique
         \item For diagonal matrices: $\boldsymbol{A}^{-1}$ can be calculated by inverting all diagonal elements  
     \end{itemize} 
-    \item Symmetric (Hermitian) matrix: $\boldsymbol{A}^\intercal = \boldsymbol{A}$
+    \item Symmetric (Hermitian) matrix:
+    \begin{itemize}
+        \item $\boldsymbol{A}^\intercal = \boldsymbol{A}$
+        \item Properties:
+        \begin{itemize}
+            \item $( \boldsymbol{x} + \boldsymbol{A}^{-1} \boldsymbol{b} )^\intercal \boldsymbol{A} ( \boldsymbol{x} + \boldsymbol{A}^{-1} \boldsymbol{b} ) - \boldsymbol{b}^\intercal \boldsymbol{A}^{-1} \boldsymbol{b} = \boldsymbol{x}^\intercal \boldsymbol{A} \boldsymbol{x} + 2 \boldsymbol{x}^\intercal \boldsymbol{b}$
+            \item If $\boldsymbol{A}$ and $\boldsymbol{B}$ are symmetric, $\boldsymbol{A} + \boldsymbol{B}$ is also symmetric
+        \end{itemize}
+    \end{itemize}
     \item Orthogonal (unitary) matrix: 
     \begin{itemize}
         \item Def: $\boldsymbol{A}^\intercal = \boldsymbol{A}^{-1}$
@@ -386,13 +414,6 @@ Let $S$ be spanned by orthonormal $\{\boldsymbol{b_i}\}_{i=1}^n$, which are colu
     \item $\textrm{det}(\boldsymbol{A}) = 0$
 \end{itemize}
 Inversely, if $\boldsymbol{A}$ is not invertible, the columns and rows are not linearly independent, etc. 
-
-{\color{lightgray}\hrule height 0.001mm}
-
-\emph{Properties} --- 
-\begin{itemize}
-    \item For symmetric $\boldsymbol{A}$: $( \boldsymbol{x} + \boldsymbol{A}^{-1} \boldsymbol{b} )^\intercal \boldsymbol{A} ( \boldsymbol{x} + \boldsymbol{A}^{-1} \boldsymbol{b} ) - \boldsymbol{b}^\intercal \boldsymbol{A}^{-1} \boldsymbol{b} = \boldsymbol{x}^\intercal \boldsymbol{A} \boldsymbol{x} + 2 \boldsymbol{x}^\intercal \boldsymbol{b}$
-\end{itemize}
 
 {\color{lightgray}\hrule height 0.001mm}
 
@@ -448,3 +469,77 @@ Psd properties:
 \begin{itemize}
     \item If $\boldsymbol{A}$ is psd, $\boldsymbol{B}\boldsymbol{A}\boldsymbol{B}^\intercal$ is psd
 \end{itemize}
+
+{\color{black}\hrule height 0.001mm}
+
+\subsection*{Singular Value Decomposition (SVD)}
+\emph{SVD} --- 
+\begin{itemize}
+    \item For $\boldsymbol{A} \in \mathbb{R}^{n \times m}$, orthogonal rotation matrix $\boldsymbol{U} \in \mathbb{R}^{n \times n}$, diagonal scaling and projection matrix $\boldsymbol{S} \in \mathbb{R}^{n \times m}$, and orthogonal rotation matrix $\boldsymbol{V} \in \mathbb{R}^{m \times m}$: $\boldsymbol{A} = \boldsymbol{U} \boldsymbol{S} \boldsymbol{V}^\intercal$
+    \item For symmetric $\boldsymbol{A} \in \mathbb{R}^{n \times n}$: $\boldsymbol{A} = \boldsymbol{U} \boldsymbol{S} \boldsymbol{U}^\intercal$
+    \item In $\boldsymbol{S}$:
+    \begin{itemize}
+        \item Diagonal elements $\sigma_1, ...$ are the \emph{singular values} of $\boldsymbol{A}$
+        \item If $\sigma_1 \geq \sigma_2 ... \geq 0$, $\boldsymbol{S}$ is unique
+        \item \emph{Condition number} = $\sigma_{max} / \sigma_{min}$
+        \item For square $\boldsymbol{A}$: Iff $\sigma_1, \sigma_2, ... > 0$, $\boldsymbol{A}$ is invertible 
+    \end{itemize}
+    \item SVD is closely related to spectral theorem:
+    \begin{itemize}
+        \item According to spectral theorem, every matrix $\boldsymbol{A}$ is symmetrically diagonizable (i.e. $\boldsymbol{A} = \boldsymbol{Q} \boldsymbol{\Lambda} \boldsymbol{Q}^\intercal$), iff $\boldsymbol{A}\boldsymbol{A}^\intercal = \boldsymbol{A}^\intercal\boldsymbol{A}$
+        \item If we apply SVD to $\boldsymbol{A}\boldsymbol{A}^\intercal$ resp. $\boldsymbol{A}^\intercal\boldsymbol{A}$:
+        \begin{itemize}
+            \item $\boldsymbol{A}\boldsymbol{A}^\intercal = \boldsymbol{U}\boldsymbol{S}\boldsymbol{V}^\intercal\boldsymbol{V}\boldsymbol{S}^\intercal\boldsymbol{U}^\intercal = \boldsymbol{U}(\boldsymbol{S}\boldsymbol{S}^\intercal)\boldsymbol{U}^\intercal$ since $\boldsymbol{V}$ is orthogonal and $\boldsymbol{V}^\intercal \boldsymbol{V} = \boldsymbol{I}$
+            \item $\boldsymbol{A}^\intercal\boldsymbol{A} = \boldsymbol{V}\boldsymbol{S}^\intercal\boldsymbol{U}^\intercal\boldsymbol{U}\boldsymbol{S}\boldsymbol{V}^\intercal = \boldsymbol{V}(\boldsymbol{S}^\intercal\boldsymbol{S})\boldsymbol{V}^\intercal$ since $\boldsymbol{U}$ is orthogonal and $\boldsymbol{U}^\intercal \boldsymbol{U} = \boldsymbol{I}$
+        \end{itemize}
+        \item $\boldsymbol{S}\boldsymbol{S}^\intercal$ and $\boldsymbol{S}^\intercal\boldsymbol{S}$ are diagonal matrices with elements $\sigma_1^2, \sigma_2^2, ...$
+        \item Given symmetric diagonalization for any matrix, we see that
+        \begin{itemize}
+            \item $\boldsymbol{S}$ contains square root of eigenvalues of $\boldsymbol{A}\boldsymbol{A}^\intercal$ resp. $\boldsymbol{A}^\intercal\boldsymbol{A}$
+            \item $\boldsymbol{U}$ contains eigenvectors of  $\boldsymbol{A}\boldsymbol{A}^\intercal$ as columns resp. $\boldsymbol{V}$ contains eigenvectors of $\boldsymbol{A}^\intercal\boldsymbol{A}$ as columns
+        \end{itemize}
+        \item According to spectral theorem, symmetric matrix $\boldsymbol{A}$ is symmetrically diagonizable (i.e. $\boldsymbol{A} = \boldsymbol{Q} \boldsymbol{\Lambda} \boldsymbol{Q}^\intercal$) 
+        \item If we apply SVD to symmetric matrix $\boldsymbol{A}$, we see that
+        \begin{itemize}
+            \item $\boldsymbol{S}$ contains absolute value of eigenvalues of $\boldsymbol{A}$ 
+            \item $\boldsymbol{U}$ contains eigenvectors of  $\boldsymbol{A}$ as columns
+        \end{itemize}
+    \end{itemize}
+\end{itemize}
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Pseudo Inverse} --- 
+\begin{itemize}
+    \item Pseudo Inverse satisfies certain conditions that make it behave like an inverse for matrices that might not be invertible in the usual sense
+    \item $\boldsymbol{A}^{\#} = \boldsymbol{V} \boldsymbol{S}^{\#} \boldsymbol{U}^\intercal$ where $ \boldsymbol{S}^{\#}$ is obtained from $ \boldsymbol{S}$ by transposing it and taking the inverse of non-zero diagonal elements
+    \item $\boldsymbol{A}^{\#}$ is unique
+    \item If $rank(\boldsymbol{A})$ = number of rows in $\boldsymbol{A}$ then:
+    \begin{itemize}
+        \item $\boldsymbol{A}\boldsymbol{A}^{\#} = \boldsymbol{I}$
+        \item $\boldsymbol{A}^{\#} = \boldsymbol{A}^\intercal (\boldsymbol{A}\boldsymbol{A}^\intercal)^{-1}$
+        \item Pseudo inverse provides mininum norm solution, when system $\boldsymbol{y} = \boldsymbol{A}\boldsymbol{x}$ is underdetermined: $\boldsymbol{x} = \boldsymbol{A}^\intercal (\boldsymbol{A}\boldsymbol{A}^\intercal)^{-1} \boldsymbol{y}$
+    \end{itemize}
+    \item If $rank(\boldsymbol{A})$ = number of columns in $\boldsymbol{A}$ then:
+    \begin{itemize}
+        \item $\boldsymbol{A}^{\#}\boldsymbol{A} = \boldsymbol{I}$
+        \item $\boldsymbol{A}^{\#} =  (\boldsymbol{A}^\intercal\boldsymbol{A})^{-1} \boldsymbol{A}^\intercal$
+        \item Pseudo inverse provides least squares solution, when system $\boldsymbol{y} = \boldsymbol{A}\boldsymbol{x}$ is overdetermined: $\boldsymbol{x} = (\boldsymbol{A}^\intercal\boldsymbol{A})^{-1} \boldsymbol{A}^\intercal\boldsymbol{y}$
+    \end{itemize}
+\end{itemize}
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Properties} --- 
+\begin{multicols}{2}
+\begin{itemize}
+    \item $\boldsymbol{A}\boldsymbol{A}^{\#}\boldsymbol{A} = \boldsymbol{A}$
+    \item $\boldsymbol{A}^{\#}\boldsymbol{A}\boldsymbol{A}^{\#} = \boldsymbol{A}^{\#}$
+    \item $(\boldsymbol{A}^\intercal)^{\#} = (\boldsymbol{A}^{\#})^\intercal$
+    \item $(\boldsymbol{A}\boldsymbol{A}^\intercal)^{\#} = (\boldsymbol{A}^{\#})^\intercal\boldsymbol{A}^{\#}$
+    \item $\boldsymbol{A}^{\#} \boldsymbol{x} = 0 \Leftrightarrow \boldsymbol{x}^\intercal \boldsymbol{A} = 0 \Leftrightarrow \boldsymbol{A}^\intercal \boldsymbol{x} = 0$
+    \item Properties can be proven by replacing $\boldsymbol{A}$ by its SVD and $\boldsymbol{A}^{\#}$ by its definition
+    \item Column space of $\boldsymbol{A}^{\#}$ equals column space of $\boldsymbol{A}^\intercal$
+    \item Property can be proven by replacing $\boldsymbol{A}$ and $\boldsymbol{A}^{\#}$ by their SVD 
+\end{itemize}
+\end{multicols}

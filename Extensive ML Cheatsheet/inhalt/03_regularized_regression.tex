@@ -39,6 +39,7 @@
     \boldsymbol{y} \\
     0
     \end{bmatrix}$
+    \item Corresponds to MAP estimation, when $\boldsymbol{X}$ is modeled as a vector of independent zero-mean Gaussian random variables
 \end{itemize}
 
 {\color{lightgray}\hrule height 0.001mm}
@@ -104,6 +105,7 @@
 \begin{itemize}
     \item Minimize mean squared error subject to constraint
     \item Lagrangian formulation: $LO = \frac{1}{n} \sum_{i=1}^n ( y^{(i)} - \boldsymbol{\beta} \cdot \boldsymbol{x^{(i)}} )^2 + \lambda ( |\boldsymbol{\beta}| - t )$ resp. $LO = ( \boldsymbol{y} - \boldsymbol{X}\boldsymbol{\beta})^\intercal( \boldsymbol{y} - \boldsymbol{X}\boldsymbol{\beta} ) + \lambda ( |\boldsymbol{\beta}| - t )$
+    \item Corresponds to MAP estimation, when $\boldsymbol{X}$ is modeled as a vector of independent zero-mean Laplacian random variables
 \end{itemize}
 
 {\color{lightgray}\hrule height 0.001mm}
@@ -114,12 +116,21 @@
     Proof:
     \begin{itemize}
         \item Gradient at optimality given by $\frac{\partial ( \boldsymbol{y} - \boldsymbol{X}\boldsymbol{\beta})^\intercal( \boldsymbol{y} - \boldsymbol{X}\boldsymbol{\beta} )}{\partial \boldsymbol{\beta}} + \frac{\partial \lambda  |\boldsymbol{\beta}|}{\partial \boldsymbol{\beta}} = 0$
-        \item $\frac{\partial \lambda  |\boldsymbol{\beta}|}{\partial \boldsymbol{\beta}}$ non-differentiable because there is a sharp edge at $\beta = 0$, but we can work with subgradients for $\beta \neq 0$
+        \item $\frac{\partial \lambda  |\boldsymbol{\beta}|}{\partial \boldsymbol{\beta}}$ non-differentiable because there is a sharp edge at $\beta = 0$, but we can work with subgradients for $\beta \neq 0$:
+        \begin{align*}
+        \frac{\partial}{\partial \beta} | \beta | = sgn(\beta) = 
+        \left\{
+            \begin{aligned}
+                 & -1 \quad & \beta < 0 \\
+                 & 0 \quad & \beta = 0 \\
+                 & 1 \quad & \beta > 0   
+            \end{aligned}
+        \right.
+        \end{align*}
         \item If we have $-\lambda < \frac{\partial ( \boldsymbol{y} - \boldsymbol{X}\boldsymbol{\beta})^\intercal( \boldsymbol{y} - \boldsymbol{X}\boldsymbol{\beta} )}{\partial \boldsymbol{\beta}} < \lambda$ the optimum is given by $\beta = 0$
         \item This means that some parameters are set to $0$ - the larger $\lambda$, the more parameters are set to $0$
         \item Small parameter values (i.e. unimportant features) are more likely to be set to $0$
         \item For parameters that are not set to $0$, LASSO regression has a similar effect as ridge regression and shrinks these parameters towards $0$
-        \utem 
     \end{itemize}
 \end{itemize}
 

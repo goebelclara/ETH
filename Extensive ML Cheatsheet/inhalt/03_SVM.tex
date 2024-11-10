@@ -1,0 +1,228 @@
+\section{SVM Classifier}
+\subsection*{General}
+\subsection*{Description}
+\emph{Task} --- Classification
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Description} --- 
+\begin{itemize}
+    \item Supervised
+    \item Parametric
+\end{itemize}
+
+{\color{black}\hrule height 0.001mm}
+_
+{\color{black}\hrule height 0.001mm}
+
+\subsection*{Hard-Margin SVM Classifier}
+\subsection*{Formulation}
+
+\begin{itemize}
+    \item Assume $y \in \{-1,1\}$
+    \item Discriminant:
+    \begin{itemize}
+        \item $f = sgn(\boldsymbol{\beta} \cdot \boldsymbol{x} + b)$
+        \item If sign is positive, $f$ outputs $1$, else $-1$
+        \item Separating hyperplane given by $\boldsymbol{z} = \boldsymbol{\beta} \cdot \boldsymbol{x} + b = 0$
+        \item Is a linear discriminant 
+        \item $\boldsymbol{z} \bot \boldsymbol{\beta}$
+    \end{itemize}
+    \item For some point $\tilde{\boldsymbol{x}}$ closest to the origin:
+    \begin{itemize}
+        \item The perpendicular distance to the origin is given by: $\boldsymbol{\beta} \cdot\tilde{\boldsymbol{x}} + b = 0$ since $\tilde{\boldsymbol{x}}$ lies on the separating hyperplane
+        \item Then, $\| \boldsymbol{\beta} \| \textrm{ } \| \tilde{\boldsymbol{x}} \| cos(\varphi) + b = \| \boldsymbol{\beta} \| \textrm{ } \| \tilde{\boldsymbol{x}} \| (-1) + b = 0$ because $\varphi = 180$ degrees
+        \item Then, $\| \tilde{\boldsymbol{x}} \| = \frac{b}{\| \boldsymbol{\beta} \|}$
+    \end{itemize}
+    \item For some point $\boldsymbol{x}^{(i)}$ above $\boldsymbol{z}$:
+    \begin{itemize}
+        \item Projection of instance onto direction of $\boldsymbol{\beta}$: $\boldsymbol{x}^{(i)'} = \frac{ \boldsymbol{x}^{(i)} \cdot \boldsymbol{\beta} }{ \| \boldsymbol{\beta} \|^2 } \boldsymbol{\beta}$
+        \item Distance of projection to the origin is given by $\| \boldsymbol{x}^{(i)'} \| = cos(\varphi^{(i)}) \| \boldsymbol{x}^{(i)} \| = \frac{ cos(\varphi^{(i)}) \| \boldsymbol{x}^{(i)} \| \textrm{ } \| \boldsymbol{\beta} \| }{ \| \boldsymbol{\beta} \| } = \frac{\boldsymbol{\beta} \cdot \boldsymbol{x}^{(i)}}{ \| \boldsymbol{\beta} \| }$
+        \item Margin $\gamma^{(i)}$ of instance given by: $\gamma^{(i)} = \| \boldsymbol{x}^{(i)'} \| + \| \tilde{\boldsymbol{x}} \| = \frac{ \boldsymbol{\beta} \cdot \boldsymbol{x}^{(i)} + b }{\| \boldsymbol{\beta} \|}$
+    \end{itemize}
+    \item For some point $\boldsymbol{x}^{(i)}$ below $\boldsymbol{z}$:
+    \begin{itemize}
+        \item Margin $\gamma^{(i)}$ of instance given by: $\gamma^{(i)} = - \frac{ \boldsymbol{\beta} \cdot \boldsymbol{x}^{(i)} + b }{\| \boldsymbol{\beta} \|}$
+    \end{itemize}
+    \item For well-classified points, $\gamma^{(i)} > 0$, for mis-classified points, $\gamma^{(i)} < 0$
+    \item Given that $y \in \{-1,1\}$ and thus $y^{(i)} (\boldsymbol{\beta} \cdot \boldsymbol{x} + b) > 0$:
+    $\gamma^{(i)} = \frac{ y^{(i)} (\boldsymbol{\beta} \cdot \boldsymbol{x}^{(i)} + b) }{\| \boldsymbol{\beta} \|}$
+    \item Margin of system defined by smallest margin for instance: $\gamma = min_i \gamma^{(i)} = \frac{1}{\| \boldsymbol{\beta} \|} min_i y^{(i)} (\boldsymbol{\beta} \cdot \boldsymbol{x}^{(i)} + b)$
+    \item Margin is invariate to scaling of $\boldsymbol{\beta}$ and $b$
+    \item Thus, we can write:
+    \begin{itemize}
+        \item $min_i \gamma^{(i)} = min_i y^{(i)} (\boldsymbol{\beta} \cdot \boldsymbol{x}^{(i)} + b) = 1$
+        \item Then, $y^{(i)} (\boldsymbol{\beta} \cdot \boldsymbol{x}^{(i)} + b) \geq 1$ (resp. $\geq m$ without scaling)
+        \item Moreover, since margin for system is defined by smallest margin for instance, $\gamma = \frac{1}{\| \boldsymbol{\beta} \|} $
+    \end{itemize}
+\end{itemize}
+
+{\color{black}\hrule height 0.001mm}
+
+\subsection*{Optimization}
+\emph{Parameters} --- Find parameters $\boldsymbol{\beta}$ and $b$
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Objective function} --- 
+\begin{itemize}
+    \item Objective function: $\gamma = \frac{1}{\| \boldsymbol{\beta} \|} $ subject to $y^{(i)} (\boldsymbol{\beta} \cdot \boldsymbol{x}^{(i)} + b) \geq 1$
+    \item Equivalent cost function: $\gamma = \frac{1}{2} \| \boldsymbol{\beta} \|^2 $ subject to $1 - y^{(i)} (\boldsymbol{\beta} \cdot \boldsymbol{x}^{(i)} + b) \leq 0$
+    \item Cost function in Lagrangian formulation: $\mathcal{L} = \frac{1}{2} \| \boldsymbol{\beta} \|^2 + \sum_{i=1}^n \alpha^{(i)} (1 - y^{(i)} (\boldsymbol{\beta} \cdot \boldsymbol{x}^{(i)} + b))$
+    \item By Slater's condition (linear separability), strong duality holds
+    \item Objective function in dual Lagrangian: $\mathcal{D} = \frac{1}{2}  \sum_{i=1}^n  \sum_{j=1}^n \alpha^{(i)}\alpha^{(j)} y^{(i)}y^{(j)} \boldsymbol{x}^{(i)}\boldsymbol{x}^{(j)} + \sum_{i=1}^n  \sum_{j=1}^n \alpha^{(i)} - \alpha^{(i)}\alpha^{(j)} y^{(i)}y^{(j)} \boldsymbol{x}^{(i)}\boldsymbol{x}^{(j)} = \sum_{i=1}^n \alpha^{(i)} - \frac{1}{2}  \sum_{i=1}^n  \sum_{j=1}^n \alpha^{(i)}\alpha^{(j)} y^{(i)}y^{(j)} \boldsymbol{x}^{(i)}\boldsymbol{x}^{(j)}$
+\end{itemize}
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Optimization} ---
+\begin{itemize}
+    \item General solution:
+    \begin{itemize}
+        \item $\nabla_{\boldsymbol{\beta}} \mathcal{L} =  \boldsymbol{\beta} - \sum_{i=1}^n \alpha^{(i)} y^{(i)} \boldsymbol{x}^{(i)} = 0$
+        \item $\Rightarrow \boldsymbol{\beta}^{*} = \sum_{i=1}^n \alpha^{(i)} y^{(i)}$
+        \item $\nabla_b \mathcal{L} = - \sum_{i=1}^n \alpha^{(i)} y^{(i)} = 0$
+        \item Subject to:
+        \begin{itemize}
+            \item $1 - y^{(i)} (\boldsymbol{\beta} \cdot \boldsymbol{x}^{(i)} + b) \leq 0$
+            \item $\alpha^{(i)} \geq 0$
+            \item $\alpha^{(i)} (1 - y^{(i)} (\boldsymbol{\beta} \cdot \boldsymbol{x}^{(i)} + b)) = 0$
+        \end{itemize}
+    \end{itemize}
+    \item Dual optimization: Maximize $\alpha$ subject to 
+    \begin{itemize}
+        \item $\alpha^{(i)} \geq 0$ 
+        \item $\sum_{i=1}^n \alpha^{(i)} y^{(i)} = 0$ due to $\nabla_b \mathcal{L}$
+    \end{itemize}
+    \item Note that only support vectors ($\alpha^{(i)} > 0$, sit on the hyperplane $ 1 = y^{(i)} (\boldsymbol{\beta} \cdot \boldsymbol{x}^{(i)} + b) = 1$) matter in establishing $\boldsymbol{\beta}^{*}$:
+    \begin{itemize}
+        \item Based on complementary slackness condition $\alpha^{(i)} (1 - y^{(i)} (\boldsymbol{\beta} \cdot \boldsymbol{x}^{(i)} + b)) = 0$: We either have 
+        \begin{itemize}
+            \item $\alpha^{(i)} = 0$ and $ (1 - y^{(i)} (\boldsymbol{\beta} \cdot \boldsymbol{x}^{(i)} + b)) > 0$ resp.$ y^{(i)} (\boldsymbol{\beta} \cdot \boldsymbol{x}^{(i)} + b) > 1$ or
+            \item $\alpha^{(i)} > 0$ and $ (1 - y^{(i)} (\boldsymbol{\beta} \cdot \boldsymbol{x}^{(i)} + b)) = 0$ resp.$ y^{(i)} (\boldsymbol{\beta} \cdot \boldsymbol{x}^{(i)} + b) = 1$ 
+        \end{itemize}
+    \end{itemize}
+\end{itemize}
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Characteristics} --- 
+\begin{itemize}
+    \item Strictly convex with psd Hessian
+    \item Has global minimum
+    \item Has unique solution
+\end{itemize}
+
+{\color{black}\hrule height 0.001mm}
+_
+{\color{black}\hrule height 0.001mm}
+
+\subsection*{Soft-Margin SVM Classifier}
+\subsection*{Optimization}
+
+\emph{Objective function} --- 
+\begin{itemize}
+    \item Cost function: Hinge loss: $max(0,1-\gamma^{(i)})$
+    \item Mis-classified instances incur a loss
+    \item Well-classified instances incur a loss, if their margin $\gamma^{(i)} < 1$
+    \item Always is equal to or dominates the plain misclassification error
+    \item To translate hinge loss into inequality constraint, we introduce slack variables $\xi^{(i)}$:
+    \begin{itemize}
+        \item $y^{(i)} (\boldsymbol{\beta} \cdot \boldsymbol{x}^{(i)} + b) \geq 1 - \xi^{(i)}$
+        \item By setting $\xi = 0$, we get pulled down towards hinge loss
+        \item For
+        \begin{itemize}
+            \item Well-classified points outside of margin $\xi^{(i)} < 0$
+            \item Well-classified points within of margin $0 < \xi^{(i)} < 1$
+            \item Points on decision boundary $\xi^{(i)} = 1$
+            \item Mis-classified points $\xi^{(i)} > 1$
+        \end{itemize}
+    \end{itemize}
+    \item We can then write cost function as slack variables penalized by $\ell_1$ norm: $\frac{1}{2} \| \boldsymbol{\beta} \|^2 + C \sum_{i=1}^n \xi^{(i)}$ where 
+    \begin{itemize}
+        \item $\| \boldsymbol{\beta} \|^2$ maximizes margin and $C \sum_{i=1}^n \xi^{(i)}$ minimizes hinge loss
+        \item $C$ is a hyperparameter that determines how tolerant we are of margin errors: If C is large, we are less tolerant, margin will decrease, and the soft-margin will become a hard-margin.
+    \end{itemize}
+    subject to:
+    \begin{itemize}
+        \item $1 - y^{(i)} (\boldsymbol{\beta} \cdot \boldsymbol{x}^{(i)} + b) \leq \xi^{(i)}$ resp. $\xi^{(i)} + y^{(i)} (\boldsymbol{\beta} \cdot \boldsymbol{x}^{(i)} + b) - 1 \geq 0$ 
+        \item $\xi^{(i)} \geq 0$
+    \end{itemize}
+    \item Cost function in Lagrangian formulation: $\mathcal{L} = \frac{1}{2} \| \boldsymbol{\beta} \|^2 - \sum_{i=1}^n \alpha^{(i)} (y^{(i)} (\boldsymbol{\beta} \cdot \boldsymbol{x}^{(i)} + b) - 1 + \xi^{(i)}) - \sum_{i=1}^n \zeta^{(i)} \xi^{(i)} + C \sum_{i=1}^n \xi^{(i)}$
+    \item By Slater's condition (linear separability), strong duality holds
+    \item Objective function in dual Lagrangian: $\mathcal{D} = \frac{1}{2}  \sum_{i=1}^n  \sum_{j=1}^n \alpha^{(i)}\alpha^{(j)} y^{(i)}y^{(j)} \boldsymbol{x}^{(i)}\boldsymbol{x}^{(j)} + \sum_{i=1}^n  \sum_{j=1}^n \alpha^{(i)} - \alpha^{(i)}\alpha^{(j)} y^{(i)}y^{(j)} \boldsymbol{x}^{(i)}\boldsymbol{x}^{(j)} = \sum_{i=1}^n \alpha^{(i)} - \frac{1}{2}  \sum_{i=1}^n  \sum_{j=1}^n \alpha^{(i)}\alpha^{(j)} y^{(i)}y^{(j)} \boldsymbol{x}^{(i)}\boldsymbol{x}^{(j)}$
+\end{itemize}
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Optimization} ---
+\begin{itemize}
+    \item General solution:
+    \begin{itemize}
+        \item $\nabla_{\boldsymbol{\beta}} \mathcal{L} =  \boldsymbol{\beta} - \sum_{i=1}^n \alpha^{(i)} y^{(i)} \boldsymbol{x}^{(i)} = 0$
+        \item $\Rightarrow \boldsymbol{\beta}^{*} = \sum_{i=1}^n \alpha^{(i)} y^{(i)}$
+        \item $\nabla_b \mathcal{L} = - \sum_{i=1}^n \alpha^{(i)} y^{(i)} = 0$
+        \item $\nabla_{\xi^{(i)}} \mathcal{L} = C - \alpha^{(i)} - \zeta^{(i)} = 0$
+        \item Subject to:
+        \begin{itemize}
+            \item $- \xi^{(i)} - y^{(i)} (\boldsymbol{\beta} \cdot \boldsymbol{x}^{(i)} + b) + 1 \leq 0$
+            \item $\xi^{(i)} \leq 0$
+            \item $\alpha^{(i)}, \zeta^{(i)} \geq 0$
+            \item $\alpha^{(i)} (- \xi^{(i)} - y^{(i)} (\boldsymbol{\beta} \cdot \boldsymbol{x}^{(i)} + b) + 1) = 0$
+            \item $\zeta^{(i)} (- \xi^{(i)}) = 0$
+        \end{itemize}
+    \end{itemize}
+    \item Dual optimization: Maximize $\alpha$ subject to 
+    \begin{itemize}
+        \item $\alpha^{(i)}, \zeta^{(i)} \geq 0$ 
+        \item $\sum_{i=1}^n \alpha^{(i)} y^{(i)} = 0$ due to $\nabla_b \mathcal{L}$
+        \item $0 \leq \alpha^{(i)} \leq C$ due to $\nabla_{\xi^{(i)}} \mathcal{L}$ 
+    \end{itemize}
+    \item Note that only support vectors ($\alpha^{(i)} > 0$, sit in or on the hyperplane $ 1 \geq y^{(i)} (\boldsymbol{\beta} \cdot \boldsymbol{x}^{(i)} + b) = 1$) matter in establishing $\boldsymbol{\beta}^{*}$:
+    \begin{itemize}
+        \item Based on complementary slackness condition $\alpha^{(i)} (1 - y^{(i)} (\boldsymbol{\beta} \cdot \boldsymbol{x}^{(i)} + b)) = 0$: We either have 
+        \begin{itemize}
+            \item $\alpha^{(i)} = 0$ and $ (1 - y^{(i)} (\boldsymbol{\beta} \cdot \boldsymbol{x}^{(i)} + b)) > 0$ resp.$ y^{(i)} (\boldsymbol{\beta} \cdot \boldsymbol{x}^{(i)} + b) > 1$ or
+            \item $\alpha^{(i)} > 0$ and $ (1 - y^{(i)} (\boldsymbol{\beta} \cdot \boldsymbol{x}^{(i)} + b)) = 0$ resp.$ y^{(i)} (\boldsymbol{\beta} \cdot \boldsymbol{x}^{(i)} + b) = 1$ 
+        \end{itemize}
+        \item Similarly, we either have
+        \begin{itemize}
+            \item $\zeta^{(i)} = 0$ and $ -\xi^{(i)} < 0$ resp.$ \xi^{(i)} > 0$ or
+            \item $\zeta^{(i)} > 0$ and $ -\xi^{(i)} = 0$ resp.$ \xi^{(i)} = 0$
+        \end{itemize}
+        \item Then, each instance lies in one of three areas:
+        \begin{itemize}
+            \item Beyond $\gamma$:
+            \begin{itemize}
+                \item $\alpha^{(i)} = 0$
+                \item $C = \zeta^{(i)}$ due to $\nabla_{\xi^{(i)}} \mathcal{L}$
+                \item $\xi^{(i)} = 0$
+                \item $1 < y^{(i)} (\boldsymbol{\beta} \cdot \boldsymbol{x}^{(i)} + b)$
+            \end{itemize}
+            \item On $\gamma$:
+            \begin{itemize}
+                \item $\alpha^{(i)}, \zeta^{(i)} > 0$
+                \item $0 < \alpha^{(i)} < C$ due to $\nabla_{\xi^{(i)}} \mathcal{L}$
+                \item $\xi^{(i)} = 0$
+                \item $1 = y^{(i)} (\boldsymbol{\beta} \cdot \boldsymbol{x}^{(i)} + b)$
+            \end{itemize}
+            \item Within $\gamma$:
+            \begin{itemize}
+                \item $\alpha^{(i)} > 0$
+                \item $\zeta^{(i)} = 0$
+                \item $\alpha^{(i)} = C$ due to $\nabla_{\xi^{(i)}} \mathcal{L}$
+                \item $\xi^{(i)} > 0$
+                \item $1 > y^{(i)} (\boldsymbol{\beta} \cdot \boldsymbol{x}^{(i)} + b)$
+            \end{itemize}
+        \end{itemize}
+    \end{itemize}
+\end{itemize}
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Characteristics} --- 
+\begin{itemize}
+    \item Strictly convex with psd Hessian
+    \item Has global minimum
+    \item Has unique solution
+\end{itemize}

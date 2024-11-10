@@ -16,7 +16,8 @@
 
 \begin{itemize}
     \item $y^{(i)} = \boldsymbol{\beta} \cdot \boldsymbol{x^{(i)}}$ resp. $\boldsymbol{y} = \boldsymbol{X}\boldsymbol{\beta}$ where $\boldsymbol{X}$ contains $n$ rows, each of which represents an instance, and $m$ columns, each of which represents a feature
-    \item This can be considered as a projection of $\boldsymbol{y}$ to the columnspace of $\boldsymbol{X}$
+    \item $\hat{\boldsymbol{y}} = \boldsymbol{X}\boldsymbol{\beta}$ is a projection of $\boldsymbol{y}$ to the columnspace of $\boldsymbol{X}$
+    \item $\boldsymbol{\beta}$ lies in the rowspace of $\boldsymbol{X}$ resp. columnspace of $\boldsymbol{X}^\intercal$
 \end{itemize}
 
 {\color{black}\hrule height 0.001mm}
@@ -31,23 +32,51 @@ Ordinary least squares estimator (OLSE):
 \begin{itemize}
     \item Minimize mean squared error: $LO = \frac{1}{n} \sum_{i=1}^n ( y^{(i)} - \boldsymbol{\beta} \cdot \boldsymbol{x^{(i)}} )^2$ resp. $LO = ( \boldsymbol{y} - \boldsymbol{X}\boldsymbol{\beta})^\intercal( \boldsymbol{y} - \boldsymbol{X}\boldsymbol{\beta} )$
 \end{itemize}
-MLE:
-\begin{itemize}
-    \item Yields same result as OLSE
-\end{itemize}
 Orthogonality principle:
 \begin{itemize}
     \item Yields same result as OLSE
     \item $\hat{\boldsymbol{y}} = \boldsymbol{X}\boldsymbol{\beta}$ is a projection of $\boldsymbol{y}$ to the columnspace of $\boldsymbol{X}$
     \item Then, by the orthogonality principle, $\boldsymbol{X} \cdot (\hat{\boldsymbol{y}} - \boldsymbol{y}) = \boldsymbol{X} \cdot (\boldsymbol{X}\boldsymbol{\beta} - \boldsymbol{y}) = 0$
     \item $\Rightarrow \boldsymbol{\beta} = (\boldsymbol{X}^\intercal \boldsymbol{X})^{-1}  \boldsymbol{X}^\intercal \boldsymbol{y}$
+    \item Alternatively, $\boldsymbol{\beta}$ lies in the columnspace of $\boldsymbol{X}^\intercal$
+    \item Then, we can express $\boldsymbol{\beta}$ as $\boldsymbol{X}^\intercal [\alpha_1, ..., \alpha_n]^\intercal$
+    \item This yields an equation system $\boldsymbol{y} = \boldsymbol{X} \boldsymbol{X}^\intercal [\alpha_1, ..., \alpha_n]^\intercal$ which can be solved for $\alpha_i$
+    \item On that basis, $\boldsymbol{\beta}$ can be calculated
+\end{itemize}
+PCA:
+\begin{itemize}
+    \item Yields same result as OLSE
+    \item Instances $y^{(i)}, \boldsymbol{x}^{(i)} = \boldsymbol{\xi}^{(i)}$ can be projected onto hyperplane given by $\boldsymbol{X}\boldsymbol{\beta}$
+    \item Projections are given by $\hat{\boldsymbol{\xi}}^{(i)}$
+    \item Residuals are given by $e^{(i)} = \boldsymbol{\xi}^{(i)} - \hat{\boldsymbol{\xi}}^{(i)}$
+    \item Since $e^{(i)}$ is orthogonal to $\hat{\boldsymbol{\xi}}^{(i)}$, we can write using Pythagorean theorem: $\| e^{(i)} \|^2 = \| \boldsymbol{\xi}^{(i)} \|^2 - \| \hat{\boldsymbol{\xi}}^{(i)} \|^2$
+    \item This is a PCA via SVD problem
+\end{itemize}
+MLE:
+\begin{itemize}
+    \item Yields same result as OLSE
+\end{itemize}
+Gradient descent:
+\begin{itemize}
+    \item Minimum-norm solution
+    \item Yields same result as OLSE
+\end{itemize}
+Pseudo Inverse:
+\begin{itemize}
+    \item Yields same result as OLSE
+    \item Minimum-norm solution
+    \item $\boldsymbol{\beta}$ minimizes MSE if $\hat{\boldsymbol{y}} = \boldsymbol{X}\boldsymbol{\beta}$ is a projection of $\boldsymbol{y}$ to the columnspace of $\boldsymbol{X}$
+    \item Given matrix projection via SVD, $\boldsymbol{X} \boldsymbol{X}^{\#} \boldsymbol{y}$ is that projection
+    \item $\Rightarrow \boldsymbol{\beta} = \boldsymbol{X}^{\#} \boldsymbol{y} = (\boldsymbol{X}^\intercal \boldsymbol{X})^{-1}  \boldsymbol{X}^\intercal \boldsymbol{y}$
 \end{itemize}
 
 {\color{lightgray}\hrule height 0.001mm}
 
 \emph{Optimization} ---
 \begin{itemize}
-    \item $\nabla_{\boldsymbol{\beta}} LO = \frac{1}{2} \nabla_{\boldsymbol{\beta}} (( \boldsymbol{y} - \boldsymbol{X}\boldsymbol{\beta})^\intercal( \boldsymbol{y} - \boldsymbol{X}\boldsymbol{\beta} )) = \frac{1}{2} \nabla_{\boldsymbol{\beta}} (\boldsymbol{\beta}^\intercal \boldsymbol{X}^\intercal \boldsymbol{X} \boldsymbol{\beta} - 2 \boldsymbol{y}^\intercal \boldsymbol{X} \boldsymbol{\beta}) = \boldsymbol{X}^\intercal \boldsymbol{X} \boldsymbol{\beta} - \boldsymbol{X}^\intercal \boldsymbol{y} = \boldsymbol{X}^\intercal (\boldsymbol{X} \boldsymbol{\beta} - \boldsymbol{y}) = 0$
+    \item $\nabla_{\boldsymbol{\beta}} LO = \frac{1}{2} \nabla_{\boldsymbol{\beta}} (( y - \boldsymbol{\beta} \cdot \boldsymbol{x})^2 = (y - \boldsymbol{\beta} \cdot \boldsymbol{x})\boldsymbol{x} = 0$
+    resp.     
+    $\nabla_{\boldsymbol{\beta}} LO = \frac{1}{2} \nabla_{\boldsymbol{\beta}} (( \boldsymbol{y} - \boldsymbol{X}\boldsymbol{\beta})^\intercal( \boldsymbol{y} - \boldsymbol{X}\boldsymbol{\beta} )) = \frac{1}{2} \nabla_{\boldsymbol{\beta}} (\boldsymbol{\beta}^\intercal \boldsymbol{X}^\intercal \boldsymbol{X} \boldsymbol{\beta} - 2 \boldsymbol{y}^\intercal \boldsymbol{X} \boldsymbol{\beta}) = \boldsymbol{X}^\intercal \boldsymbol{X} \boldsymbol{\beta} - \boldsymbol{X}^\intercal \boldsymbol{y} = \boldsymbol{X}^\intercal (\boldsymbol{X} \boldsymbol{\beta} - \boldsymbol{y}) = 0$
     \item $\Rightarrow \boldsymbol{\beta} = (\boldsymbol{X}^\intercal \boldsymbol{X})^{-1}  \boldsymbol{X}^\intercal \boldsymbol{y}$
 \end{itemize}
 
@@ -109,6 +138,7 @@ Orthogonality principle:
     \item Has global minimum
     \item Has unique or infinitely many solutions
     \item Can be solved analytically, if $(\boldsymbol{X}^\intercal \boldsymbol{X})$ is invertible
+    \item If it has infinitely many solutions, the preferred solution is the \emph{minimum-norm solution}, which minimizes $\| \boldsymbol{\beta} \|$
 \end{itemize}
 
 \section{Linear Minimum Mean Squared Error Estimation (LMMSE)}
@@ -132,7 +162,7 @@ Orthogonality principle:
 {\color{black}\hrule height 0.001mm}
 
 \subsection*{Optimization}
-\emph{Parameters} --- Find parameters $\boldsymbol{\h}$
+\emph{Parameters} --- Find parameters $\boldsymbol{h}$
 
 {\color{lightgray}\hrule height 0.001mm}
 

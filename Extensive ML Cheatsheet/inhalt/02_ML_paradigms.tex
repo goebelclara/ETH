@@ -70,7 +70,8 @@
     \item Parametric approach
     \item $\boldsymbol{\theta}$ as random, unknown quantity, $\boldsymbol{X}$ as random, and known quantity
     \item Makes estimate in form of distribution
-    \item Focuses on leveraging prior and likelihood to infer posterior: $p(\boldsymbol{\theta}|\boldsymbol{X}, \boldsymbol{y}) = \frac{p(\boldsymbol{\theta})p(\boldsymbol{y}|\boldsymbol{X}, \boldsymbol{\theta})}{p(\boldsymbol{y}|\boldsymbol{X})} = \frac{p(\boldsymbol{\theta})p(\boldsymbol{y}|\boldsymbol{X}, \boldsymbol{\theta})}{\int p(\boldsymbol{\theta}) p(\boldsymbol{y}|\boldsymbol{X}, \boldsymbol{\theta}) d\boldsymbol{\theta}} \propto p(\boldsymbol{\theta})p(\boldsymbol{y}|\boldsymbol{X}, \boldsymbol{\theta})$ 
+    \item Leverages prior and likelihood to infer posterior: $p(\boldsymbol{\theta}|\boldsymbol{X}, \boldsymbol{y}) = \frac{p(\boldsymbol{\theta})p(\boldsymbol{y}|\boldsymbol{X}, \boldsymbol{\theta})}{p(\boldsymbol{y}|\boldsymbol{X})} = \frac{p(\boldsymbol{\theta})p(\boldsymbol{y}|\boldsymbol{X}, \boldsymbol{\theta})}{\int p(\boldsymbol{\theta}) p(\boldsymbol{y}|\boldsymbol{X}, \boldsymbol{\theta}) d\boldsymbol{\theta}} \propto p(\boldsymbol{\theta})p(\boldsymbol{y}|\boldsymbol{X}, \boldsymbol{\theta}) = p(\boldsymbol{\theta}, \boldsymbol{y} |\boldsymbol{X})$ 
+    \item Focuses on minimizing cost function $\mathbb{E}[k(\boldsymbol{\theta}',\boldsymbol{\Theta}) | \boldsymbol{X}, \boldsymbol{y}] = \int_{\boldsymbol{\theta}} p(\boldsymbol{\theta} | \boldsymbol{X}, \boldsymbol{y}) \times k(\boldsymbol{\theta}',\boldsymbol{\theta}) d\boldsymbol{\theta} \propto \int_{\boldsymbol{\theta}} p(\boldsymbol{\theta}, \boldsymbol{y} | \boldsymbol{X}) \times k(\boldsymbol{\theta}',\boldsymbol{\theta}) d\boldsymbol{\theta}$
     \item Requires integration methods for normalizing constant in denominator, which can be intractable, in which case MAP estimator can provide an alternative
     \item Low variance, but high bias 
 \end{itemize}
@@ -79,7 +80,8 @@
 
 \emph{Mean estimator}
 \begin{itemize}
-    \item Takes expected value and variance posterior
+    \item Minimizes mean squared error as cost function $k(\hat{\boldsymbol{\theta}},\boldsymbol{\theta}) = | \hat{\boldsymbol{\theta}} - \boldsymbol{\theta} |^2$
+    \item The resulting estimate is the mean of the posterior: $\hat{\boldsymbol{\theta}} = \mathbb{E}[ \boldsymbol{\theta} | \boldsymbol{X}, \boldsymbol{y} ]$
     \item Returns estimate that reflects central tendency and overall uncertainty
 \end{itemize}
 
@@ -87,7 +89,17 @@
 
 \emph{MAP estimator}
 \begin{itemize}
-    \item Maximizes posterior (i.e. takes point where posterior density is highest): $\hat{\boldsymbol{\theta}} = argmax_{\boldsymbol{\theta}}( p(\boldsymbol{\theta}|\boldsymbol{X}) )$
+    \item Generally, maximizes posterior: $\hat{\boldsymbol{\theta}} = argmax_{\boldsymbol{\theta}}( p(\boldsymbol{\theta}|\boldsymbol{X}) )$ resp. $p(\boldsymbol{\theta}|\boldsymbol{X}) p(\boldsymbol{X})$ 
+    \item In discrete cases, minimizes following cost function: 
+    \begin{align*}
+        k(\hat{\boldsymbol{\theta}},\boldsymbol{\theta}  = 
+        \left\{
+            \begin{aligned}
+                 & 1 \quad & \hat{\boldsymbol{\theta}} \neq \boldsymbol{\theta} \\
+                 & 0 \quad & \hat{\boldsymbol{\theta}} = \boldsymbol{\theta}
+            \end{aligned}
+        \right.
+    \end{align*}
     \item Returns single point estimate
 \end{itemize}
 

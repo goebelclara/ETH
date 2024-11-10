@@ -1,4 +1,5 @@
 \section{PCA}
+\subsection*{Maximize Variance Approach}
 \subsection*{Description}
 \emph{Task} --- Dimensionality reduction via projection, create uncorrelated features
 
@@ -23,7 +24,6 @@ Identifies lower-dimensional subspace and projects data onto it such that the ma
 {\color{black}\hrule height 0.001mm}
 
 \subsection*{Formulation}
-
 \begin{itemize}
     \item Project data $\{\boldsymbol{x^{(i)}}\}_{i=1}^n \in \mathbb{R}^m$ onto space $\mathbb{R}^d$ spanned by orthonormal basis $\{\boldsymbol{u^{[j]}}\}_{j=1}^d \in \mathbb{R}^m$ where $d << m$
     \item Each instance $\boldsymbol{x^{(i)}}$ is projected onto each basis vectors $\boldsymbol{u^{[j]}} \cdot \boldsymbol{x^{(i)}}$
@@ -39,7 +39,7 @@ Identifies lower-dimensional subspace and projects data onto it such that the ma
 
 {\color{lightgray}\hrule height 0.001mm}
 
-\emph{Objective function} --- 
+\emph{Objective function} ---
 \begin{itemize}
     \item Maximize variance $\sum_{j=1}^d \boldsymbol{u^{[j]}}^\intercal \boldsymbol{S} \boldsymbol{u^{[j]}}$ subject to orthonormal $\{\boldsymbol{u^{[j]}}\}_{j=1}^d$
     \item Gives rise to Lagrangian formulation
@@ -49,7 +49,7 @@ Identifies lower-dimensional subspace and projects data onto it such that the ma
 
 {\color{lightgray}\hrule height 0.001mm}
 
-\emph{Optimization} --- 
+\emph{Optimization} ---
 For $\boldsymbol{u^{[1]}}$: 
 \begin{itemize}
     \item $\nabla_{\boldsymbol{u^{[1]}}} \mathcal{L} = 2 \boldsymbol{S} \boldsymbol{u^{[1]}} - 2 \lambda^{[1]} \boldsymbol{u^{[1]}} = 0$
@@ -83,4 +83,29 @@ In the end, we have a total projected variance of $\sum_{j=1}^d \lambda^{[j]}$
     \item Has global minimum
     \item Has unique or infinitely many solutions
     \item Can be solved analytically
+\end{itemize}
+
+{\color{black}\hrule height 0.001mm}
+_
+{\color{black}\hrule height 0.001mm}
+
+\subsection*{SVD Approach}
+\subsection*{Formulation}
+\begin{itemize}
+    \item Project data $\{\boldsymbol{x^{(i)}}\}_{i=1}^n \in \mathbb{R}^m$ onto space $\mathbb{R}^d$ spanned by orthonormal basis $\{\boldsymbol{u^{[j]}}\}_{j=1}^d \in \mathbb{R}^m$ where $d << m$
+    \item $\tilde{\boldsymbol{x}}^{(i)} = \sum_{j=1}^d \alpha_{ij} \boldsymbol{u^{[j]}} + \sum_{j=d+1}^m \gamma_j \boldsymbol{u^{[j]}}$ where $\alpha_{ij}$ is particular to the instance, $\gamma_j$ is the same for all instances and maps up to the subspace
+\end{itemize}
+
+{\color{black}\hrule height 0.001mm}
+
+\subsection*{Optimization}
+\emph{Objective function} ---
+\begin{itemize}
+    \item Reconstruction error:
+    \begin{itemize}
+        \item $J = \frac{1}{n} \sum_{i=1}^n \| \boldsymbol{x^{(i)}} - \tilde{\boldsymbol{x}}^{(i)} \|^2 = \frac{1}{n} \sum_{i=1}^n \| \boldsymbol{x^{(i)}} \|^2 - \| \boldsymbol{B}\boldsymbol{B}^T \boldsymbol{x^{(i)}} \|^2 = \frac{1}{n} \sum_{i=1}^n \| \boldsymbol{x^{(i)}} \|^2 - \| \boldsymbol{B}^T \boldsymbol{x^{(i)}} \|^2 $ where the last step follows since $\boldsymbol{B}$  is orthogonal
+        \item $\boldsymbol{x^{(i)}}$ is a column of $\boldsymbol{X}^\intercal$
+        \item If $\boldsymbol{A} = \boldsymbol{X}^\intercal$ and SVD of $\boldsymbol{A}$ is $\boldsymbol{U}\boldsymbol{S}\boldsymbol{V}^\intercal$, then $\boldsymbol{B}$ is given by $\boldsymbol{U}^{(j \leq d)}$, i.e. the first $d$ columns of $\boldsymbol{U}$
+        \item Then, reconstruction error is given by: $J = \frac{1}{n} \sum_{i=1}^n \| \boldsymbol{x^{(i)}} \|^2 - \| \boldsymbol{B}^T \boldsymbol{x^{(i)}} \|^2 = \frac{1}{d} \sum_{i=1}^d \sigma_d^2$
+    \end{itemize}
 \end{itemize}

@@ -66,6 +66,16 @@ Further properties:
     \begin{itemize}
         \item $\mathbb{P}(A|B) = 1 - \mathbb{P}(A^C|B)$
         \item $\mathbb{P}(A_1|B) + \mathbb{P}(A_2|B) + ... = 1$
+        \item If conditioning on subset $S$:
+        \begin{align*}
+        p(x | S) = 
+        \left\{
+            \begin{aligned}
+                 & p(x) / p(x \in S) \quad & x \in S \\ 
+                 & 0 \quad & x \notin S  
+            \end{aligned}
+        \right.
+        \end{align*}
     \end{itemize}
     \item Bayesian terminology: 
     \begin{itemize}
@@ -75,6 +85,7 @@ Further properties:
         \item Evidence $\mathbb{P}(\textrm{data})$
     \end{itemize}
     \item \emph{Bayes theorem}: $\textrm{Posterior } \mathbb{P}(A|B) = \frac{\textrm{Likelihood }\mathbb{P}(B|A) \times  \textrm{Prior }\mathbb{P}(A)}{\textrm{Evidence }\mathbb{P}(B)}$
+    \item Attention! In $p(\cdot | \theta)$ the $|$ can either refer to parametrizing on $\theta$ (parameter is part of the distribution's form but isn't observed or fixed) or conditioning on $\theta$ (parameter takes a observed and fixed value, and we evaluate the distribution on this condition)
 \end{itemize}
 
 {\color{black}\hrule height 0.001mm}
@@ -125,6 +136,7 @@ Properties - variance:
     \item For uncorrelated (and independent) variables: $\mathbb{V}(\mathcal{X} + \mathcal{Y})=\mathbb{V}(\mathcal{X})+\mathbb{V}(\mathcal{Y})$
     \item For independent variables: $\mathbb{V}(\mathcal{X}\mathcal{Y})=\mathbb{E}((\mathcal{X}\mathcal{Y})^2)\mathbb{E}(\mathcal{X}\mathcal{Y})^2$
     \item For vector $\boldsymbol{y} = \boldsymbol{A}\boldsymbol{x}$:\\ $\mathbb{V}_y = \boldsymbol{A}\mathbb{V}_X\boldsymbol{A}^\intercal$
+    \item For zero-mean variable: $\mathbb{V}(\mathcal{X})= \mathbb{E}(\mathcal{X}^2) - \mathbb{E}(\mathcal{X})^2 = \mathbb{E}(\mathcal{X}^2)$ since $\mathbb{E}(\mathcal{X}) = 0$
 \end{itemize}
 \end{multicols}
 Properties - covariance:
@@ -138,6 +150,7 @@ Properties - covariance:
             \item $\boldsymbol{\Sigma}_y = \boldsymbol{A}\boldsymbol{\Sigma}_X\boldsymbol{A}^\intercal$
             \item $\boldsymbol{R}_y = \boldsymbol{A}\boldsymbol{R}_X\boldsymbol{A}^\intercal$
         \end{itemize}
+    \item For zero-mean variables: $\textrm{Cov}(\mathcal{X},\mathcal{Y})= \mathbb{E}(\mathcal{X}\mathcal{Y}) - \mu_{\mathcal{X}} \mu_{\mathcal{Y}} = \mathbb{E}(\mathcal{X},\mathcal{Y})$ since $\mu_{\mathcal{X}} = \mu_{\mathcal{Y}} = 0$
 \end{itemize}
 \emph{Cauchy Schwarz inequality}: \begin{itemize}
     \item $\textrm{Cov}(\mathcal{X},\mathcal{Y})^2 \leq \mathbb{V}(\mathcal{X})\mathbb{V}(\mathcal{Y})$
@@ -188,7 +201,8 @@ Properties - covariance:
 \emph{Normal distribution} --- 
 $\mathcal{X} \sim \mathcal{N}(\mu, \sigma^2)$\\
 For univariate, PDF: $\frac{1}{\sqrt{2\pi\sigma}} exp(\frac{-(x-\mu)^2}{2\sigma^2})$\\
-For multivariate, PDF: $\frac{1}{{2\pi\sigma}^{n/2}} \frac{1}{|\boldsymbol{\Sigma}|^{1/2}} exp(-\frac{1}{2} (\boldsymbol{x}-\boldsymbol{\mu})^\intercal \boldsymbol{\Sigma}^{-1} (\boldsymbol{x}-\boldsymbol{\mu}))$ where the term in the exponent is a quadratic form
+For multivariate, PDF: $\frac{1}{{2\pi\sigma}^{n/2}} \frac{1}{|\boldsymbol{\Sigma}|^{1/2}} exp(-\frac{1}{2} (\boldsymbol{x}-\boldsymbol{\mu})^\intercal \boldsymbol{\Sigma}^{-1} (\boldsymbol{x}-\boldsymbol{\mu}))$ where the term in the exponent is a quadratic form\\
+Convolution: $\int \mathcal{N}(a;Bc,D) \times \mathcal{N}(c;e,F) dc = \int \mathcal{N}(a;Be,D + BFB^\intercal$
 
 {\color{lightgray}\hrule height 0.001mm}
 
