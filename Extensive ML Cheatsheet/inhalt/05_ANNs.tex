@@ -1,0 +1,86 @@
+\section{Neural Networks}
+\subsection*{Formulation}
+\emph{Formulation} --- 
+\begin{itemize}
+    \item Model architecture: 
+    \begin{itemize}
+        \item Input features $(\boldsymbol{X})$ > weights $(\boldsymbol{B})$ > weighted sums $(\boldsymbol{S})$ > activation functions $(\varphi)$ > hidden states $(\boldsymbol{H})$ > weights > ... > hidden states > activation function > outputs
+        \item Can be seen as a composition of:
+        \begin{itemize}
+            \item Encoders that construct disentangled and robust latent representation from input, which maximizes mutual information between representation and input, as according to infomax principle
+            \item Linear estimators
+        \end{itemize}
+    \end{itemize}
+    \item Neuron $(j)$ in layer $[k]$ given training instance $\boldsymbol{x}^{(i)[0]}$ resp. instance from previous layer $\boldsymbol{h}^{(i)[k-1]}$ given by:\\
+    $\boldsymbol{h}^{(j)[1]} = \varphi( \boldsymbol{x}^{(i)[0]} \cdot \boldsymbol{\beta}^{(j)[1]} )$ resp. $\boldsymbol{h}^{(j)[k]} = \varphi( \boldsymbol{h}^{(i)[k-1]} \cdot \boldsymbol{\beta}^{(j)[k]} )$ 
+    \item Outputs for neurons $1, ..., j$ in fixed layer (notation for layer omitted below) given by:\\
+    $\boldsymbol{H} = \varphi ( \boldsymbol{X} \boldsymbol{B} ) = \varphi ( \boldsymbol{S} )$ where
+    \begin{itemize}
+        \item $\boldsymbol{X} \in \mathbb{R}^{n \times m+1}$ (incl. bias term)
+        \item $\boldsymbol{B} \in \mathbb{R}^{m+1 \times j}$ with a weight vector for each neuron in each column (incl. bias term)
+        \item $\boldsymbol{S} \in \mathbb{R}^{n \times j}$ with the weighted sum (prior to activation) for instance $i$ in neuron $j$ is on the $i^{th}$ row and $j^{th}$ column
+        \item The activation function differs by neuron
+    \end{itemize}
+\end{itemize}
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Activation functions} --- 
+\begin{itemize}
+    \item Introduce non-linearities
+    \item Can differ by neuron
+    \item Sigmoid:
+    \begin{itemize}
+        \item $[0,1]$
+        \item $\varphi(z) = \sigma(z) =  \frac{1}{1+e^{-z}} = \frac{e^z}{e^z + 1}$
+        \item $\varphi'(z) = \frac{e^{-z}}{(1+e^{-z})^2}$
+    \end{itemize}
+    \item Hyperbolic Tangent:
+    \begin{itemize}
+        \item $[-1,1]$
+        \item $\varphi(z) = tanh(z) =  \frac{e^z - e^{-z}}{e^z + e^{-z}} = \frac{1 - e^{-2z}}{1 + e^{-2z}}$
+        \item $\varphi'(z) = 1-tanh(z)^2$
+    \end{itemize}
+    \item ReLu:
+    \begin{itemize}
+        \item $\varphi(z) = max(0,z)$
+        \item $\varphi'(z) = 1 \textrm{ if } z > 0; 0 \textrm { otherwise}$
+    \end{itemize}
+\end{itemize}
+
+{\color{black}\hrule height 0.001mm}
+
+\subsection*{Optimization}
+\emph{Parameters} --- Find parameters $\theta = \boldsymbol{B}$
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Objective function} --- 
+\begin{itemize}
+    \item Minimize standard objectives, e.g. MSE
+\end{itemize}
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Optimization} ---
+\begin{itemize}
+    \item Perform \emph{forward pass} with randomly initialized parameters, to calculate loss
+    \item Perform \emph{backpropagation}, to calculate gradient:
+    \begin{itemize}
+        \item $\frac{\partial L}{\partial \theta} = [ \frac{\partial L}{\partial \boldsymbol{B}^{[0]}} , ..., \frac{\partial L}{\partial \boldsymbol{B}^{[output]}} ]$
+        \item $\frac{\partial L}{\partial \boldsymbol{B}^{[k]} } = \frac{\partial L}{ \partial \boldsymbol{H}^{[l]} } \frac{ \partial \boldsymbol{H}^{[l]} }{ \partial \boldsymbol{B}^{[k]} } = C$
+        \begin{itemize}
+            \item When $l > k+1$, i.e. when going several layers back: $\frac{\partial L}{\partial \boldsymbol{B}^{[k]} } = \frac{\partial L}{ \partial \boldsymbol{H}^{[l]} }  \frac{ \partial \boldsymbol{H}^{[l]} }{ \partial \boldsymbol{S}^{[l-1]} } \frac{ \partial \boldsymbol{S}^{[l-1]} }{ \partial \boldsymbol{H}^{[l-1]} } \frac{ \partial \boldsymbol{H}^{[l-1]} }{ \partial \boldsymbol{B}^{[k]} }$ 
+            \item When $l = k+1$, i.e. when going one layer back: $\frac{\partial L}{\partial \boldsymbol{B}^{[k]} } = \frac{\partial L}{ \partial \boldsymbol{H}^{[k+1]} }  \frac{ \partial \boldsymbol{H}^{[k+1]} }{ \partial \boldsymbol{S}^{[k]} } \frac{ \partial \boldsymbol{S}^{[k]} }{ \partial \boldsymbol{B}^{[k]} }$
+        \end{itemize}
+    \end{itemize}
+    \item Perform gradient descent to find best weights 
+\end{itemize}
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Backpropagation} --- \hl{TBA}
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Challenges} --- \hl{TBA}

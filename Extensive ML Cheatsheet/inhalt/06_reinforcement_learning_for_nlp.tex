@@ -1,0 +1,63 @@
+\section{Reinforcement Learning for NLP}
+\subsection*{Formulation}
+
+$S$: States
+\begin{itemize}
+    \item $s = \mathcal{X} \times \mathcal{Y} = \{ \boldsymbol{x}, \tilde{\boldsymbol{y}} \}$, where $\boldsymbol{x}$ is input and $\tilde{\boldsymbol{y}}$ is partial output
+\end{itemize}
+
+$A$: Actions
+\begin{itemize}
+    \item Elementary modifications, e.g., adding a single edge to a dependency tree
+\end{itemize}
+
+$T$: Transition function
+\begin{itemize}
+    \item Specifies which state the agent will end up in if it commits a certain action in a certain state
+    \item Transition corresponds to replacing the current partial output $\tilde{\boldsymbol{y}}$ with transformed partial output $a(\tilde{\boldsymbol{y}})$ after applying action $a$:
+    $
+    T(( \boldsymbol{x}, \tilde{\boldsymbol{y}} ), a) = ( \boldsymbol{x}, a(\tilde{\boldsymbol{y}}) )
+    $
+\end{itemize}
+
+$r$: Reward function
+\begin{itemize}
+    \item Specifies the reward the agent obtains by committing a certain action in a certain state:
+    $
+    r(s = ( \boldsymbol{x}, a(\tilde{\boldsymbol{y}}) )) = -\big(\Delta(a(\tilde{\boldsymbol{y}}), \boldsymbol{y}) - \Delta(\tilde{\boldsymbol{y}}, \boldsymbol{y})\big)
+    $ i.e.  -(loss after action - loss before action)
+    where:
+    \begin{itemize}
+        \item $\Delta(a(\tilde{\boldsymbol{y}}), \boldsymbol{y})$ is the loss between the true output $\boldsymbol{y}$ and the new prediction after applying action $a$ to $\tilde{\boldsymbol{y}}$
+        \item $\Delta(\tilde{\boldsymbol{y}}, \boldsymbol{y})$ is the loss between the true output $\boldsymbol{y}$ and the current prediction $\tilde{\boldsymbol{y}}$
+    \end{itemize}
+    \item Intuitively:
+    \begin{itemize}
+        \item If loss after action $>$ loss before action, $r$ is negative
+        \item Otherwise, $r$ is positive
+    \end{itemize}
+\end{itemize}
+
+$\pi$: Policy
+\begin{itemize}
+    \item Set of rules that tell the agent which action to take in a certain state
+    \item Policy score: Distinguishes good from bad policies:
+    $
+    \eta(\pi, s) = \sum_{t=1}^T r(s_t, \pi(s_t)) \mid \pi, s_1 = s
+    $
+    where:
+    \begin{itemize}
+        \item Total reward for policy starting at $s = s_1$ is calculated by summing the reward at each time step
+        \item $\pi(s_t)$ maps action $a_t$ to state $s_t$
+        \item $r(s_t, \pi(s_t))$ is the reward of taking action $a_t$ in state $s_t$
+        \item $T$ is the maximum number of steps allowed to transition from $s_1$ to a final valid output
+    \end{itemize}
+\end{itemize}
+
+{\color{black}\hrule height 0.001mm}
+
+\subsection*{Optimization}
+Optimal policy search:
+$
+\pi^* = argmax_{\theta \in \Theta} \mathbb{E}_{s \sim \mathcal{D}}[\eta(\pi_\theta, s)]
+$

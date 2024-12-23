@@ -9,7 +9,9 @@
 {\color{lightgray}\hrule height 0.001mm}
 
 \emph{Inner product} --- $\boldsymbol{u} \cdot \boldsymbol{v} = \boldsymbol{u}^\intercal\boldsymbol{v} = \sum_{i=1}^n u_i v_i = cos(\varphi) \textrm{ } \|\boldsymbol{u}\| \textrm{ } 
- \|\boldsymbol{v}\|$ --- 
+ \|\boldsymbol{v}\|$ \\
+resp.\\
+$\langle \boldsymbol{u}, \boldsymbol{v} \rangle_W = \boldsymbol{u}^\intercal \boldsymbol{W} \boldsymbol{v} = \sum_i u_i v_i w_i $ where $\boldsymbol{W}$ is a diagonal matrix with $w_i > 0$ --- 
 Properties:
 \begin{multicols}{2}
 \begin{itemize}
@@ -24,7 +26,9 @@ Properties:
 {\color{lightgray}\hrule height 0.001mm}
 
 \emph{Norm} --- 
-$\|\boldsymbol{u}\| = \sqrt{\boldsymbol{u} \cdot \boldsymbol{u}}$ --- 
+$\|\boldsymbol{u}\| = \sqrt{\boldsymbol{u} \cdot \boldsymbol{u}}$\\
+resp.\\
+$\|\boldsymbol{u}\|_W^2 = \boldsymbol{u}^\intercal \boldsymbol{W} \boldsymbol{u} = \sum_i u_i^2 w_i$ where $\boldsymbol{W}$ is a diagonal matrix with $w_i > 0$ --- 
 Properties:
 \begin{multicols}{2}
 \begin{itemize}
@@ -32,6 +36,15 @@ Properties:
     \item $\|\alpha\boldsymbol{u}\| = |\alpha| \|\boldsymbol{u}\|$
 \end{itemize}
 \end{multicols}
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Distance and angle between two vectors} --- 
+\begin{itemize}
+    \item Distance: $d = \| \boldsymbol{u} - \boldsymbol{v} \| = \sqrt{(u_1 - v_1)^2+...+(u_n - v_n)^2}$
+    \item Angle: $cos(\varphi) = \frac{\boldsymbol{u} \cdot \boldsymbol{v}}{\textrm{ } \|\boldsymbol{u}\| \textrm{ } 
+ \|\boldsymbol{v}}\|$
+\end{itemize}
 
 {\color{lightgray}\hrule height 0.001mm}
 
@@ -53,6 +66,15 @@ Proof:
 
 \emph{Triangle inequality} --- 
 $\|\boldsymbol{u} + \boldsymbol{v}\| \leq \|\boldsymbol{u}\| + \|\boldsymbol{v}\|$ with equality iff $\varphi = 0$ i.e. $\boldsymbol{u} = \alpha\boldsymbol{v}$ or if $\boldsymbol{u} \textrm{ or } \boldsymbol{v} = 0_v$
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Other inequalities} ---  
+
+\begin{itemize}
+    \item $\|n^k\| \leq \|n\|^k$
+    \item $|\sum_i n_i| \leq \sum_i |n_i|$
+\end{itemize}
 
 {\color{lightgray}\hrule height 0.001mm}
 
@@ -115,6 +137,11 @@ Proof:
 
 {\color{lightgray}\hrule height 0.001mm}
 
+\emph{Affine subspace $L$} --- 
+\hl{TBA}
+
+{\color{lightgray}\hrule height 0.001mm}
+
 \emph{Invariant subspace $H$} --- $H$ is an invariant subspace of $S$ spanned by $\boldsymbol{S}$ if $\boldsymbol{S}\boldsymbol{h} \in H$ for all $\boldsymbol{h} \in H$ --- Properties:
 \begin{itemize}
     \item $\boldsymbol{S}$ has an eigenvector in $H$
@@ -157,7 +184,7 @@ A span is a subspace, since for a linear combination, we can derive additive clo
 
 {\color{lightgray}\hrule height 0.001mm}
 
-\emph{Dimension} --- Number of vectors in basis of $S$.
+\emph{Dimension d} --- Number of vectors in basis of $S$. Each vector has $d$ elements.
 
 {\color{lightgray}\hrule height 0.001mm}
 
@@ -345,6 +372,8 @@ Via SVD: Let $S$ be spanned by $\{\boldsymbol{y_i}\}_{i=1}^n$, which are column 
     Proof:
     $\sum_{l=1}^m | \boldsymbol{u}_k \cdot \boldsymbol{y}_l |= \| \boldsymbol{u}_k^\intercal \boldsymbol{A} \| = \boldsymbol{u}_k^\intercal \boldsymbol{A} \boldsymbol{A}^\intercal \boldsymbol{u}_k = \boldsymbol{u}_k^\intercal \boldsymbol{U} \boldsymbol{S} \boldsymbol{V}^\intercal \boldsymbol{V} \boldsymbol{S}^\intercal \boldsymbol{U}^\intercal \boldsymbol{u}_k = \boldsymbol{e}_k^\intercal  \boldsymbol{S}  \boldsymbol{S}^\intercal \boldsymbol{e}_k = \sigma_k^2$
 \end{itemize}
+Via basis: Let $S$ be spanned by $\{\boldsymbol{b_i}\}_{i=1}^n$, which are column vectors of the matrix $\boldsymbol{B} \in \mathbb{R}^{m \times n}$
+\hl{TBA}
 
 {\color{black}\hrule height 0.001mm}
 
@@ -392,6 +421,7 @@ Via SVD: Let $S$ be spanned by $\{\boldsymbol{y_i}\}_{i=1}^n$, which are column 
             \item $\textrm{det}(\boldsymbol{A}^\intercal) = \textrm{det}(\boldsymbol{A})$
             \item $\textrm{det}(\boldsymbol{A}^{-1}) = (\textrm{det}(\boldsymbol{A}))^{-1}$
             \item $\textrm{det}(\alpha\boldsymbol{A}) = \alpha^2\textrm{det}(\boldsymbol{A})$
+            \item Determinant of diagonal matrix is product of diagonal elements
         \end{itemize}
         \end{multicols}
     \end{itemize}
@@ -434,7 +464,8 @@ Inversely, if $\boldsymbol{A}$ is not invertible, the columns and rows are not l
 \emph{Eigenvectors and eigenvalues} --- 
 \begin{itemize}
     \item $\boldsymbol{q}$ is an eigenvector of $\boldsymbol{A}$ associated with an eigenvalue $\lambda$ if it remains on the same line after transformation by a linear map: $\boldsymbol{A}\boldsymbol{q} = \lambda\boldsymbol{q}$
-    \item Let $\boldsymbol{A} \in \mathbb{R}^{n \times n}$. $\boldsymbol{A}$ can have between $1-n$ eigenvalues, each with multiple eigenvectors. Eigenvectors for distinct eigenvalues are linearly independent.
+    \item Let $\boldsymbol{A} \in \mathbb{R}^{n \times n}$. $\boldsymbol{A}$ can have between $1-n$ eigenvalues, each with multiple eigenvectors. Eigenvectors for distinct eigenvalues are linearly independent
+    \item \emph{Spectral radius}: $\rho(\boldsymbol{A})$ is the largest eigenvalue of $\boldsymbol{A}$
     \item If there exists a non-trivial solution for $\boldsymbol{q}$, $(\boldsymbol{A}-\lambda\boldsymbol{I})$ is not invertible and characteristic polynomial $\textrm{det}(\boldsymbol{A}-\lambda\boldsymbol{I}) = 0$
     \item \emph{Eigendecomposition resp. diagonalization}: $\boldsymbol{A} = \boldsymbol{Q}\boldsymbol{\Lambda}\boldsymbol{Q}^{-1}$ where $\boldsymbol{Q}$ is a matrix with the eigenvectors as columns and $\boldsymbol{\Lambda}$ is a diagonal matrix with the eigenvalues on the diagonal
     \item $\textrm{det}(\boldsymbol{A}) = \textrm{det}(\boldsymbol{Q}\boldsymbol{\Lambda}\boldsymbol{Q}^{-1}) = \prod_{i=1}^n \lambda_i$
@@ -481,6 +512,8 @@ Psd properties:
     \begin{itemize}
         \item Diagonal elements $\sigma_1, ...$ are the \emph{singular values} of $\boldsymbol{A}$
         \item If $\sigma_1 \geq \sigma_2 ... \geq 0$, $\boldsymbol{S}$ is unique
+        \item \emph{Spectral norm} = $\sigma_{max} = \| \boldsymbol{A} \|$
+        \item Largest singular value $\sigma_{max}$ is always greater than largest eigenvalue $\rho(\boldsymbol{A})$
         \item \emph{Condition number} = $\sigma_{max} / \sigma_{min}$
         \item For square $\boldsymbol{A}$: Iff $\sigma_1, \sigma_2, ... > 0$, $\boldsymbol{A}$ is invertible 
     \end{itemize}
@@ -502,7 +535,7 @@ Psd properties:
         \item If we apply SVD to symmetric matrix $\boldsymbol{A}$, we see that
         \begin{itemize}
             \item $\boldsymbol{S}$ contains absolute value of eigenvalues of $\boldsymbol{A}$ 
-            \item $\boldsymbol{U}$ contains eigenvectors of  $\boldsymbol{A}$ as columns
+            \item $\boldsymbol{U}$ contains eigenvectors of $\boldsymbol{A}$ as columns
         \end{itemize}
     \end{itemize}
 \end{itemize}
@@ -543,3 +576,167 @@ Psd properties:
     \item Property can be proven by replacing $\boldsymbol{A}$ and $\boldsymbol{A}^{\#}$ by their SVD 
 \end{itemize}
 \end{multicols}
+
+{\color{black}\hrule height 0.001mm}
+
+\subsection*{Hilbert Space $S$}
+Equivalence modulo norm zero:
+\begin{itemize}
+    \item Challenge: In some cases, $\boldsymbol{v} \cdot \boldsymbol{v} = \Leftrightarrow \boldsymbol{v} = 0_v$ does not hold
+    \item Issue is resolved by defining equivalence classes of vectors: $[\boldsymbol{v}] = \{\boldsymbol{v}' \in V : \|\boldsymbol{v} - \boldsymbol{v}'\| = 0\}$
+    \item Implications: Modified meaning of equality: 
+    \begin{itemize}
+        \item For functions: $f = g$ means $\int_T |f(t) - g(t)|^2 dt = 0$
+        \item For random variables: $X = Y$ means $\mathbb{E}[|X - Y|^2] = 0$
+    \end{itemize}
+\end{itemize} 
+
+Existence (convergence) of the inner product:
+\begin{itemize}
+    \item Challenge: In some cases, inner product does not exist for all $\boldsymbol{v}, \boldsymbol{w} \in V$
+    \item Issue is resolved by restricting attention to subsets of $V$ where the norm is finite: $V_{fn} = \{ \boldsymbol{v} \in | \| \boldsymbol{v} \| < \infty \}$
+\end{itemize}
+
+Hilbert spaces:
+\begin{itemize}
+    \item Vector space with an inner product that satisfies the additional condition of \emph{completeness}:
+    \begin{itemize}
+        \item Every Cauchy sequence in $V$ converges to an element in $V$\\
+        resp.
+        \item Limit vectors, that Cauchy sequences tend towards, are also elements of $V$
+        \item Cauchy sequence: Sequence of points that get closer and closer
+    \end{itemize}
+    \item If we make modifications for above challenges (equivalence modulo norm zero, existence of inner product), vector spaces can be transformed to Hilbert spaces
+\end{itemize}
+
+\begin{definition}
+    A vector space $V$ with an inner product is a Hilbert space if every Cauchy sequence in $V$ converges to an element in $V$.
+\end{definition}
+\begin{example}
+    The following spaces, with appropriate modifications, are Hilbert spaces:
+    \begin{itemize}
+        \item $\ell^2(\mathbb{Z})$: square-summable discrete-time signals.
+        \item $L^2(\mathbb{R})$: square-integrable functions on $\mathbb{R}$.
+        \item $L^2(T)$: square-integrable functions on an interval $T$.
+        \item Random variables with finite second moments.
+    \end{itemize}
+\end{example}
+\begin{theorem}
+    The spaces mentioned above, with modifications for norm equivalence and finiteness of the inner product, are Hilbert spaces.
+\end{theorem}
+
+{\color{black}\hrule height 0.001mm}
+
+\subsection*{Semiring}
+\emph{Semiring} ---
+\begin{itemize}
+    \item A 5-tuple $\mathcal{S} = (\mathcal{A}, \oplus, \otimes, \underline{0}, \underline{1})$ with the following properties:
+    \begin{itemize}
+        \item $(\mathcal{A}, \oplus, \underline{0})$ is a commutative monoid
+        \item $(\mathcal{A}, \otimes, \underline{1})$ is a monoid
+        \item $\otimes$ distributes over $\oplus$:
+        $
+        (a \oplus b) \otimes c = (a \otimes c) \oplus (b \otimes c)
+        $
+        $
+        c \otimes (a \oplus b) = (c \otimes a) \oplus (c \otimes b)
+        $
+        \item $\underline{0}$ is an annihilator for $\otimes$:
+        $
+        a \otimes \underline{0} = \underline{0}, \quad \underline{0} \otimes a = \underline{0}
+        $
+    \end{itemize}
+    \item A \emph{commutative semiring}: semiring where $\otimes$ is commutative: $a \otimes b = b \otimes a$
+    \item An \emph{idempotent semiring}: semiring where $\oplus$ is idempotent: $a \oplus a = a$
+    \item A \emph{closed semiring}: semiring augmented with additional unary operation: \emph{Kleene star} $*$ (or \emph{asteration}):
+    \begin{itemize}
+        \item $
+        x^* = \bigoplus_{n=0}^\infty x^{\otimes n}
+        $
+        \item Allows computation of infinite sums
+        \item Kleene star must obey:
+        $
+        x^* = \underline{1} \oplus x \otimes x^*$
+        $x^* = \underline{1} \oplus x^* \otimes x
+        $
+        \item For example, the geometric series is a Kleene star:
+        \begin{itemize}
+            \item $
+            x^* = \sum_{n=0}^\infty x^n = \frac{1}{1 - x}$ for $x \in (0, 1)$\\
+            Proof:
+            $
+            x^* = \frac{1}{1 - x} = 1 + \frac{1}{1 - x} -1 = 1 + \frac{1 - 1 + x}{1 - x} = 1 + \frac{x}{1 - x} = 1 + x \frac{1}{1 - x} = 1 + x x^*
+            $
+        \end{itemize}
+        \item We can approximate Kleene star:
+        $
+        \sum_{k=0}^{K} \boldsymbol{M}^k \approx \boldsymbol{M}^*$ as $K \to \infty$ if $\rho(\boldsymbol{M}) < 1$ resp. $\sigma_{\max}(\boldsymbol{M}) = \| \boldsymbol{M} \|^2 < 1
+        $
+        \item Truncation error of this approximation:
+        $
+        || \boldsymbol{M}^* - \sum_{k=0}^K \boldsymbol{M}^k || \leq \frac{\sigma_{\max}(\boldsymbol{M})^{K+1}}{1 - \sigma_{\max}(\boldsymbol{M})}
+        $\\
+        Proof:
+        \begin{itemize}
+            \item $\boldsymbol{M}^* - \sum_{n=0}^K \boldsymbol{M}^n = \sum_{n=k+1}^\infty \boldsymbol{M}^n = \boldsymbol{M}^{k+1} \sum_{n=k+1}^\infty \boldsymbol{M}^{n-(k+1)} = \boldsymbol{M}^{k+1} \sum_{m=0}^\infty \boldsymbol{M}^m = \boldsymbol{M}^{k+1} \boldsymbol{M}^*$
+            \item Then:
+            $
+            || \boldsymbol{M}^* - \sum_{k=0}^K \boldsymbol{M}^k || = || \boldsymbol{M}^{k+1} \boldsymbol{M}^* ||
+            $
+            \item Using the Cauchy-Schwarz inequality:
+            $
+            || \boldsymbol{M}^{k+1} \boldsymbol{M}^* || < || \boldsymbol{M}^{k+1} || \textrm{ } || \boldsymbol{M}^* ||
+            $
+            \item For $|| \boldsymbol{M}^{k+1} ||$:
+            $
+            || \boldsymbol{M}^{k+1} || \leq || \boldsymbol{M} ||^{k+1} = \sigma_{\max}(\boldsymbol{M})^{k+1}
+            $
+            \item For $|| \boldsymbol{M}^* ||$:
+            $
+            \sum_{n=0}^\infty || \boldsymbol{M}^n || \leq \sum_{n=0}^\infty || \boldsymbol{M} ||^n = \sum_{n=0}^\infty \sigma_{\max}(\boldsymbol{M})^n = \frac{1}{1 - \sigma_{\max}(\boldsymbol{M})}
+            $ where the second-to-last term is a geometric series
+            \item Then: $
+            || \boldsymbol{M}^* - \sum_{n=0}^K \boldsymbol{M}^n || \leq \frac{\sigma_{\max}(\boldsymbol{M})^{K+1}}{1 - \sigma_{\max}(\boldsymbol{M})}
+            $
+        \end{itemize}
+        \item Good approximation, especially if $\sigma_{\max} \ll 1$, since then the error becomes very small
+    \end{itemize}
+    \item A \emph{$\underline{0}$-closed semiring}:
+    \begin{itemize}
+        \item $\underline{1} \oplus a = \underline{1}$
+        \item Examples: tropical and arctic semiring
+        \item Properties:
+        \begin{itemize}
+            \item $
+            x^* = \bigoplus_{n=0}^{N-1} x^{\otimes n}$ since cycles in a path of length $\geq N$ do not contribute  
+            $= \bigoplus_{n=0}^{N-1} \boldsymbol{M}^n = ( \boldsymbol{I} + \boldsymbol{M})^{N-1}
+            $ if $x$ is a matrix $\boldsymbol{M}$
+            $
+            = \bigoplus_{n=0}^{N-1} \bigotimes_{k=0}^{\lfloor \log_2 n \rfloor} \boldsymbol{M}^{\alpha_k2^k}
+            $ if we use binary decomposition on matrix $\boldsymbol{M}$
+            \item Idempotent
+        \end{itemize}
+    \end{itemize}
+\end{itemize}
+Kinds of semirings:
+\begin{itemize}
+    \item Boolean semiring $(\{0, 1\}, \lor, \land, 0, 1)$
+    \item Real semiring $(\mathbb{R}, +, \times, 0, 1)$
+    \item Probability semiring $([0, 1], +, \times, 0, 1)$
+    \item Tropical semiring $(\mathbb{R} \cup \{\infty\}, \min, +, \infty, 0)$
+    \item Arctic semiring resp. max-plus semiring $(\mathbb{R} \cup \{-\infty\}, \max, +, -\infty, 0)$
+    \item Log semiring: $(\mathbb{R} \cup \{-\infty\}, \oplus_{\textrm{log}}, +, -\infty, 0)$ where $a \oplus_{\textrm{log}} b = \log(e^a + e^b)$
+    \item Language semiring: $(2^{\Sigma^*}, \cup, \circ, \{\}, \{\epsilon\})$ where $2^{\Sigma^*}$ is the set of all possible languages and $A \circ B = \{a \circ b \mid a \in A, b \in B\}$ is the concatenation
+\end{itemize}
+
+{\color{lightgrey}\hrule height 0.001mm}
+
+\emph{Monoid} ---
+\begin{itemize}
+    \item Consists of a set $\mathcal{A}$, an operation $*$, and an identity element $e$, such that:
+    \begin{itemize}
+        \item Associativity: $(a * b) * c = a * (b * c)$
+        \item Identity: $a * e = e * a = a$
+    \end{itemize}
+    \item A \emph{commutative monoid}: additionally commutative: $a * b = b * a$
+\end{itemize}

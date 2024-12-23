@@ -1,0 +1,35 @@
+\section{Generative Adversarial Nets (GAN)}
+\subsection*{Description}
+\emph{Task} --- Generate new samples
+
+{\color{black}\hrule height 0.001mm}
+
+\subsection*{Formulation}
+\emph{Formulation} --- 
+\begin{itemize}
+    \item Model architecture: 
+    \begin{itemize}
+        \item Generator: Encoder decoder network, aims to produce samples that pass as real in the discriminator network
+        \item Discriminator: Fake detection network, aims to tell fake from real samples
+    \end{itemize}
+\end{itemize}
+
+{\color{black}\hrule height 0.001mm}
+
+\subsection*{Optimization}
+\emph{Steps} --- 
+\begin{itemize}
+    \item Encoder decoder network is trained in autoencoder mode to reproduce its input
+    \item Decoder is fed with Gaussian noise input vectors $\boldsymbol{z}^{(i)}$ and produces corresponding samples $\tilde{\boldsymbol{y}}^{(i)}$
+    \item Fake detection network produces $\hat{\xi} = 0$ for real samples $\boldsymbol{y}^{(i)}$ and $\hat{\xi} = 1$ for $\tilde{\boldsymbol{y}}^{(i)}$
+\end{itemize}
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Objective function} --- 
+\begin{itemize}
+    \item Encoder is trained to produce $\boldsymbol{\hat{z}}^{(i)} = \boldsymbol{z}^{(i)}$
+    \item Decoder is trained to produce $\hat{\xi} = 0$
+    \item Fake detection network is trained to correctly produce $\hat{\xi}$
+    \item Trained in interleaving manner
+\end{itemize}

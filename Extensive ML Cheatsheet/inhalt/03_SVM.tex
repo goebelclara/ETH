@@ -70,7 +70,7 @@ _
     \item Equivalent cost function: $\gamma = \frac{1}{2} \| \boldsymbol{\beta} \|^2 $ subject to $1 - y^{(i)} (\boldsymbol{\beta} \cdot \boldsymbol{x}^{(i)} + b) \leq 0$
     \item Cost function in Lagrangian formulation: $\mathcal{L} = \frac{1}{2} \| \boldsymbol{\beta} \|^2 + \sum_{i=1}^n \alpha^{(i)} (1 - y^{(i)} (\boldsymbol{\beta} \cdot \boldsymbol{x}^{(i)} + b))$
     \item By Slater's condition (linear separability), strong duality holds
-    \item Objective function in dual Lagrangian: $\mathcal{D} = \frac{1}{2}  \sum_{i=1}^n  \sum_{j=1}^n \alpha^{(i)}\alpha^{(j)} y^{(i)}y^{(j)} \boldsymbol{x}^{(i)}\boldsymbol{x}^{(j)} + \sum_{i=1}^n  \sum_{j=1}^n \alpha^{(i)} - \alpha^{(i)}\alpha^{(j)} y^{(i)}y^{(j)} \boldsymbol{x}^{(i)}\boldsymbol{x}^{(j)} = \sum_{i=1}^n \alpha^{(i)} - \frac{1}{2}  \sum_{i=1}^n  \sum_{j=1}^n \alpha^{(i)}\alpha^{(j)} y^{(i)}y^{(j)} \boldsymbol{x}^{(i)}\boldsymbol{x}^{(j)}$
+    \item Objective function in dual Lagrangian: $\mathcal{D} = \frac{1}{2}  \sum_{i=1}^n  \sum_{j=1}^n \alpha^{(i)}\alpha^{(j)} y^{(i)}y^{(j)} \boldsymbol{x}^{(i)} \cdot \boldsymbol{x}^{(j)} + \sum_{i=1}^n  \sum_{j=1}^n \alpha^{(i)} - \alpha^{(i)}\alpha^{(j)} y^{(i)}y^{(j)} \boldsymbol{x}^{(i)} \cdot \boldsymbol{x}^{(j)} = \sum_{i=1}^n \alpha^{(i)} - \frac{1}{2}  \sum_{i=1}^n  \sum_{j=1}^n \alpha^{(i)}\alpha^{(j)} y^{(i)}y^{(j)} \boldsymbol{x}^{(i)} \cdot \boldsymbol{x}^{(j)}$
 \end{itemize}
 
 {\color{lightgray}\hrule height 0.001mm}
@@ -150,7 +150,7 @@ _
     \end{itemize}
     \item Cost function in Lagrangian formulation: $\mathcal{L} = \frac{1}{2} \| \boldsymbol{\beta} \|^2 - \sum_{i=1}^n \alpha^{(i)} (y^{(i)} (\boldsymbol{\beta} \cdot \boldsymbol{x}^{(i)} + b) - 1 + \xi^{(i)}) - \sum_{i=1}^n \zeta^{(i)} \xi^{(i)} + C \sum_{i=1}^n \xi^{(i)}$
     \item By Slater's condition (linear separability), strong duality holds
-    \item Objective function in dual Lagrangian: $\mathcal{D} = \frac{1}{2}  \sum_{i=1}^n  \sum_{j=1}^n \alpha^{(i)}\alpha^{(j)} y^{(i)}y^{(j)} \boldsymbol{x}^{(i)}\boldsymbol{x}^{(j)} + \sum_{i=1}^n  \sum_{j=1}^n \alpha^{(i)} - \alpha^{(i)}\alpha^{(j)} y^{(i)}y^{(j)} \boldsymbol{x}^{(i)}\boldsymbol{x}^{(j)} = \sum_{i=1}^n \alpha^{(i)} - \frac{1}{2}  \sum_{i=1}^n  \sum_{j=1}^n \alpha^{(i)}\alpha^{(j)} y^{(i)}y^{(j)} \boldsymbol{x}^{(i)}\boldsymbol{x}^{(j)}$
+    \item Objective function in dual Lagrangian: $\mathcal{D} = \frac{1}{2}  \sum_{i=1}^n  \sum_{j=1}^n \alpha^{(i)}\alpha^{(j)} y^{(i)}y^{(j)} \boldsymbol{x}^{(i)} \cdot \boldsymbol{x}^{(j)} + \sum_{i=1}^n  \sum_{j=1}^n \alpha^{(i)} - \alpha^{(i)}\alpha^{(j)} y^{(i)}y^{(j)} \boldsymbol{x}^{(i)} \cdot \boldsymbol{x}^{(j)} = \sum_{i=1}^n \alpha^{(i)} - \frac{1}{2}  \sum_{i=1}^n  \sum_{j=1}^n \alpha^{(i)}\alpha^{(j)} y^{(i)}y^{(j)} \boldsymbol{x}^{(i)} \cdot \boldsymbol{x}^{(j)}$
 \end{itemize}
 
 {\color{lightgray}\hrule height 0.001mm}
@@ -160,7 +160,7 @@ _
     \item General solution:
     \begin{itemize}
         \item $\nabla_{\boldsymbol{\beta}} \mathcal{L} =  \boldsymbol{\beta} - \sum_{i=1}^n \alpha^{(i)} y^{(i)} \boldsymbol{x}^{(i)} = 0$
-        \item $\Rightarrow \boldsymbol{\beta}^{*} = \sum_{i=1}^n \alpha^{(i)} y^{(i)}$
+        \item $\Rightarrow \boldsymbol{\beta}^{*} = \sum_{i=1}^n \alpha^{(i)} y^{(i)} \boldsymbol{x}^{(i)}$
         \item $\nabla_b \mathcal{L} = - \sum_{i=1}^n \alpha^{(i)} y^{(i)} = 0$
         \item $\nabla_{\xi^{(i)}} \mathcal{L} = C - \alpha^{(i)} - \zeta^{(i)} = 0$
         \item Subject to:

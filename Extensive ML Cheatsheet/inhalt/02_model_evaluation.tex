@@ -1,13 +1,46 @@
 \section{Model Evaluation}
 \subsection*{Estimator Evaluation Criteria}
+\emph{Crtiteria} --- 
 \begin{itemize}
     \item Consistency: $\hat{\boldsymbol{\theta}} \rightarrow \boldsymbol{\theta}$ as $n \rightarrow \infty$
     \item Bias: $\mathbb{E}(\hat{\boldsymbol{\theta}}) - \boldsymbol{\theta}$
     \begin{itemize}
         \item Unbiased: $\mathbb{E}(\hat{\boldsymbol{\theta}}) = \boldsymbol{\theta}$
         \item Asymptotically unbiased: $\mathbb{E} [ ( \hat{\boldsymbol{\theta}} - \boldsymbol{\theta} )^2 ] = 0$ as $n \rightarrow \infty$ 
-        \item Asymptotically efficient: $\mathbb{E} [ ( \hat{\boldsymbol{\theta}} - \boldsymbol{\theta} )^2 ] = I$ as $n \rightarrow \infty$  where $I$ is Fisher information (cf. Rao-Cramer bound)
+        \item Asymptotically efficient: $\mathbb{E} [ ( \hat{\boldsymbol{\theta}} - \boldsymbol{\theta} )^2 ] = I$ as $n \rightarrow \infty$  where $I$ is Fisher information 
     \end{itemize}
+\end{itemize}
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Fisher information} --- 
+\begin{itemize}
+    \item $\boldsymbol{I} = \mathbb{E} [(\Lambda)^2] = \mathbb{E} [ ( \frac{\partial}{ \partial \boldsymbol{\theta} } log( p ( \boldsymbol{x} | \boldsymbol{\theta} ) ) )^2 ] = \mathbb{V} ( \frac{ \partial log( p(\boldsymbol{x} | \boldsymbol{\theta}) ) }{ \partial \boldsymbol{\theta}} )$ where $\Lambda$ is the score
+    \item Equality is given because $\mathbb{V}(x) = \mathbb{E}[(x-\mathbb{E}(x))^2] = \mathbb{E}[x^2]$ if $\mathbb{E}(x) = 0$, which is the case here, given that the expected score is $0$
+\end{itemize}
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Rao-Cramer bound} --- 
+\begin{itemize}
+    \item Shows that there does not exist an asymptotically unbiased parameter estimator
+    \item For each unbiased estimator, $\mathbb{E} [ ( \hat{\boldsymbol{\theta}} - \boldsymbol{\theta} )^2 ] \geq \frac{1}{I}$ where $I$ is the Fisher information
+    \item For estimators in general, $\frac{(\frac{\partial}{\partial \boldsymbol{\theta}} \textrm{bias} + 1)^2}{\boldsymbol{I}} + \textrm{bias}^2 \leq \mathbb{E}[(\hat{\boldsymbol{\theta}}-\boldsymbol{\theta})^2]$, so there is a trade-off if the bias derivative is negative and the squared bias is positive, whereby a biased estimator may produce better results than an unbiased estimator
+\end{itemize}
+Proof: 
+\begin{itemize}
+    \item Given Cauchy Schwarz inequality, we can say:
+    $\mathbb{E}[ (\Lambda - \mathbb{E}((\Lambda)) (\hat{\boldsymbol{\theta}} - \mathbb{E}(\hat{\boldsymbol{\theta}})) ]^2 \leq \mathbb{E}[(\Lambda - \mathbb{E}((\Lambda))^2] \mathbb{E}[(\hat{\boldsymbol{\theta}} - \mathbb{E}(\hat{\boldsymbol{\theta}}))^2]$ where $\Lambda$ is the score
+    \item We know that $\mathbb{E}(\Lambda) = 0$
+    \item Let's look at the LHS of the equation:
+    \begin{itemize}
+        \item Since $\mathbb{E}(\Lambda) = 0$, we can simplify to $\mathbb{E}[ \Lambda (\hat{\boldsymbol{\theta}} - \mathbb{E}(\hat{\boldsymbol{\theta}})) ] = \mathbb{E}[ \Lambda \hat{\boldsymbol{\theta}}] - \mathbb{E}[\Lambda] \mathbb{E}[\hat{\boldsymbol{\theta}}] = \mathbb{E}[ \Lambda \hat{\boldsymbol{\theta}}] - 0$
+        \item This can be developed to: $\mathbb{E}[ \Lambda \hat{\boldsymbol{\theta}}] = \int p( \boldsymbol{x} | \boldsymbol{\theta}) \frac{ \frac{\partial}{\partial \boldsymbol{\theta}} p( \boldsymbol{x} | \boldsymbol{\theta})}{ p( \boldsymbol{x} | \boldsymbol{\theta}) } \hat{\boldsymbol{\theta}} dx = \frac{\partial}{\partial \boldsymbol{\theta}} (\int p( \boldsymbol{x} | \boldsymbol{\theta}) \hat{\boldsymbol{\theta}} dx - \boldsymbol{\theta}) + 1$ where the last part ($- \boldsymbol{\theta}) + 1$) can be added, because $\frac{\partial}{\partial \boldsymbol{\theta}} -\boldsymbol{\theta} = -1$ and we compensate this with $+1$
+        \item This is equal to the derivative of the bias + 1: $\frac{\partial}{\partial \boldsymbol{\theta}} (\int p( \boldsymbol{x} | \boldsymbol{\theta}) \hat{\boldsymbol{\theta}} dx - \boldsymbol{\theta}) + 1 = \frac{\partial}{\partial \boldsymbol{\theta}} (\mathbb{E}[\hat{\boldsymbol{\theta}}] - \boldsymbol{\theta}) + 1 = \frac{\partial}{\partial \boldsymbol{\theta}} \textrm{bias} + 1$
+    \end{itemize}
+    \item Let's look at the RHS of the equation: Since $\mathbb{E}(\Lambda) = 0$, first term is $\mathbb{E}(\Lambda^2) = \boldsymbol{I}$
+    \item Then, we have: $(\frac{\partial}{\partial \boldsymbol{\theta}} \textrm{bias} + 1)^2 \leq \boldsymbol{I} \times \mathbb{E}[(\hat{\boldsymbol{\theta}}-\mathbb{E}(\hat{\boldsymbol{\theta}}))^2] = \boldsymbol{I} \times \mathbb{E}[(\hat{\boldsymbol{\theta}} - \boldsymbol{\theta} - \mathbb{E}(\hat{\boldsymbol{\theta}}) + \boldsymbol{\theta})^2] = ... = \boldsymbol{I} \times \mathbb{E}[(\hat{\boldsymbol{\theta}} - \boldsymbol{\theta})^2] - \textrm{bias}^2$
+    \item Then, we have $\frac{(\frac{\partial}{\partial \boldsymbol{\theta}} \textrm{bias} + 1)^2}{\boldsymbol{I}} + \textrm{bias}^2 \leq \mathbb{E}[(\hat{\boldsymbol{\theta}}-\boldsymbol{\theta})^2]$
 \end{itemize}
 
 {\color{black}\hrule height 0.001mm}
@@ -39,7 +72,6 @@
 {\color{black}\hrule height 0.001mm}
 
 \subsection*{Approximating Generalisation Loss via Empirical Loss}
-
 \emph{Via resampling methods} --- \\
 Cross-validation:
 \begin{itemize}
@@ -66,3 +98,55 @@ Bootstrapping:
         \item We then define: $\hat{\mathcal{R}}^{(0.632)} = 0.368 \hat{\mathcal{R}}(\mathcal{A}) + 0.632 \hat{\mathcal{R}}^{bs}$
     \end{itemize}
 \end{itemize}
+
+{\color{black}\hrule height 0.001mm}
+
+\subsection*{Common Loss Measures}
+\emph{Confusion matrix} --- 
+\begin{itemize}
+    \item Precision = Correctly predicted positive / predicted positive
+    \item Recall = Correctly predicted positive / positive in reality
+    \item Accuracy = $(TP + TN) / N$
+    \item F1 score = Harmonic mean between precision and recall = $(2PR)/(P+R)$
+\end{itemize}
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Curve scores} --- 
+\begin{itemize}
+    \item ROC AUC curve: 
+    \begin{itemize}
+        \item Plots the TPR (recall, y) against the False Positive Rate FPR (x) at various threshold levels
+        \item A perfect model has an AUC of 1, a random model has an AUC of 0.5
+        \item Useful when we care about the trade-off between sensitivity and specificity
+    \end{itemize}
+    \item Precision recall curve:
+    \begin{itemize}
+        \item Plots the precision (y) against the recall (x) at various threshold levels
+        \item A perfect model has precision and recall of 1, the curve for a random model is a horizontal line at the baseline precision, reflecting the proportion of positive samples in the dataset
+        \item Useful when we care about the trade-off between sensitivity and specificity
+    \end{itemize}
+\end{itemize}
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Structured prediction and NLP} --- 
+\begin{itemize}
+    \item Some outcomes are more similar than others, e.g. if a translation is almost right vs. a translation is completely wrong
+    \item NLP evaluation metrics:
+    \begin{itemize}
+        \item Intrinsic evaluation:
+        \begin{itemize}
+            \item Held-out log likelihood $l(\boldsymbol{w})$
+            \item Perplexity: $perplexity(\boldsymbol{w}) = 2^{-\frac{l(\boldsymbol{w})}{M}}$
+            \item Lower perplexity = higher likelihood
+            \item Cosine similarity of embeddings for words, which are humanly considered similar
+            \item Word analogy testing (e.g. king vs. queen, man vs. woman)
+        \end{itemize}
+        \item Extrinsic evaluation on downstream task
+    \end{itemize}
+\end{itemize}
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\hl{TBA}

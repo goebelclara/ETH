@@ -14,6 +14,17 @@
     \item Allows to operate in higher-dimensional feature space, without explicitly calculating this transformation, but instead implicitly computing the inner product in this feature space via a kernel function
     \item Given two inputs $\boldsymbol{x^{(i)}}, \boldsymbol{x^{(j)}}$ and a feature map $\varphi: \mathbb{R}^m \rightarrow \mathbb{R}^k$ we can define an inner product on $\mathbb{R}^k$ via the kernel function: $k(\boldsymbol{x^{(i)}}, \boldsymbol{x^{(j)}}) = \varphi(\boldsymbol{x^{(i)}}) \cdot \varphi(\boldsymbol{x^{(j)}})$
     \item If a prediction function is described solely in terms of inner products in the input space, it can be lifted into the feature space by replacing the inner product with the kernel function
+    \item Kernel trick requires that span of training instances  $span(\varphi(\boldsymbol{x^{(i)}}), ..., \varphi(\boldsymbol{x^{(N)}})) = \mathbb{R}^k$ and, thus, that $N \geq k$.\\
+    Proof:
+    \begin{align*}
+    dim(span(...)) = 
+    \left\{
+        \begin{aligned}
+             & N \quad & \text{if } N < k \\
+             & k \quad & \text{if } N \geq k
+        \end{aligned}
+    \right.
+    \end{align*}
     \item Kernel trick cannot be used in conjunction with feature selection resp. sparsity inducing regularize (e.g. $\ell_1$), as this does not satisfy the representer theorem
 \end{itemize}
 
@@ -79,6 +90,7 @@
     \item Length scale parameter $l$ controls how quickly the similarity decays with distance: If $l$ is large, points with high distance still have high covariance
     \item Variance parameter $\sigma$ controls the vertical scale of the function
     \item RBF kernel is stationary, meaning that only the relative distance between two points determines the value output by the kernel function
+    \item Challenge: Cannot ignore irrelevant dimensions (whereas e.g. a neural network can do this by setting the associated weights to $0$)
 \end{itemize}
 
 {\color{lightgray}\hrule height 0.001mm}
@@ -303,3 +315,26 @@ Value:
     \item Calculate mean and variance of predicted distribution
     \item Return predicted distribution
 \end{enumerate}
+
+\section{Kernel SVM}
+\subsection*{Description}
+\emph{Task} --- Classification
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Description} --- 
+\begin{itemize}
+    \item Supervised
+    \item Parametric
+\end{itemize}
+
+{\color{black}\hrule height 0.001mm}
+
+\subsection*{Optimization}
+\emph{Optimization} --- 
+\begin{itemize}
+    \item Cost function $argmin_\beta \frac{1}{2} \| \boldsymbol{\beta} \|^2 + C \sum_{i=1}^n \xi^{(i)}$ resp. dual Lagrangian objective function $argmax_\alpha \sum_{i=1}^n \alpha^{(i)} - \frac{1}{2}  \sum_{i=1}^n  \sum_{j=1}^n \alpha^{(i)}\alpha^{(j)} y^{(i)}y^{(j)} \varphi(\boldsymbol{x}^{(i)}) \cdot \varphi(\boldsymbol{x}^{(j)})$ of soft-margin SVM is eligible for kernel trick
+    \item Thus, $\boldsymbol{\beta}^{*} = \sum_{i=1}^n \tilde{\alpha}^{(i)} \varphi(\boldsymbol{x}^{(i)})$ where $\tilde{\alpha}$ refers to Kernel theorem
+    \item Given general Lagrangian solution, $\boldsymbol{\beta}^{*} = \sum_{i=1}^n \alpha^{(i)} y^{(i)} \varphi(\boldsymbol{x}^{(i)}) $ where $\alpha$ refers to Lagrange multiplier, we know that: $\tilde{\alpha}^{(i)} = \alpha^{(i)} y^{(i)}$
+    \item Outcome of novel instance can be predicted as: $\boldsymbol{\beta}^{*} \cdot \varphi({\boldsymbol{z}}) = \sum_{i=1}^n \alpha^{(i)} y^{(i)} \varphi(\boldsymbol{x}^{(i)}) \cdot \varphi({\boldsymbol{z}}) = \sum_{i=1}^n \alpha^{(i)} y^{(i)} k(\boldsymbol{x^{(i)}}, \boldsymbol{z})$
+\end{itemize}

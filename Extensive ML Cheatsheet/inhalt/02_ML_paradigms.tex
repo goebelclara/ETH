@@ -1,4 +1,5 @@
 \section{ML Paradigms}
+\subsection*{Paradigms I}
 \subsection*{Frequentism}
 \emph{Description} --- 
 \begin{itemize}
@@ -15,6 +16,11 @@
 \emph{MLE estimator}
 \begin{itemize}
     \item Maximizes log-likelihood: $\hat{\boldsymbol{\theta}} = argmax_{\boldsymbol{\theta}}(L) = argmax_{\boldsymbol{\theta}}(\prod_{i=1}^n p(\boldsymbol{x_i} | \boldsymbol{\theta})) = argmax_{\boldsymbol{\theta}}(\sum_{i=1}^n log(p(\boldsymbol{x_i} | \boldsymbol{\theta})))$
+    \item \emph{Score}: 
+    \begin{itemize}
+        \item The score is the derivative of the log-likelihood: $\Lambda = \frac{\partial}{\partial \boldsymbol{\theta}} log(p( \boldsymbol{x} | \boldsymbol{\theta})) = \frac{ \frac{\partial}{\partial \boldsymbol{\theta}} p( \boldsymbol{x} | \boldsymbol{\theta})}{ p( \boldsymbol{x} | \boldsymbol{\theta}) }$
+        \item The expected score is given by: $\mathbb{E}(\Lambda) = \int p( \boldsymbol{x} | \boldsymbol{\theta}) \frac{ \frac{\partial}{\partial \boldsymbol{\theta}} p( \boldsymbol{x} | \boldsymbol{\theta})}{ p( \boldsymbol{x} | \boldsymbol{\theta}) } dx = \frac{\partial}{\partial \boldsymbol{\theta}} \int p( \boldsymbol{x} | \boldsymbol{\theta}) dx = \frac{\partial}{\partial \boldsymbol{\theta}} \times 1 = 0$
+    \end{itemize}
     \item Advantages
     \begin{itemize}
         \item Consistent: $\hat{\boldsymbol{\theta}} \rightarrow \boldsymbol{\theta}$ as $n \rightarrow \infty$
@@ -71,7 +77,7 @@
     \item $\boldsymbol{\theta}$ as random, unknown quantity, $\boldsymbol{X}$ as random, and known quantity
     \item Makes estimate in form of distribution
     \item Leverages prior and likelihood to infer posterior: $p(\boldsymbol{\theta}|\boldsymbol{X}, \boldsymbol{y}) = \frac{p(\boldsymbol{\theta})p(\boldsymbol{y}|\boldsymbol{X}, \boldsymbol{\theta})}{p(\boldsymbol{y}|\boldsymbol{X})} = \frac{p(\boldsymbol{\theta})p(\boldsymbol{y}|\boldsymbol{X}, \boldsymbol{\theta})}{\int p(\boldsymbol{\theta}) p(\boldsymbol{y}|\boldsymbol{X}, \boldsymbol{\theta}) d\boldsymbol{\theta}} \propto p(\boldsymbol{\theta})p(\boldsymbol{y}|\boldsymbol{X}, \boldsymbol{\theta}) = p(\boldsymbol{\theta}, \boldsymbol{y} |\boldsymbol{X})$ 
-    \item Focuses on minimizing cost function $\mathbb{E}[k(\boldsymbol{\theta}',\boldsymbol{\Theta}) | \boldsymbol{X}, \boldsymbol{y}] = \int_{\boldsymbol{\theta}} p(\boldsymbol{\theta} | \boldsymbol{X}, \boldsymbol{y}) \times k(\boldsymbol{\theta}',\boldsymbol{\theta}) d\boldsymbol{\theta} \propto \int_{\boldsymbol{\theta}} p(\boldsymbol{\theta}, \boldsymbol{y} | \boldsymbol{X}) \times k(\boldsymbol{\theta}',\boldsymbol{\theta}) d\boldsymbol{\theta}$
+    \item Focuses on minimizing cost function $\mathbb{E}[k(\boldsymbol{\theta}',\boldsymbol{\Theta}) | \boldsymbol{X}, \boldsymbol{y}] = \int_{\boldsymbol{\theta}} p(\boldsymbol{\theta} | \boldsymbol{X}, \boldsymbol{y}) \times k(\boldsymbol{\theta}',\boldsymbol{\theta}) d\boldsymbol{\theta} \propto \int_{\boldsymbol{\theta}} p(\boldsymbol{\theta}, \boldsymbol{y} | \boldsymbol{X}) \times k(\boldsymbol{\theta}',\boldsymbol{\theta}) d\boldsymbol{\theta}$ resp. $\sum p(\boldsymbol{\theta} | \boldsymbol{X}, \boldsymbol{y}) \times k(\boldsymbol{\theta}',\boldsymbol{\theta})$
     \item Requires integration methods for normalizing constant in denominator, which can be intractable, in which case MAP estimator can provide an alternative
     \item Low variance, but high bias 
 \end{itemize}
@@ -90,7 +96,7 @@
 \emph{MAP estimator}
 \begin{itemize}
     \item Generally, maximizes posterior: $\hat{\boldsymbol{\theta}} = argmax_{\boldsymbol{\theta}}( p(\boldsymbol{\theta}|\boldsymbol{X}) )$ resp. $p(\boldsymbol{\theta}|\boldsymbol{X}) p(\boldsymbol{X})$ 
-    \item In discrete cases, minimizes following cost function: 
+    \item In discrete cases, MAP minimizes following cost function: 
     \begin{align*}
         k(\hat{\boldsymbol{\theta}},\boldsymbol{\theta}  = 
         \left\{
@@ -121,4 +127,42 @@
         \item We use a loss function to approximate the expected value
     \end{itemize}
     \item With these choices, we approximate the expected risk via the empirical risk $\hat{\mathcal{R}}(f) = \hat{L}(Z,f) = \frac{1}{n} \sum_i L(y_i, f(x_i))$
+\end{itemize}
+
+{\color{black}\hrule height 0.001mm}
+_
+{\color{black}\hrule height 0.001mm}
+
+\subsection*{Paradigms II}
+\subsection*{Probabilistic}
+Probabilistic inference by learning about posterior
+\emph{Generative} --- 
+\begin{itemize}
+    \item Learn about posterior indirectly via prior and likelihood
+    \item Requires to learn more parameters vs. discriminative approach
+    \item E.g. N-gram models, Markov random fields, RNNs
+\end{itemize}
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Discriminative} --- 
+\begin{itemize}
+    \item Learn about posterior directly
+    \item Requires to learn fewer parameters vs. generative approach
+    \item E.g. conditional random fields, RNNs
+\end{itemize}
+
+{\color{black}\hrule height 0.001mm}
+
+\subsection*{Distribution-free}
+\emph{Learned} --- 
+\begin{itemize}
+    \item E.g. perceptron, SVM
+\end{itemize}
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Manually crafted} --- 
+\begin{itemize}
+    \item E.g. conetxt free grammars, linear indexed grammars
 \end{itemize}

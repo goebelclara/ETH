@@ -1,0 +1,191 @@
+\section{N Gram Models}
+\subsection*{Description}
+\emph{Task} --- Predict the next word in a sequence, based on a locally normalized language model
+
+{\color{black}\hrule height 0.001mm}
+
+\subsection*{Formulation}
+\begin{itemize}
+    \item Naively, probability of a sentence: $
+    p(\boldsymbol{w}) = p(w_1) \times p(w_2 \mid w_1) \times p(w_3 \mid w_1, w_2) \times \cdots \times p(w_N \mid \boldsymbol{w}_{<N}) \times p(\textrm{EOS} \mid \boldsymbol{w})
+    $
+    \item Challenge: Probabilities for long sequences are likely to be $0$, given the low chance of exactly such a sequence appearing in the sentence
+    \item \emph{Markov assumption}: Not all words prior to the target word matter in predicting it; only the last $N-1$ words (history) are considered
+    \item \emph{N-gram}:
+    \begin{itemize}
+        \item Sequence of $n$ words as they appear in the sentence
+        \item Denoted by $w^i_j$, where $i$ and $j$ refer to words in the sentence
+        \item If the sentence has $M$ words, there are:
+        \begin{itemize}
+            \item $M$ unigrams
+            \item $M-1$ bigrams
+            \item $M-2$ trigrams
+        \end{itemize}
+        \item N-gram probability:
+        $
+        p(w_t \mid w_{t-n+1}, \ldots, w_{t-1})
+        $
+    \end{itemize}
+    \item Under Markov assumption and N-gram, probability of a sentence: 
+    $
+    p(\boldsymbol{w}) = \left(\prod_{t=n}^N p(w_t \mid w_{t-n+1}, \ldots, w_{t-1})\right) \times p(\textrm{EOS} \mid w_{N-n+1}, \ldots, w_N) 
+    $ with appropriate BOS padding for the first $n-1$ conditional probabilities: $w_0 = w_{-1} = w_{-n+2} = \textrm{BOS}$
+    \item Under this model, we have 
+    \begin{itemize}
+        \item $
+        |\mathcal{V}|^{n-1} + |\mathcal{V}|^{n-2} + \cdots + |\mathcal{V}| + 1 = \sum_{i=0}^{n-1} |\mathcal{V}|^i
+        $
+        conditional probabilities, where 
+        \begin{itemize}
+            \item $|\mathcal{V}|^{n-1}$ applies if the context is fully occupied
+            \item $1$ applies if the context onl< contains BOS, i.e. $w_t$ is the first token
+        \end{itemize}
+        \item $|\bar{\mathcal{V}}|-1$ free parameters for each conditional probability, i.e., $|\bar{\mathcal{V}}|^{n-1} \sum_{i=0}^{n-1} |\mathcal{V}|^i$ in total, where $\bar{\mathcal{V}} = \mathcal{V} \cup \{\textrm{EOS}\}$
+    \end{itemize}
+\end{itemize}
+
+{\color{black}\hrule height 0.001mm}
+
+\subsection*{Optimization}
+Via relative frequency counts or neural nets
+\emph{Relative frequency counts} ---
+\begin{itemize}
+    \item $
+    p(w_t \mid w_{t-n+1}, \ldots, w_{t-1}) = \frac{\text{count}(w_{t-n+1}, \ldots, w_{t-1}, w_t)}{\text{count}(w_{t-n+1}, \ldots, w_{t-1})}
+    $\\
+    Note:  In denominator, only count instances where the correct sequence is found in the sentence
+    \item Corresponds to MLE estimate, if we assume each token is sampled independently from a categorical distribution over the vocabulary
+    \item Dealing with unseen words or word combinations resulting in probability $0$:
+    \begin{itemize}
+        \item How likely is this?
+        \begin{itemize}
+            \item Given a sentence with $M+1$ words and vocabulary $\mathcal{V}$
+            \item In the sentence, there are $M$ bigrams, but from the vocabulary, we can construct $|\mathcal{V}|^2$ bigrams
+            \item Probability of a given bigram at index $m$ in the sentence:
+            $
+            \frac{1}{|\mathcal{V}|^2}
+            $
+            \item Thus, the probability that a given bigram does not appear at index $m$ is:
+            $
+            \left(1 - \frac{1}{|\mathcal{V}|^2}\right)
+            $
+            \item Thus, the probability that a given bigram does not appear in any of the $M$ spots is:
+            $
+            \left(1 - \frac{1}{|\mathcal{V}|^2}\right)^M
+            $
+            \item If we seek to bound the likelihood of OOV bigrams with an upper limit $\epsilon$, we have:
+            $
+            \epsilon \geq \left(1 - \frac{1}{|\mathcal{V}|^2}\right)^M
+            $\\
+            $
+            \ln(\epsilon) \geq M \ln\left(1 - \frac{1}{|\mathcal{V}|^2}\right)
+            $\\
+            $
+            \ln(\epsilon) \approx -M \frac{1}{|\mathcal{V}|^2}
+            $ because $\ln(1 + \lambda) \approx \lambda$ for $\lambda \approx 0$ for $\lambda \approx 0$\\
+            $
+            M \geq -\ln(\epsilon) |\mathcal{V}|^2 \approx |\mathcal{V}|^2 \ln\left(\frac{1}{\epsilon}\right)
+            $
+        \end{itemize}
+        \item Remedies:
+        \begin{itemize}
+            \item Consider creating an OOV category
+            \item Consider additive smoothing:
+            \begin{itemize}
+                \item Smooth the PMF of the vocabulary by moving weight from seen vocabulary to unseen vocabulary by adding pseudo counts to each word:
+                $
+                p(w_t \mid w_{t-n+1}, \ldots, w_{t-1}) = \frac{\text{count}(w_{t-n+1}, \ldots, w_{t-1}, w_t) + \lambda}{\text{count}(w_{t-n+1}, \ldots, w_{t-1}) + |\mathcal{V}| \lambda}
+                $
+                \item If $\lambda = 1$, we call this \emph{Laplace smoothing}
+                \item Corresponds to a MAP estimate if we assume a symmetric Dirichlet distribution with parameter $\lambda$ as our prior distribution over the weights
+            \end{itemize}
+            \item Consider back-off approach:
+            \begin{itemize}
+                \item Revert to lower-order n-grams that do not contain OOVs
+                \item 
+                $
+                \hat{p}(w_t \mid w_{t-n+1}, \ldots, w_{t-1}) =
+                \begin{cases} 
+                p^*(w_t \mid w_{t-n+1}, \ldots, w_{t-1}) & \text{if } \text{count}(w_{t-n+1}, \ldots, w_{t-1}) > 0\\
+                \alpha_{n-1} \ p(w_t \mid w_{t-(n-1)+1}, \ldots, w_{t-1}) & \text{otherwise}
+                \end{cases}
+                $
+            \end{itemize}
+            \item Consider interpolation: Combine estimates from different n-gram orders:
+            $
+            p(w_t \mid w_{t-n+1}, \ldots, w_{t-1}) = \alpha_1 p(w_t) + \alpha_2 p(w_t \mid w_{t-1}) + \ldots + \alpha_n p(w_t \mid w_{t-n+1}, \ldots, w_{t-1})
+            $
+        \end{itemize}
+    \end{itemize}
+\end{itemize}
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Neural nets} ---
+\begin{itemize}
+    \item Advantage over frequency-count-based n-grams: Parameters are shared between contexts $w_{t-n+1}, \ldots, w_{t-1}$
+    \item 
+    $
+    p(w_t \mid w_{t-n+1}, \ldots, w_{t-1}) = \frac{\exp(\mathbf{v}(w_t) \cdot \mathbf{h}_t)}{\sum_{w' \in \bar{\mathcal{V}}} \exp(\mathbf{v}(w') \cdot \mathbf{h}_t)}
+    $
+    where:
+    \begin{itemize}
+        \item $\mathbf{v}(w)$ are word vectors
+        \item $\mathbf{h}_t$ are n-gram context vectors of the previous $n-1$ words
+    \end{itemize}
+    \item E.g.
+    \begin{itemize}
+        \item \hl{INSERT IMAGE 1}
+        \item Outputs: Probability $p(w_i \mid \boldsymbol{w}_{<3})$ for each word $w_i$ in vocab
+        \item Activation: Softmax ensures all $P$ add to 1:
+        $
+        p(w_4 \mid \boldsymbol{w}_{<3}) = \frac{\exp \left( \boldsymbol{v}(w_4) \cdot \boldsymbol{h}_4 \right)}{\sum_{w' \in \bar{\mathcal{V}}} \exp \left( \boldsymbol{v}(w') \cdot \boldsymbol{h}_4 \right)}
+        $
+        \item Hidden layer:
+        $
+        \boldsymbol{h}_1 = f(\boldsymbol{c}(\boldsymbol{w}_{<3}))
+        $
+        \item Concatenated vector of word embeddings:
+        $
+        \boldsymbol{c}(\boldsymbol{w}_{<3}) = [\boldsymbol{c}(w_1) \ \boldsymbol{c}(w_2) \ \boldsymbol{c}(w_3)]
+        $
+        \item Transformation: word embedding $\boldsymbol{c}(w)$
+        \item Inputs: $n-1$ words
+    \end{itemize}
+    \item $\boldsymbol{v}(w_i), \boldsymbol{h_i}, f$, and its parameters $\theta$ are learned by maximizing log-likelihood of training dataset:
+    $
+    \log p(w^{(i)}) = \sum_{w^{(i)} \in D} \log \left( \prod_{t=1}^{|w^{(i)}|} p(w_t^{(i)} \mid w_{t-1}^{(i)}, \dots, w_{t-n+1}^{(i)}) \right)
+    $\\
+    $ = \sum_{w^{(i)} \in D} \sum_{t=1}^{|w^{(i)}|} \log \left( p(w_t^{(i)} \mid w_{t-1}^{(i)}, \dots, w_{t-n+1}^{(i)}) \right)$\\
+    $ = \sum_{w^{(i)} \in D} \sum_{t=1}^{|w^{(i)}|} \boldsymbol{v}(w_t) \cdot \boldsymbol{h_t} - \log(\sum_{w' \in \bar{\mathcal{V}}} \exp ( \boldsymbol{v}(w') \cdot \boldsymbol{h_t}))$
+\end{itemize}
+
+{\color{black}\hrule height 0.001mm}
+
+\subsection*{Evaluation}
+Intrinsic evaluation: \emph{Perplexity}:
+\begin{itemize}
+    \item Given test sequence $(w_1, \dots, w_N)$:
+    $
+    \text{perplexity}(w_1, \dots, w_N) = p(w_1, \dots, w_N)^{-\frac{1}{N}} 
+    $
+    where $N$ is the number of words in the sentence and $n$ is the n-gram order
+    \item Perplexity is the normalized inverse probability of test set:
+    \begin{itemize}
+        \item $
+        p(w_1, \dots, w_N) = \prod_{i=1}^N p(w_i \mid w_{i-n+1}, \dots, w_{i-1})
+        $
+        \item Normalize by transforming to log and dividing by $N$:
+        $
+        \frac{\sum_{i=1}^N \log \left( p(w_i \mid \dots) \right)}{N}
+        $
+        \item Remove log:
+        $
+        \left( \prod_{i=1}^N p(w_i \mid \dots) \right)^{\frac{1}{N}}
+        $
+        \item Take inverse:
+        $
+        \frac{1}{\left( \prod_{i=1}^N p(w_i \mid \dots) \right)^{\frac{1}{N}}} = \left( \prod_{i=1}^N p(w_i \mid \dots) \right)^{-\frac{1}{N}} = \sqrt[N]{ \prod_{i=1}^N \frac{1}{p(w_i \mid w_{i-n+1}, \dots, w_{i-1})}}
+        $
+    \end{itemize}
+\end{itemize}

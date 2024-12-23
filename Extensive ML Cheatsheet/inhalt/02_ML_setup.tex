@@ -1,0 +1,56 @@
+\section{ML Set-Up}
+\subsection*{Formalization}
+\emph{Data} --- 
+\begin{itemize}
+    \item Features $\mathcal{X} \in \mathbb{R}^m$
+    \item Response $\mathcal{Y}$
+    \item Training data $\mathcal{D}$ vs. test data 
+\end{itemize}
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Representation} --- 
+\begin{itemize}
+    \item Model resp. function $f$: 
+    \begin{itemize}
+        \item Models relationship between features and response based on noisy training data
+        \item $f_\theta : \mathbb{R}^m \rightarrow \mathcal{Y}$
+        \item $\theta$ are parameters characterizing $f$ which are optimized during training
+        \item $f$ is constrained by hyperparameters which are tuned during validation
+    \end{itemize}
+    \item Model resp. function class $\mathcal{F}$: Determines model resp. function structure
+\end{itemize}
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Loss resp. objective function} --- 
+\begin{itemize}
+    \item $\mathcal{L}(\theta) = \frac{1}{n} \sum_{i=1}^n \ell(y_i,\hat{y}_i)$
+    \item Distinguishes good from bad model resp. function
+    \item Training vs. test error: Test error empirically estimates the true error
+\end{itemize}
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Optimization} --- 
+\begin{itemize}
+    \item During training, algorithm selects function with parameters $\theta^*$ that yields optimal results, based on loss resp. objective function
+    \item Search for optimal parameters is governed by hyperparameters
+    \item Models can be selected for:
+    \begin{itemize}
+        \item Prediction performance: Model with best performance based on loss resp. objective function
+        \item Inference: Model which best explains the underlying process generating the data
+    \end{itemize}
+\end{itemize}
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Evaluation metric} --- 
+\begin{itemize}
+    \item Can coincide with loss resp. objective function, but not always the case
+\end{itemize}
+
+{\color{black}\hrule height 0.001mm}
+
+\subsection*{Steps}
+\hl{TBA}

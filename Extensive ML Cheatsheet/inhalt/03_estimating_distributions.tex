@@ -2,19 +2,20 @@
 \subsection*{Gaussian}
 \emph{Frequentism (MLE)} --- 
 \begin{itemize}
-    \item Likelihood (excl. constants): $L = (\frac{1}{\boldsymbol{\sigma}})^n \prod_{i=2}^n exp( -\frac{1}{2\boldsymbol{\sigma}^2} (\boldsymbol{x}^{(i)} - \boldsymbol{\mu} )^2)$
+    \item Likelihood (excl. constants): $L = (\frac{1}{\boldsymbol{\sigma}})^n \prod_{i=1}^n exp( -\frac{1}{2\boldsymbol{\sigma}^2} (\boldsymbol{x}^{(i)} - \boldsymbol{\mu} )^2)$
     \item Log-likelihood: $LL = -n log(\boldsymbol{\sigma}) - \sum_{i=1}^n (\frac{1}{2\boldsymbol{\sigma}^2} (\boldsymbol{x}^{(i)} - \boldsymbol{\mu} )^2)$
     \item $\boldsymbol{\mu}_{MLE}$ is sample mean: $ \frac{1}{n}\sum_{i=1}^n \boldsymbol{x}^{(i)}$:
     \begin{itemize}
-        \item Derivative of log-likelihood wrt $\boldsymbol{\mu}$: $\nabla_{\boldsymbol{\mu}} LL = \nabla_{\boldsymbol{\mu}} - \sum_{i=1}^n (\frac{{\boldsymbol{x}^{(i)}}^2 - 2 \boldsymbol{x}^{(i)} \boldsymbol{\mu} + \boldsymbol{\mu}^2}{2\boldsymbol{\sigma}^2} = \nabla_{\boldsymbol{\mu}} - \sum_{i=1}^n (-\frac{ \boldsymbol{x}^{(i)} \boldsymbol{\mu}}{\boldsymbol{\sigma}^2} + \frac{ \boldsymbol{\mu}^2}{2\boldsymbol{\sigma}^2} ) = - \sum_{i=1}^n (-\frac{ \boldsymbol{x}^{(i)}}{\boldsymbol{\sigma}^2} + \frac{ 2\boldsymbol{\mu}}{2\boldsymbol{\sigma}^2} ) =  \sum_{i=1}^n (\frac{ \boldsymbol{x}^{(i)} - \boldsymbol{\mu}}{\boldsymbol{\sigma}^2}) = \sum_{i=1}^n \boldsymbol{x}^{(i)} - n\boldsymbol{\mu} = 0 $
+        \item Derivative of log-likelihood wrt $\boldsymbol{\mu}$: $\nabla_{\boldsymbol{\mu}} LL = \nabla_{\boldsymbol{\mu}} (- \sum_{i=1}^n (\frac{{\boldsymbol{x}^{(i)}}^2 - 2 \boldsymbol{x}^{(i)} \boldsymbol{\mu} + \boldsymbol{\mu}^2}{2\boldsymbol{\sigma}^2})) = \nabla_{\boldsymbol{\mu}} (- \sum_{i=1}^n (-\frac{ \boldsymbol{x}^{(i)} \boldsymbol{\mu}}{\boldsymbol{\sigma}^2} + \frac{ \boldsymbol{\mu}^2}{2\boldsymbol{\sigma}^2} )) = - \sum_{i=1}^n (-\frac{ \boldsymbol{x}^{(i)}}{\boldsymbol{\sigma}^2} + \frac{ 2\boldsymbol{\mu}}{2\boldsymbol{\sigma}^2} ) =  \sum_{i=1}^n (\frac{ \boldsymbol{x}^{(i)} - \boldsymbol{\mu}}{\boldsymbol{\sigma}^2}) = \sum_{i=1}^n \boldsymbol{x}^{(i)} - n\boldsymbol{\mu} = 0 $
     \end{itemize}
     \item $\boldsymbol{\sigma^2}_{MLE}$ is sample variance: $ \frac{1}{n}\sum_{i=1}^n (\boldsymbol{x}^{(i)} - \boldsymbol{\mu})^2$:
     \begin{itemize}
         \item Derivative of log-likelihood wrt $\boldsymbol{\sigma}$: $\nabla_{\boldsymbol{\sigma}} LL = 
         -n \nabla_{\boldsymbol{\sigma}} log(\boldsymbol{\sigma}) -
-        \nabla_{\boldsymbol{\sigma}} (\sum_{i=1}^n (\frac{(\boldsymbol{x}^{(i)} - \boldsymbol{\mu} )^2}{2\boldsymbol{\sigma}^2}) =
+        \nabla_{\boldsymbol{\sigma}} (\sum_{i=1}^n (\frac{(\boldsymbol{x}^{(i)} - \boldsymbol{\mu} )^2}{2\boldsymbol{\sigma}^2})) =
         \frac{-n}{\boldsymbol{\sigma}} - \nabla_{\boldsymbol{\sigma}} (\sum_{i=1}^n \frac{1}{2} \boldsymbol{\sigma}^{-2} (\boldsymbol{x}^{(i)} - \boldsymbol{\mu} )^2) = \frac{-n}{\boldsymbol{\sigma}} - (\sum_{i=1}^n -1 \boldsymbol{\sigma}^{-3} (\boldsymbol{x}^{(i)} - \boldsymbol{\mu} )^2) = -n + \sum_{i=1}^n (\frac{ (\boldsymbol{x}^{(i)} - \boldsymbol{\mu} )^2 }{ \boldsymbol{\sigma}^{2} })
         = 0 $
+        \item $\boldsymbol{\sigma^2}_{MLE}$ is problematic when $n \leq m$, since covariance matrix $\boldsymbol{\Sigma}$ is then only psd (not pd) and in the diagonalization $\boldsymbol{\Sigma} = \boldsymbol{Q} \boldsymbol{\Lambda} \boldsymbol{Q}^\intercal$ at least one diagonal element of $\boldsymbol{\Lambda}$ is zero. Solution: Regularization: $\boldsymbol{\sigma^2}_{Adj} = \boldsymbol{\sigma^2}_{MLE} + \frac{\rho}{n}$
     \end{itemize}
 \end{itemize}
 
@@ -42,4 +43,11 @@
         \item $\boldsymbol{\Sigma}_n$ approximates prior for small n and MLE for large n
         \item If prior variance is small (i.e. if we are certain of our prior), posterior variance is also small
     \end{itemize}
+\end{itemize}
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Bayesianism: Absolute Error} --- 
+\begin{itemize}
+    \item Conditional median of $y$ given $X = x$ is the Bayesian estimation of $y$ from $X = x$, when we take the absolute error $|\hat{y}-y|$ as the cost function: $\mathbb{E}[|\hat{y}-y| | X = x]$
 \end{itemize}

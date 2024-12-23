@@ -63,6 +63,14 @@
 
 {\color{lightgray}\hrule height 0.001mm}
 
+\emph{Scalar-by-matrix derivative} --- \hl{TBA} 
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Total derivative} --- \hl{TBA} 
+
+{\color{lightgray}\hrule height 0.001mm}
+
 \emph{Matrix calculus rules} --- 
 \begin{multicols}{2}
 \begin{itemize}
@@ -72,7 +80,7 @@
     \item For symmetric $\boldsymbol{A}$: $\frac{\partial \boldsymbol{x}^\intercal\boldsymbol{A}\boldsymbol{x}}{\partial \boldsymbol{x}} = 2\boldsymbol{A}\boldsymbol{x}$
     \item For square $\boldsymbol{A}$: 
     \begin{itemize}
-        \item $\frac{\partial \boldsymbol{a}^\intercal\boldsymbol{A}^{-1}\boldsymbol{b}}{\partial \boldsymbol{A}} = (\boldsymbol{A}^\intercal)^{-1} \boldsymbol{a}\boldsymbol{c}^\intercal (\boldsymbol{A}^\intercal)^{-1}$
+        \item $\frac{\partial \boldsymbol{a}^\intercal\boldsymbol{A}^{-1}\boldsymbol{b}}{\partial \boldsymbol{A}} = -(\boldsymbol{A}^\intercal)^{-1} \boldsymbol{a}\boldsymbol{c}^\intercal (\boldsymbol{A}^\intercal)^{-1}$
         \item $\frac{\partial log(|\boldsymbol{A}|)}{\partial \boldsymbol{A}} = (\boldsymbol{A}^\intercal)^{-1}$
     \end{itemize}
 \end{itemize}
@@ -213,4 +221,58 @@ Solving inequality constraints via duality – \emph{strong duality}:
     \item $\textrm{min}_{\boldsymbol{x}} \mathcal{L}$ can be solved for general solution $\boldsymbol{x^*}$ in terms of $\boldsymbol{\lambda},\boldsymbol{\mu}$
     \item Plug $\boldsymbol{x^*}$ back into $\mathcal{L}$ and maximize to find solutions $\boldsymbol{\lambda^*},\boldsymbol{\mu^*}$
     \item Specify $\boldsymbol{x^*}$ based on $\boldsymbol{\lambda^*},\boldsymbol{\mu^*}$
+\end{itemize}
+
+{\color{black}\hrule height 0.001mm}
+
+\subsection*{Integrals}
+\emph{Indefinite integral} --- 
+\begin{itemize}
+    \item $F(x) = \int f(x) dx$
+    \item $F'(x) = f(x)$
+\end{itemize}
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Definite integral} --- 
+\begin{itemize}
+    \item $F(b) - F(a) = \int_a^b f(x) dx$
+    \item $F'(x) = f(x)$
+\end{itemize}
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Common integrals} --- 
+\begin{itemize}
+    \item $f(x) = x^n \rightarrow F(x) = \frac{x^{n+1}}{n+1}$ for $n \neq 1$
+    \item $f(x) = \frac{1}{x} \rightarrow F(x) = log(x)$
+    \item $f(x) = e^x \rightarrow F(x) = e^x$
+\end{itemize}
+
+\subsection*{Other}
+\emph{Common exp and log rules} ---
+\begin{multicols}{2}
+\begin{itemize}
+    \item $a^m \cdot a^n = a^{m+n}$
+    \item $\frac{a^m}{a^n} = a^{m-n}$
+    \item $(ab)^n = a^n b^n$
+    \item $\left(\frac{a}{b}\right)^n = \frac{a^n}{b^n}$
+    \item $a^{-n} = \frac{1}{a^n}$
+    \item $a^0 = 1$
+    \item $a^1 = a$
+    \item $\log(xy) = \log x + \log y$
+    \item $\log\left(\frac{x}{y}\right) = \log x - \log y$
+    \item $\log(x^n) = n \log x$
+    \item $\log 1 = 0$
+    \item $\log (x<1) < 0$
+    \item $\log (x>1) > 0$
+    \item $e^{log(x)} = log(e^x) = x$
+\end{itemize}
+\end{multicols}
+
+{\color{lightgray}\hrule height 0.001mm}
+\emph{Geometric series} --- 
+\begin{itemize}
+    \item Finite: $S_n = \sum_{i=1}^n a_i r^{i-1} = a_1 (\frac{1-r^n}{1-r})$
+    \item Infinite: $S = \sum_{i=0}^\infty a_i r^i = \frac{a_1}{1-r}$ for $r < 1$
 \end{itemize}

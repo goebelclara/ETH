@@ -1,0 +1,81 @@
+\section{Natural Language Processing (NLP) Basics}
+\subsection*{Description}
+\emph{Task} --- 
+\begin{itemize}
+    \item Predict context word given center word
+    \item Generate word embeddings
+\end{itemize}
+
+{\color{black}\hrule height 0.001mm}
+
+\subsection*{Formulation}
+
+\begin{itemize}
+    \item Let us consider vocabulary $\mathcal{V}$, for which we wish to create embeddings $e(w)$ by considering the $T$ preceding and following words of a center word
+    \item Start by processing each document into a set $\mathcal{D}$ of $\mathcal{O}(T \cdot |\mathcal{V}|)$ pairs of center words $w$ and context words $w'$:
+    $
+    \{(w_i, w_t)\}
+    $
+    where $w_i$ is center word, $w_t$ is context word, $c \in \{-T, -T+1, \dots, -1, 1, \dots, T-1, T\}$
+\end{itemize}
+
+{\color{black}\hrule height 0.001mm}
+
+\subsection*{Optimization}
+\emph{Parameters} --- Find parameters xxx
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Objective function} --- 
+\begin{itemize}
+    \item Given by bi-linear softmax function
+    \item Bilinear model is linear, if other variables are held constant, in this case $e_\textrm{wrd}$ or $e_\textrm{ctx}$
+    \item Likelihood:
+    $
+    \prod_{(w_i, w_t) \in \mathcal{D}} p(w_t \mid w_i)
+    $ where\\
+    $
+    p(w_t \mid w_i) = \frac{\exp\left(e_\textrm{wrd}(w_i) \cdot e_\textrm{ctx}(w_t)\right)}{Z(w_i)}
+    $ where
+    \begin{itemize}
+        \item $
+        Z(w_i) = \sum_{w' \in \mathcal{V}} \exp\left(e_\textrm{wrd}(w_i) \cdot e_\textrm{ctx}(w')\right)
+        $
+        \item $
+        e_\textrm{wrd}(w_i) \cdot e_\textrm{ctx}(w_t) = (\boldsymbol{w} \cdot \boldsymbol{e}_{oh}(w_i)) \cdot (\boldsymbol{w} \cdot \boldsymbol{e}_{oh}(w_t))
+        $ where $\boldsymbol{e}_{oh}(w)$ is the one hot encoding
+    \end{itemize}
+    \item Log-likelihood: $\sum_{(w_i, w_t) \in \mathcal{D}} \log\left(p(w_t \mid w_i)\right) = e_\textrm{wrd}(w_i) \cdot e_\textrm{ctx}(w_t) - \log(Z(w_i)) = $
+    \item Challenge: $Z(w_i)$ can take a long time to compute for large $|\mathcal{V}|$, since there are $2|\mathcal{V}|$ parameters
+    \item Solution: Use \emph{negative sampling}:
+    \begin{itemize}
+        \item For each pair $(w_i, w_t)$, we randomly sample with replacement a set $\mathcal{C}^-$ from $\mathcal{V}$
+        \item We compute sigmoid, instead of softmax
+        \item Then we have:
+        $
+        \sum_{(w_i, w_t, \mathcal{C}^-)} \left( \log(p(w_t \mid w_i)) + \sum_{w^- \in \mathcal{C}^-} \log(1 - p(w^- \mid w_i)) \right)
+        $
+        \item $
+        = \sum_{(w_i, w_t, \mathcal{C}^-)} \frac{1}{1 + \exp\left(-e_\textrm{wrd}(w_i) \cdot e_\textrm{ctx}(w_t)\right)} + \sum_{w^- \in \mathcal{C}^-} \log(1 - p(w^- \mid w_i))
+        $
+        \item Here:
+        \begin{itemize}
+            \item $\log(p(w_t \mid w_i))$ is computed with sigmoid, instead of softmax
+            \item $\sum_{w^- \in \mathcal{C}^-} \log(1 - p(w^- \mid w_i))$ replaces $- \log(Z(w_i))$
+        \end{itemize}
+    \end{itemize}
+\end{itemize}
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Optimization} ---
+\begin{itemize}
+    \item $argmax_{w,w'} \textrm{ log-likelihood}$
+    \item Gradient descent
+    \item We usually use center word embeddings $w$ and throw away context word embeddings $w'$
+    \item Evaluation via:
+    \begin{itemize}
+        \item Cosine similarity between words
+        \item Word analogies (e.g., man $\to$ woman has same distance and direction as king $\to$ queen)
+    \end{itemize}
+\end{itemize}

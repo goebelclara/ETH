@@ -1,0 +1,86 @@
+\section{K-Means Clustering}
+\subsection*{Description}
+\emph{Task} --- Clustering
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Description} --- 
+\begin{itemize}
+    \item Unsupervised
+    \item Non-parametric
+\end{itemize}
+
+{\color{black}\hrule height 0.001mm}
+
+\subsection*{Formulation}
+
+\begin{itemize}
+    \item We specify that we want $k$ clusters in total
+    \item Clusters $j= 1, ..., k$ defined by centroid $\boldsymbol{\mu}^{[j]}  \in \mathbb{R}^m$
+    \item Instances $i = 1, ..., n$ given by $\boldsymbol{x}^{(i)}$
+    \item Each instance $i$ has $k$ indicator variables, which describe whether instance $i$ is assigned to cluster $j$, given by $\{p^{i[j]}\}_{j=1}^k \in [0,1]$
+\end{itemize}
+
+{\color{black}\hrule height 0.001mm}
+
+\subsection*{Optimization}
+\emph{Parameters} --- Find centroids $\boldsymbol{\mu}^{[j]}$, i.e. find cluster assignments (instance always assigned to closest cluster) 
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Objective function} --- 
+\begin{itemize}
+    \item Minimize distance between each instance and the centroid of its closest cluster: $j^* = argmin_l \| \boldsymbol{x}^{(i)} - \boldsymbol{\mu}^{[l]} \|^2$ with
+    \begin{align*}
+    p^{i[j]} = 
+    \left\{
+        \begin{aligned}
+             & 1 \quad & \text{if } j = j^* \\
+             & 0 \quad & \text{otherwise}   
+        \end{aligned}
+    \right.
+    \end{align*}
+    \item Distortion function given by: $\Theta = \sum_{i=1}^n \sum_{j=1}^k p^{i[j]} \| \boldsymbol{x}^{(i)} - \boldsymbol{\mu}^{[j]} \|^2$
+\end{itemize}
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Optimization} ---
+Lloyd's algorithm: 
+\begin{enumerate}
+    \item Randomly initialize each $\boldsymbol{\mu}^{[j]}$
+    \item E-Step:
+    \begin{itemize}
+        \item Re-assign instances while keeping all centroids fixed, i.e. minimize $\Theta$ with respect to $p^{i[j]}$
+    \end{itemize}
+    \item M-Step:
+    \begin{itemize}
+        \item Re-compute centroids while keeping all instance assignments fixed, i.e. minimize $\Theta$ with respect to $\boldsymbol{\mu}^{[j]}$
+        \item $\nabla_{\boldsymbol{\mu}^{[j]}} \Theta = 2 \sum_{i=1}^n p^{i[j]} ( \boldsymbol{\mu}^{[j]}  - \boldsymbol{x}^{(i)} ) = 0$
+        \item Then, $\boldsymbol{\mu}^{[j]} = \frac{ \sum_{i=1}^n p^{i[j]} \boldsymbol{x}^{(i)} }{ \sum_{i=1}^n p^{i[j]} }$
+        \item $\Theta$ is strictly convex, thus, we find a global minimum and a unique solution here
+    \end{itemize}
+    \item Repeat E- and M-Step until convergence
+\end{enumerate}
+Proof of convergence:
+\begin{itemize}
+    \item $\Theta_t = \sum_{i=1}^n \sum_{j=1}^k p_t^{i[j]} \| \boldsymbol{x}^{(i)} - \boldsymbol{\mu}_t^{[j]} \|^2$
+    \item In M-Step: $\Theta_t \leq \sum_{i=1}^n \sum_{j=1}^k p_t^{i[j]} \| \boldsymbol{x}^{(i)} - \boldsymbol{\mu}_{t-1}^{[j]} \|^2$
+    \item In E-Step: $\sum_{i=1}^n \sum_{j=1}^k p_t^{i[j]} \| \boldsymbol{x}^{(i)} - \boldsymbol{\mu}_{t-1}^{[j]} \|^2 \leq \sum_{i=1}^n \sum_{j=1}^k p_{t-1}^{i[j]} \| \boldsymbol{x}^{(i)} - \boldsymbol{\mu}_{t-1}^{[j]} \|^2 = \Theta_{t-1}$
+    \item Thus, $\Theta_t \leq \Theta_{t-1}$
+\end{itemize}
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Characteristics} --- 
+\begin{itemize}
+    \item Challenges:
+    \begin{itemize}
+        \item Has no way representing size of shape of a cluster, all that matters is distance
+        \item Hard cluster assignment, rather than soft cluster assignment, which implies that all instances in a cluster have an "equal vote" within that cluster and no votes in any other cluster with regards to the assignment of a new point
+    \end{itemize}
+    \item Not convex
+    \item Has local minimum
+    \item Has unique or infinitely many solutions
+    \item Can be solved numerically
+\end{itemize}
