@@ -58,14 +58,130 @@
 
 {\color{lightgray}\hrule height 0.001mm}
 
-\emph{PAC estimator}
+\emph{Probably Approximately Correct (PAC) estimator}
 \begin{itemize}
     \item Generates probabilistic bounds for parameter $\boldsymbol{\theta}$ that is approximately known with a high probability:
     \begin{itemize}
         \item Probability of being correct: $1-\delta$
         \item Degree of approximation: $\epsilon$
     \end{itemize}
-    \item Given Hoeffding's inequality, the probability that the error is greater than $\epsilon$ is bounded
+\end{itemize}
+Setting:
+\begin{itemize}
+    \item \emph{Hypothesis class $\mathcal{H}$}: Set of functions that can be expressed by the algorithm
+    \item \emph{Concept class $\mathcal{C}$}: Set of possible target functions that represent true mappings from input to output
+    \item \emph{Specific concept $c$}:
+    \begin{itemize}
+        \item True function $c$ that maps inputs to outputs
+        \item Estimated function $\hat{c}$
+    \end{itemize}
+    \item \emph{Learning algorithm $\mathcal{A}$}:
+    \begin{itemize}
+        \item Receives samples $\mathcal{Z} = \{(x_1, y_1), \ldots, (x_n, y_n)\}$ as inputs
+        \item $c(x_i) = y_i$ for all $i$
+        \item $\mathcal{A}$ outputs $\hat{c} \in \mathcal{H}$
+    \end{itemize}
+\end{itemize}
+PAC learning model:
+\begin{itemize}
+    \item $\mathcal{A}$ can learn $c$ from $\mathcal{C}$ if, given a sufficiently large sample, it outputs $\hat{c}$ that generalizes well with high probability\\
+    resp.\\
+    if given $\mathcal{Z}$ of size $n > \textrm{poly}\big(1/\epsilon, 1/\delta, \textrm{size}(c)\big)$, it outputs $\hat{c}$ such that:
+    $
+    P(\mathcal{R}(\hat{c}) \leq \epsilon) \geq 1 - \delta
+    $
+    where:
+    \begin{itemize}
+        \item $\epsilon$: Error tolerance (how much $\hat{c}$ deviates from $c$), is between $0$ and $0.5$
+        \item $\delta$: Confidence (how likely $\hat{c}$ generalizes well), is between $0$ and $0.5$
+        \item $\textrm{size}(c)$: Complexity of the concept
+    \end{itemize}
+    \item A concept class $\mathcal{C}$ is \emph{PAC-learnable} from a hypothesis class $\mathcal{H}$ if there is an algorithm $\mathcal{A}$ that can learn any concept in $\mathcal{C}$
+    \item If algorithm $\mathcal{A}$ runs in time polynomial in $1/\epsilon$ and $1/\delta$, then $\mathcal{C}$ is \emph{efficiently PAC-learnable}
+    \item \emph{Strong PAC learning}: Demand arbitrarily small error $\epsilon$ with high probability $1 - \delta$
+    \item \emph{Weak PAC learning}: Demand that risk is bounded for large (not trivial) error $\epsilon$, used frequently in ensemble learning
+\end{itemize}
+Scenario 1: If $\mathcal{C}$ is finite and $\mathcal{H} = \mathcal{C}$:\\
+Deterministic scenario:
+\begin{itemize}
+    \item In this case, algorithm $\mathcal{A}$ returns a consistent hypothesis $\hat{c}$, i.e.
+    $
+    \mathcal{R}(\hat{c}) = 0
+    $
+    \item We aim to bound the risk of $\hat{c}$ as follows:
+    $
+    P(\mathcal{R}(\hat{c}) > \epsilon) \leq \delta
+    $
+    \item According to \emph{Hoeffding's inequality} for a single hypothesis:
+    $
+    P(|\mathcal{R}(c) - \mathcal{R}(\hat{c})| > \epsilon) = P(\mathcal{R}(c) > \epsilon) \leq \exp(-n \epsilon)
+    $
+    \item To account for all hypotheses in $\mathcal{C}$, we apply a \emph{union bound}:
+    $
+    P(\exists c \in \mathcal{C} : \mathcal{R}(c) > \epsilon) \leq |\mathcal{C}| \times \exp(-n \epsilon)
+    $
+    \item We then get:
+    $
+    |\mathcal{C}| \times \exp(-n \epsilon) \leq \delta
+    $
+    \item From this, we can derive:
+    $
+    \log(|\mathcal{C}|) - n \epsilon \leq \log(\delta)
+    $\\
+    $
+    \log(|\mathcal{C}|) - \log(\delta) \leq n \epsilon
+    $\\
+    $
+    \frac{1}{\epsilon} \big[\log(|\mathcal{C}|) + \log\left(\frac{1}{\delta}\right)\big] \leq n
+    $
+    \item Then, we have derived a minimum required sample size to bound the risk of $\hat{c}$ as follows:
+    $
+    P(\mathcal{R}(\hat{c}) > \epsilon) \leq \delta
+    $
+\end{itemize}
+Stochastic scenario:
+\begin{itemize}
+    \item If the instance's true label is not deterministic, but modeled by a distribution $\mathcal{D}$
+    \item \emph{Bayes optimal classifier:}
+    \begin{itemize}
+        \item Classifier that achieves minimum possible error
+        \item Outputs labels based on true probabilities of labels given input features:
+        $
+        \hat{y} = argmax_y p(y \mid \boldsymbol{x})
+        $
+        \item If the Bayes optimal classifier is not in $\mathcal{C}$, there will always be a gap between the error of the best hypothesis $\hat{c}$ and Bayes optimal error
+        \item We then aim to bound the risk of $\hat{c}$ as follows:
+        $
+        P\big(\mathcal{R}(\hat{c}) - \inf_{c \in \mathcal{C}} \mathcal{R}(c) \leq \epsilon\big) \geq 1 - \delta
+        $
+    \end{itemize}
+\end{itemize}
+Scenario 2: If $\mathcal{C}$ is finite and $\mathcal{H} \neq \mathcal{C}$:
+\begin{itemize}
+    \item According to \emph{Hoeffding's inequality} for a single hypothesis:
+    $
+    P\big(\mathcal{R}(\hat{c}^*) - \inf_{c \in \mathcal{C}} \mathcal{R}(c) > \epsilon\big) \leq 2 \exp(-n \epsilon^2)
+    $
+    \item To account for all hypotheses in $\mathcal{C}$, we apply a \emph{union bound}:
+    $
+    P\big(\exists c \in \mathcal{C}: \mathcal{R}(\hat{c}^*) - \inf_{c \in \mathcal{C}} \mathcal{R}(c) > \epsilon\big) \leq 2 |\mathcal{C}| \exp(-n \epsilon^2)
+    $
+\end{itemize}
+Scenario 3: If $\mathcal{C}$ has finite VC-dimension, but is infinite:
+\begin{itemize}
+    \item The \emph{VC-dimension} of a concept class $\mathcal{C}$ is a measure of its complexity: VC-dimension $V_c$ is the size of the largest set $A$ that can be shattered by $\mathcal{C}$
+    \begin{itemize}
+        \item A set of instances $A$ is \emph{shattered} by the concept class $\mathcal{C}$ if, for every subset $S \subseteq A$, there is a concept $c_S \in \mathcal{C}$ such that $S = c_S \cap A$
+        \item This means the concept class can "realize" or "perfectly label" every possible labeling of $A$
+        \item E.g. for $2^n$ points, there are $2^n$ possible ways to assign binary labels to the points. If $\mathcal{C}$ can express all $2^n$ labelings, it shatters $A$
+    \end{itemize}
+    \item If $V_c > 2$:
+    $
+    P\big(\mathcal{R}(\hat{c}^*_n) - \inf_{c \in \mathcal{C}} \mathcal{R}(c) > \epsilon\big) \leq g  n^{V_c} \exp\left(-\frac{n \epsilon^2}{32}\right)
+    $
+    \item If $\mathcal{C}$ has a finite VC-dimension:
+    $
+    P\big(\mathcal{R}(\hat{c}^*_n) - \inf_{c \in \mathcal{C}} \mathcal{R}(c) > \epsilon\big) \leq g n^{V_c} \exp\left(-\frac{n \epsilon^2}{32}\right) \to 0$ as $n \to \infty$
 \end{itemize}
 
 {\color{black}\hrule height 0.001mm}
