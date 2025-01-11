@@ -1,0 +1,47 @@
+\section{Model Evaluation}
+\subsection*{Common Loss Measures}
+\emph{Confusion matrix} --- 
+\begin{itemize}
+    \item \emph{Precision} = Correctly predicted positive / predicted positive
+    \item \emph{Recall} = Correctly predicted positive / positive in reality
+    \item \emph{Accuracy} = $(TP + TN) / N$
+    \item \emph{F1 score} = Harmonic mean between precision and recall = $(2PR)/(P+R)$
+\end{itemize}
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Curve scores} --- 
+\begin{itemize}
+    \item \emph{ROC AUC curve}: 
+    \begin{itemize}
+        \item Plots the TPR (recall, y) against the False Positive Rate FPR (x) at various threshold levels
+        \item A perfect model has an AUC of 1, a random model has an AUC of 0.5
+    \end{itemize}
+    \item \emph{Precision recall curve}:
+    \begin{itemize}
+        \item Plots the precision (y) against the recall (x) at various threshold levels
+        \item A perfect model has precision and recall of 1, the curve for a random model is a horizontal line at the baseline precision, reflecting the proportion of positive samples in the dataset
+    \end{itemize}
+\end{itemize}
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Structured prediction and NLP} --- 
+\begin{itemize}
+    \item Some outcomes are more similar than others, e.g. if a translation is almost right vs. a translation is completely wrong
+    \item NLP evaluation metrics:
+    \begin{itemize}
+        \item Intrinsic evaluation:
+        \begin{itemize}
+            \item Log likelihood
+            \item \emph{Perplexity}:
+            \begin{itemize}
+                \item $perplexity(\boldsymbol{w}) = 2^{-\frac{l(\boldsymbol{w})}{M}}$
+                \item Lower perplexity = higher likelihood, with perplexity 1 being perfect
+            \end{itemize}
+            \item Cosine similarity of embeddings for words, which are humanly considered similar
+            \item Word analogy testing (e.g. king vs. queen, man vs. woman)
+        \end{itemize}
+        \item Extrinsic evaluation on downstream task
+    \end{itemize}
+\end{itemize}

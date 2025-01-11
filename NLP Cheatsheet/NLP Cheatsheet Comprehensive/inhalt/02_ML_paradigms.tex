@@ -1,0 +1,39 @@
+\section{ML Paradigms}
+\subsection*{MLE estimator}
+\begin{itemize}
+    \item Maximizes \emph{log likelihood}: $\hat{\boldsymbol{\theta}} = argmax_{\boldsymbol{\theta}}(L) = argmax_{\boldsymbol{\theta}}(\prod_{i=1}^n p(y_i |\boldsymbol{x_i}, \boldsymbol{\theta})) = argmax_{\boldsymbol{\theta}}(\sum_{i=1}^n log(p(y_i |\boldsymbol{x_i}, \boldsymbol{\theta})))$
+    \item In the case of classification for $2$ classes, \emph{log loss} is equivalent to \emph{binary cross entropy}:
+    \begin{itemize}
+        \item Given two classes $y \in \{0, 1\}$:
+            \begin{itemize}
+                \item Predicted probability for class 1: $p_1 = \sigma(z) = \frac{1}{1 + e^{-z}}$
+                \item Predicted probability for class 0: $p_0 = 1 - p_1$
+            \end{itemize}
+        \item \emph{Binary cross entropy}: $\text{BCE}(y, p_1) = -[ y \log(p_1) + (1 - y) \log(1 - p_1) ]$
+        \begin{itemize}
+            \item When $y = 1$: $\text{BCE}(1, p_1) = -\log(p_1)$
+            \item When $y = 0$: $\text{BCE}(0, p_1) = -\log(1 - p_1)$
+        \end{itemize}
+        \item \emph{Log loss}:$\text{LL}(y, p) = - \log(p_y)$
+        \begin{itemize}
+            \item When $y = 1$: $\text{LL}(y, p) = -\log(p_1)$
+            \item When $y = 0$: $\text{LL}(y, p) = -\log(p_0) = -\log(1 - p_1)$
+        \end{itemize}
+    \end{itemize}
+\end{itemize}
+
+{\color{black}\hrule height 0.001mm}
+
+\subsection*{NLP-specific model taxonomy}
+\begin{itemize}
+    \item Locally normalized models: Normalization at each token prediction step within sequence
+    \begin{itemize}
+        \item $p(y_i \mid \mathbf{x}) = \frac{\exp(\text{score}(\mathbf{x}, y_i))}{\sum_{y'} \exp(\text{score}(\mathbf{x}, y'))}$
+        \item $p(\mathbf{y} \mid \mathbf{x}) = \prod_{i=1}^{|\mathbf{y}|} p(y_i \mid \mathbf{x})$
+    \end{itemize}
+    \item Globally normalized models: Normalization over entire sequence
+    \begin{itemize}
+        \item $p(\mathbf{y} \mid \mathbf{x}) = \frac{\exp(\text{score}(\mathbf{x}, \mathbf{y}))}{\sum_{\mathbf{y}' \in \mathcal{Y}} \exp(\text{score}(\mathbf{x}, \mathbf{y}'))}$
+    \end{itemize}
+    \emph{Structured prediction task}: Predict over exponentially (or even infinitely) large set of classes
+\end{itemize}

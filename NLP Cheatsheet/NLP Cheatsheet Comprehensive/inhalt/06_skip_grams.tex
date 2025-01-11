@@ -1,0 +1,66 @@
+\section{Skip Grams}
+\subsection*{Description}
+\emph{Task} --- 
+\begin{itemize}
+    \item Predict context word given center word
+    \item Generate word embeddings
+\end{itemize}
+
+{\color{black}\hrule height 0.001mm}
+
+\subsection*{Formulation}
+
+\begin{itemize}
+    \item Vocabulary $\mathcal{V}$ with words $w$, for which we wish to create embeddings by considering the $T$ preceding and following words of a center word
+    \item Start by processing each document into a set $\mathcal{D}$ of $\mathcal{O}(T \times |\mathcal{V}|)$ pairs of center and context words:
+    $
+    \{(w_i, w_t)\}
+    $
+    where $w_i \in w$ is center word, $w_t\in w'$ is context word
+\end{itemize}
+
+{\color{black}\hrule height 0.001mm}
+
+\subsection*{Optimization}
+\emph{Objective function} --- 
+\begin{itemize}
+    \item Bilinear softmax function
+    \item \emph{Bilinear model} is linear, if other variables are held constant, in this case $e_\textrm{wrd}$ or $e_\textrm{ctx}$
+    \item Likelihood:
+    $
+    \prod_{(w_i, w_t) \in \mathcal{D}} p(w_t \mid w_i) = \prod_{(w_i, w_t) \in \mathcal{D}} \frac{\exp\left(e_\textrm{wrd}(w_i) \cdot e_\textrm{ctx}(w_t)\right)}{Z(w_i)} = \prod_{(w_i, w_t) \in \mathcal{D}} \frac{\exp\left(e_\textrm{wrd}(w_i) \cdot e_\textrm{ctx}(w_t)\right)}{\sum_{w' \in \mathcal{V}} \exp\left(e_\textrm{wrd}(w_i) \cdot e_\textrm{ctx}(w')\right)}
+    $ where
+    \begin{itemize}
+        \item $
+        e_\textrm{wrd}(w_i) \cdot e_\textrm{ctx}(w_t) = (\boldsymbol{w} \cdot \boldsymbol{e}_{oh}(w_i)) \cdot (\boldsymbol{w} \cdot \boldsymbol{e}_{oh}(w_t))
+        $ where $\boldsymbol{e}_{oh}(w)$ is the one hot encoding
+    \end{itemize}
+    \item Log likelihood: $\sum_{(w_i, w_t) \in \mathcal{D}} \log\left(p(w_t \mid w_i)\right) = e_\textrm{wrd}(w_i) \cdot e_\textrm{ctx}(w_t) - \log(Z(w_i)) = $
+    \item Challenge: $Z(w_i)$ has $2|\mathcal{V}|$ parameters
+    \item Solution: Use \emph{negative sampling}:
+    \begin{itemize}
+        \item For each pair $(w_i, w_t)$, we randomly sample with replacement a set $\mathcal{C}^-$ from $\mathcal{V}$
+        \item We compute sigmoid, instead of softmax
+        \item Then we have:
+        $
+        \sum_{(w_i, w_t, \mathcal{C}^-)} \left( \log(p(w_t \mid w_i)) + \sum_{w^- \in \mathcal{C}^-} \log(1 - p(w^- \mid w_i)) \right)
+        $
+        \item $
+        = \sum_{(w_i, w_t, \mathcal{C}^-)} \frac{1}{1 + \exp\left(-e_\textrm{wrd}(w_i) \cdot e_\textrm{ctx}(w_t)\right)} + \sum_{w^- \in \mathcal{C}^-} \log(1 - p(w^- \mid w_i))
+        $
+        \item Here:
+        \begin{itemize}
+            \item $\log(p(w_t \mid w_i))$ is computed with sigmoid, instead of softmax
+            \item $\sum_{w^- \in \mathcal{C}^-} \log(1 - p(w^- \mid w_i))$ replaces $- \log(Z(w_i))$
+        \end{itemize}
+    \end{itemize}
+\end{itemize}
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Optimization} ---
+\begin{itemize}
+    \item $argmax_{w,w'} \textrm{ log likelihood}$
+    \item Gradient descent
+    \item We usually use center word embeddings $w$ and throw away context word embeddings $w'$
+\end{itemize}

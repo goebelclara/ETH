@@ -1,0 +1,38 @@
+\section{Estimating Common Distributions}
+\subsection*{Gaussian}
+\emph{Frequentism (MLE)} --- 
+\begin{itemize}
+    \item Likelihood (excl. constants): $L = (\frac{1}{\boldsymbol{\sigma}})^n \prod_{i=1}^n exp( -\frac{1}{2\boldsymbol{\sigma}^2} (\boldsymbol{x}^{(i)} - \boldsymbol{\mu} )^2)$
+    \item Log likelihood: $LL = -n log(\boldsymbol{\sigma}) - \sum_{i=1}^n (\frac{1}{2\boldsymbol{\sigma}^2} (\boldsymbol{x}^{(i)} - \boldsymbol{\mu} )^2)$
+    \item $\boldsymbol{\mu}_{MLE}$ is sample mean: $ \frac{1}{n}\sum_{i=1}^n \boldsymbol{x}^{(i)}$:
+    \begin{itemize}
+        \item Derivative of log likelihood wrt $\boldsymbol{\mu}$: $\nabla_{\boldsymbol{\mu}} LL = \nabla_{\boldsymbol{\mu}} (- \sum_{i=1}^n (\frac{{\boldsymbol{x}^{(i)}}^2 - 2 \boldsymbol{x}^{(i)} \boldsymbol{\mu} + \boldsymbol{\mu}^2}{2\boldsymbol{\sigma}^2})) = \nabla_{\boldsymbol{\mu}} (- \sum_{i=1}^n (-\frac{ \boldsymbol{x}^{(i)} \boldsymbol{\mu}}{\boldsymbol{\sigma}^2} + \frac{ \boldsymbol{\mu}^2}{2\boldsymbol{\sigma}^2} )) = - \sum_{i=1}^n (-\frac{ \boldsymbol{x}^{(i)}}{\boldsymbol{\sigma}^2} + \frac{ 2\boldsymbol{\mu}}{2\boldsymbol{\sigma}^2} ) =  \sum_{i=1}^n (\frac{ \boldsymbol{x}^{(i)} - \boldsymbol{\mu}}{\boldsymbol{\sigma}^2}) = \sum_{i=1}^n \boldsymbol{x}^{(i)} - n\boldsymbol{\mu} = 0 $
+    \end{itemize}
+    \item $\boldsymbol{\sigma^2}_{MLE}$ is sample variance: $ \frac{1}{n}\sum_{i=1}^n (\boldsymbol{x}^{(i)} - \boldsymbol{\mu})^2$:
+    \begin{itemize}
+        \item Derivative of log likelihood wrt $\boldsymbol{\sigma}$: $\nabla_{\boldsymbol{\sigma}} LL = 
+        -n \nabla_{\boldsymbol{\sigma}} log(\boldsymbol{\sigma}) -
+        \nabla_{\boldsymbol{\sigma}} (\sum_{i=1}^n (\frac{(\boldsymbol{x}^{(i)} - \boldsymbol{\mu} )^2}{2\boldsymbol{\sigma}^2})) =
+        \frac{-n}{\boldsymbol{\sigma}} - \nabla_{\boldsymbol{\sigma}} (\sum_{i=1}^n \frac{1}{2} \boldsymbol{\sigma}^{-2} (\boldsymbol{x}^{(i)} - \boldsymbol{\mu} )^2) = \frac{-n}{\boldsymbol{\sigma}} - (\sum_{i=1}^n -1 \boldsymbol{\sigma}^{-3} (\boldsymbol{x}^{(i)} - \boldsymbol{\mu} )^2) = -n + \sum_{i=1}^n (\frac{ (\boldsymbol{x}^{(i)} - \boldsymbol{\mu} )^2 }{ \boldsymbol{\sigma}^{2} })
+        = 0 $
+    \end{itemize}
+\end{itemize}
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Bayesianism} --- 
+\begin{itemize}
+    \item Assume $\boldsymbol{\Sigma}$ is known and $\boldsymbol{\mu} \sim \mathcal{N}(\boldsymbol{\mu_0}, \boldsymbol{\Sigma_0})$ is the outcome of a random variable
+    \item $p(\boldsymbol{\mu} | \boldsymbol{X}, \boldsymbol{\mu_0}, \boldsymbol{\Sigma_0}) \propto p(\boldsymbol{X} | \boldsymbol{\mu}, \boldsymbol{\Sigma})p(\boldsymbol{\mu} | \boldsymbol{\mu_0}, \boldsymbol{\Sigma_0})$
+    \item $p(\boldsymbol{X} | \boldsymbol{\mu}, \boldsymbol{\Sigma}) = \frac{1}{2\pi^{mn/2}} \frac{1}{|\boldsymbol{\Sigma}|^{n/2}} exp(\frac{1}{2} \sum_{i=1}^n ( \boldsymbol{\boldsymbol{x^{(i)}}} - \boldsymbol{\mu} )^\intercal \boldsymbol{\Sigma}^{-1} ( \boldsymbol{\boldsymbol{x^{(i)}}} - \boldsymbol{\mu} ) )$
+    \item $p(\boldsymbol{\mu} | \boldsymbol{\mu_0}, \boldsymbol{\Sigma_0}) = \frac{1}{2\pi^{m/2}} \frac{1}{|\boldsymbol{\Sigma_0}|^{1/2}} exp(\frac{1}{2} \sum_{i=1}^n ( \boldsymbol{\mu} - \boldsymbol{\mu_0} )^\intercal \boldsymbol{\Sigma_0}^{-1} ( \boldsymbol{\mu} - \boldsymbol{\mu_0} ) )$
+    \item $p(\boldsymbol{\mu} | \boldsymbol{X}, \boldsymbol{\mu_0}, \boldsymbol{\Sigma_0}) \propto exp( -\frac{1}{2} ( \boldsymbol{\mu}^\intercal \boldsymbol{\Sigma_0}^{-1} \boldsymbol{\mu} + n \boldsymbol{\mu}^\intercal \boldsymbol{\Sigma}^{-1} \boldsymbol{\mu} - 2 \boldsymbol{\mu_0}^\intercal \boldsymbol{\Sigma_0}^{-1} \boldsymbol{\mu} - 2 n \overline{\boldsymbol{x}}^\intercal \boldsymbol{\Sigma}^{-1} \boldsymbol{\mu} ) )$ after combining exponents of the prior and likelihood, expanding, absorbing terms unrelated to $\boldsymbol{\mu}$ into a constant, and replacing $\sum_{i=1}^n {\boldsymbol{x^{(i)}}}^\intercal$ by $n \overline{\boldsymbol{x}}^\intercal$
+    \item We now apply a symmetric matrix property $\boldsymbol{x}^\intercal \boldsymbol{A} \boldsymbol{x} + 2 \boldsymbol{x}^\intercal \boldsymbol{b} = ( \boldsymbol{x} + \boldsymbol{A}^{-1} \boldsymbol{b} )^\intercal \boldsymbol{A} ( \boldsymbol{x} + \boldsymbol{A}^{-1} \boldsymbol{b} ) - \boldsymbol{b}^\intercal \boldsymbol{A}^{-1} \boldsymbol{b}$, with $\boldsymbol{\mu} = \boldsymbol{x}$, $-( \boldsymbol{\Sigma_0}^{-1} + n \boldsymbol{\Sigma}^{-1} )^{-1} = \boldsymbol{A}^{-1}$ and $(\boldsymbol{\Sigma}^{-1} n \overline{\boldsymbol{x}} + \boldsymbol{\Sigma_0}^{-1} \boldsymbol{\mu_0}) = \boldsymbol{b}$
+    \item Through this, we get $p(\boldsymbol{\mu} | \boldsymbol{X}, \boldsymbol{\mu_0}, \boldsymbol{\Sigma_0}) \propto \exp (  \frac{1}{2}  ( \boldsymbol{\mu} (  \boldsymbol{\Sigma_0}^{-1} + n \boldsymbol{\Sigma}^{-1} )^{-1} ( \boldsymbol{\Sigma}^{-1} n \overline{\boldsymbol{x}} + \boldsymbol{\Sigma_0}^{-1} \boldsymbol{\mu_0} ) )^\intercal ( \boldsymbol{\Sigma_0}^{-1} + n \boldsymbol{\Sigma}^{-1} ) ( \boldsymbol{\mu} - ( \boldsymbol{\Sigma_0}^{-1} + n \boldsymbol{\Sigma}^{-1} )^{-1} ( \boldsymbol{\Sigma}^{-1} n \overline{\boldsymbol{x}} + \boldsymbol{\Sigma_0}^{-1} \boldsymbol{\mu_0} ) ) ) = exp( \frac{1}{2} ( \boldsymbol{\mu} - \boldsymbol{\mu}_n )^\intercal  \boldsymbol{\Sigma}_n^{-1} ( \boldsymbol{\mu} - \boldsymbol{\mu}_n ) )$
+    \item Thus, $p(\boldsymbol{\mu} | \boldsymbol{X}, \boldsymbol{\mu_0}, \boldsymbol{\Sigma_0}) \sim \mathcal{N}(\boldsymbol{\mu}_n, \boldsymbol{\Sigma}_n)$ with
+    \begin{itemize}
+        \item $\boldsymbol{\mu}_n = (\boldsymbol{\Sigma_0}^{-1} + n \boldsymbol{\Sigma}^{-1})^{-1} (\boldsymbol{\Sigma}^{-1} n \overline{\boldsymbol{x}} + \boldsymbol{\Sigma_0}^{-1} \boldsymbol{\mu_0}) = \textrm{(if } \boldsymbol{\Sigma} \textrm{ equals 1) } \frac{n \overline{\boldsymbol{x}} \boldsymbol{\Sigma_0} + \boldsymbol{\mu_0}}{n \boldsymbol{\Sigma_0} + 1}$
+        \item $\boldsymbol{\Sigma}_n = (\boldsymbol{\Sigma_0}^{-1} + n \boldsymbol{\Sigma}^{-1})^{-1} = \textrm{(if } \boldsymbol{\Sigma} \textrm{ equals 1) } \frac{\boldsymbol{\Sigma_0}}{n \boldsymbol{\Sigma_0} + 1}$
+    \end{itemize}
+    \item Bayesian parameters approximate prior for small n and MLE for large n
+\end{itemize}

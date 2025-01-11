@@ -1,0 +1,472 @@
+\section{Linear Algebra}
+\subsection*{Vector Properties}
+\emph{Linear independence} --- Linear combination $\boldsymbol{A}\boldsymbol{u} = u_1 \boldsymbol{a_1} + ... + u_n \boldsymbol{a_n} = \sum_{i=1}^n u_i \boldsymbol{a_i}$ only has unique solutions for $\boldsymbol{u}$ (\emph{unique representation theorem}), if $\boldsymbol{A}\boldsymbol{u}=0$ then  $\boldsymbol{u}=0$, and $\boldsymbol{A}$ is full rank
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Unit vector} --- $\boldsymbol{u} = \frac{\boldsymbol{\tilde{u}}}{\|\boldsymbol{\tilde{u}}\|}$, therefore $\|\boldsymbol{u}\|^2 = 1$
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Inner product} --- $\boldsymbol{u} \cdot \boldsymbol{v} = \boldsymbol{u}^\intercal\boldsymbol{v} = \sum_{i=1}^n u_i v_i = cos(\varphi) \textrm{ } \|\boldsymbol{u}\| \textrm{ } 
+ \|\boldsymbol{v}\|$ \\
+resp.\\
+$\langle \boldsymbol{u}, \boldsymbol{v} \rangle_W = \boldsymbol{u}^\intercal \boldsymbol{W} \boldsymbol{v} = \sum_i u_i v_i w_i $ where $\boldsymbol{W}$ is a diagonal matrix with $w_i > 0$ --- 
+Properties:
+\begin{itemize}
+    \item Positive definite: $\boldsymbol{u} \cdot \boldsymbol{u} \geq 0$
+\end{itemize}
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Norm} --- 
+$\|\boldsymbol{u}\| = \sqrt{\boldsymbol{u} \cdot \boldsymbol{u}}$\\
+resp.\\
+$\|\boldsymbol{u}\|_W^2 = \boldsymbol{u}^\intercal \boldsymbol{W} \boldsymbol{u} = \sum_i u_i^2 w_i$ where $\boldsymbol{W}$ is a diagonal matrix with $w_i > 0$ --- 
+Properties:
+\begin{multicols}{2}
+\begin{itemize}
+    \item $\|\boldsymbol{u}+\boldsymbol{v}\| = \|\boldsymbol{u}\| + \| \boldsymbol{v}\|$
+    \item $\|\alpha\boldsymbol{u}\| = |\alpha| \|\boldsymbol{u}\|$
+\end{itemize}
+\end{multicols}
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Cauchy Schwarz inequality} --- 
+$\|\boldsymbol{u} \cdot \boldsymbol{v}\| \leq \|\boldsymbol{u}\| \textrm{ } \|\boldsymbol{v}\|$ with equality iff $\varphi = 0$ i.e. $\boldsymbol{u} = \alpha\boldsymbol{v}$ or if $\boldsymbol{u} \textrm{ or } \boldsymbol{v} = 0_v$\\
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Triangle inequality} --- 
+$\|\boldsymbol{u} + \boldsymbol{v}\| \leq \|\boldsymbol{u}\| + \|\boldsymbol{v}\|$ with equality iff $\varphi = 0$ i.e. $\boldsymbol{u} = \alpha\boldsymbol{v}$ or if $\boldsymbol{u} \textrm{ or } \boldsymbol{v} = 0_v$
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Other inequalities} ---  
+
+\begin{itemize}
+    \item $\|n^k\| \leq \|n\|^k$
+    \item $|\sum_i n_i| \leq \sum_i |n_i|$
+\end{itemize}
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Orthogonal vectors} ---  Properties:
+\begin{itemize}
+    \item $\boldsymbol{u} \cdot \boldsymbol{v} = 0$
+    \item $\|\boldsymbol{u} + \boldsymbol{v}\|^2 = \|\boldsymbol{u}\|^2 + \|\boldsymbol{v}\|^2$
+    \item \emph{Pythagorean theorem}: $\|\boldsymbol{u} - \boldsymbol{v}\|^2 = \|\boldsymbol{u}\|^2 + \|\boldsymbol{v}\|^2$
+\end{itemize}
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Orthonormal vectors} ---  Vectors are orthonormal iff $\|\boldsymbol{u}\| = \|\boldsymbol{v}\| = 1$ and $\boldsymbol{u} \cdot \boldsymbol{v} = 0$
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Projection} --- Projection of $\boldsymbol{v} \in V$ onto $\boldsymbol{s} \in S$ given by: $\boldsymbol{v}_S = \frac{\boldsymbol{v} \cdot \boldsymbol{s}}{\|\boldsymbol{s}\|^2}\boldsymbol{s} = (\boldsymbol{v} \cdot \boldsymbol{s})\boldsymbol{s}$ if $\boldsymbol{s}$ is a unit vector
+
+{\color{black}\hrule height 0.001mm}
+
+\subsection*{Vector Spaces}
+\emph{Span} --- Span of $\{\boldsymbol{s_i}\}_{i=1}^n$ is the set of all vectors that can be expressed as a linear combination of $\{\boldsymbol{s_i}\}_{i=1}^n$.
+$\sum_{i=1}^n u_i \boldsymbol{s_i}$
+\\
+Span of matrix $\boldsymbol{A}$ is the span of its column vectors.
+$\boldsymbol{A}\boldsymbol{u} = u_1 \boldsymbol{a_1} + ... + u_n \boldsymbol{a_n} = \sum_{i=1}^n u_i \boldsymbol{a_i}$
+\\
+A span is a subspace, since for a linear combination, we can derive additive closure and scalar closure.
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{(Orthonormal) basis} --- Unique set of all (orthonormal) vectors that are linearly independent and span the whole of a subspace.
+\begin{itemize}
+    \item \emph{Orthonormal representation theorem}: Any vector $\boldsymbol{x} \in S$ can be expressed in terms of orthonormal basis: $\boldsymbol{x} = \sum_i (\boldsymbol{x} \cdot \boldsymbol{s_i})\boldsymbol{s_i}$
+\end{itemize}
+
+{\color{black}\hrule height 0.001mm}
+
+\subsection*{General Matrix Properties}
+\emph{Matrices} ---
+\begin{itemize}
+    \item $\boldsymbol{A} \in \mathbb{R}^{n \times m}$ with elements $A_{ij}$, rows $i = 1,...,n$, columns $j = 1,...,m$
+    \item Transpose $\boldsymbol{A^\intercal}$
+    \item Identity matrix $\boldsymbol{I}$ with 1 on diagonal, 0 elsewhere
+    \item Scalar matrix $\boldsymbol{K}$ with $k$ on diagonal, 0 elsewhere
+\end{itemize}
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Operations} ---
+\begin{itemize}
+    \item Element-wise addition: Returns matrix of same size
+    \item Element-wise scalar multiplication: Returns matrix of same size
+    \item Matrix multiplication: 
+    \begin{itemize}
+        \item $\boldsymbol{A}^{n \times p}\boldsymbol{B}^{p \times m}=\boldsymbol{C}^{n \times m}$
+        \begin{multicols}{2}
+        \begin{itemize}
+            \item $r_v \times c_v = s$
+            \item $c_v \times r_v = M$
+            \item $M \times c_v = c_v$
+            \item $r_v \times M = r_v$ 
+            \item $M \times M = M$
+        \end{itemize}
+        \end{multicols}
+        \item Element in $\boldsymbol{C}$ is sum-product of row in $\boldsymbol{A}$ and column in $\boldsymbol{B}$: $C_{ij} = \boldsymbol{A}^{(i)} \cdot \boldsymbol{B}^{(j)}$
+        \item Column vector in $\boldsymbol{C}$ is a linear combination of the columns in $\boldsymbol{A}$: $\boldsymbol{C}^{(j)} = \boldsymbol{A} \boldsymbol{B}^{(j)} = \sum_p \boldsymbol{A}^{(j=p)} b_{p}^{(j)}$
+        \item Row vector in $\boldsymbol{C}$ is a linear combination of the rows in $\boldsymbol{B}$: $\boldsymbol{C}^{(i)} = \boldsymbol{A}^{(i)} \boldsymbol{B} = \sum_p a_{p}^{(i)} \boldsymbol{B}^{(i=p)}$
+        \item $\boldsymbol{C} = \boldsymbol{A}[\boldsymbol{B^{(j=1)}} | ... | \boldsymbol{B^{(j=m)}}]$
+        \item $\boldsymbol{C} = [\boldsymbol{A^{(i=1)}} | ... | \boldsymbol{A^{(i=n)}}]^\intercal \boldsymbol{B} = [\boldsymbol{A^{(i=1)}} \boldsymbol{B} | ... | \boldsymbol{A^{(i=n)}} \boldsymbol{B}]^\intercal$
+    \end{itemize}
+\end{itemize}
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Implications} ---
+
+\begin{itemize}
+    \item $\boldsymbol{A} \boldsymbol{e_k} = \boldsymbol{A^{(j=k)}}$ and $\boldsymbol{e_k}^\intercal \boldsymbol{A} = \boldsymbol{A^{(i=k)}}$ where $\boldsymbol{e_k}$ = 1 on $k^{th}$ element and 0 everywhere else
+    \item Matrix form:
+    \begin{itemize}
+        \item In following $^{(j)}$ refers to column vector and $^{(i)}$ to row vector, however written as column vector
+        \item $\boldsymbol{u} \cdot \boldsymbol{v} = \boldsymbol{u}^\intercal \boldsymbol{v} = \sum_i u_i v_i = c$
+        \item $\boldsymbol{u} \boldsymbol{v}^\intercal = \boldsymbol{C}$\\
+        with $u_i v_j = C_{ij}$
+        \item $\boldsymbol{A} \boldsymbol{u} = \sum_{j=i} \boldsymbol{A}^{(j)} u_i = \boldsymbol{c}$\\
+        with $\boldsymbol{A}^{(i)} \cdot \boldsymbol{u} = \boldsymbol{A}^{(i) \intercal} \boldsymbol{u} = c_i$
+        \item $\boldsymbol{u}^\intercal \boldsymbol{A} = \sum_{j=i} \boldsymbol{A}^{(i) \intercal} u_j = \boldsymbol{c}^\intercal$\\
+        with $\boldsymbol{u} \cdot \boldsymbol{A}^{(j)} = \boldsymbol{u}^\intercal \boldsymbol{A}^{(j)} = c_j$
+        \item $\boldsymbol{A} \boldsymbol{B} = \sum_{j=i} \boldsymbol{A}^{(j)} \boldsymbol{B}^{(i) \intercal} = \boldsymbol{C}$\\
+        with $\boldsymbol{A}^{(i)} \cdot \boldsymbol{B}^{(j)} = \boldsymbol{A}^{(i) \intercal} \boldsymbol{B}^{(j)} = C_{ij}$
+    \end{itemize}
+    \item Moving between instance-level $\rightarrow$ data-level:
+    \begin{itemize}
+        \item $\boldsymbol{x^{(i)}} \boldsymbol{y} = \boldsymbol{a}$ $\rightarrow$ $\boldsymbol{X}^\intercal \boldsymbol{y} = \boldsymbol{a}$ where $\boldsymbol{X}$ consists of rows $\boldsymbol{x^{(i)}}$
+        \item $\boldsymbol{x^{(i)}} \boldsymbol{x^{(i)}}^\intercal = \boldsymbol{A}$ $\rightarrow$ $\boldsymbol{X}^\intercal \boldsymbol{X} = \boldsymbol{A}$ where $\boldsymbol{X}$ consists of rows $\boldsymbol{x^{(i)}}$
+        \item $\boldsymbol{x^{(i)}} \cdot \boldsymbol{\beta} = y_i$ $\rightarrow$ $\boldsymbol{X}\boldsymbol{\beta} = \boldsymbol{y}$ where $\boldsymbol{X}$ consists of rows $\boldsymbol{x^{(i)}}$
+    \end{itemize}
+\end{itemize}
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Properties} ---
+\begin{multicols}{2}
+\begin{itemize}
+    \item $(\boldsymbol{A} + \boldsymbol{B})^\intercal = \boldsymbol{A}^\intercal + \boldsymbol{B}^\intercal$
+    \item $(\alpha\boldsymbol{A})^\intercal = \alpha \boldsymbol{A}^\intercal$
+    \item $(\boldsymbol{A} \boldsymbol{B})^\intercal = \boldsymbol{B}^\intercal \boldsymbol{A}^\intercal$
+    \item $(\boldsymbol{A} + \boldsymbol{B}) + \boldsymbol{C} = \boldsymbol{A} + (\boldsymbol{B} + \boldsymbol{C})$
+    \item $\boldsymbol{A} + \boldsymbol{B} = \boldsymbol{B} + \boldsymbol{A}$
+    \item $\alpha(\boldsymbol{A} + \boldsymbol{B}) = \alpha\boldsymbol{A} + \alpha\boldsymbol{B}$
+    \item $(\alpha + \beta)\boldsymbol{A}= \alpha\boldsymbol{A} + \beta\boldsymbol{A}$
+    \item $(\alpha\beta)\boldsymbol{A}= \alpha(\beta\boldsymbol{A})$
+    \item $(\boldsymbol{A} + \boldsymbol{B})\boldsymbol{x} = \boldsymbol{A}\boldsymbol{x} + \boldsymbol{B}\boldsymbol{x} = \boldsymbol{C}\boldsymbol{x}$
+    \item $(\boldsymbol{A} \boldsymbol{B})\boldsymbol{x} = \boldsymbol{A} (\boldsymbol{B} \boldsymbol{x}) = \boldsymbol{C}\boldsymbol{x}$
+    \item $\boldsymbol{A} = 0.5(\boldsymbol{A} + \boldsymbol{A}^\intercal) + 0.5(\boldsymbol{A} - \boldsymbol{A}^\intercal) = \boldsymbol{B} + \boldsymbol{C}$ where $\boldsymbol{B}$ is symmetric, but not $\boldsymbol{C}$
+    \item $\boldsymbol{A} = \boldsymbol{A}\boldsymbol{I} = \boldsymbol{I}\boldsymbol{A}$
+    \item $\boldsymbol{A}k = \boldsymbol{A}\boldsymbol{K} = \boldsymbol{K}\boldsymbol{A}$
+    \item $\textrm{rank}(\boldsymbol{A}\boldsymbol{B}) = \textrm{min(rank}(\boldsymbol{A}), \textrm{rank}(\boldsymbol{B}))$
+    \item $\boldsymbol{A}^\intercal\boldsymbol{A}$ satisfies: 
+    \begin{itemize}
+        \item Symmetric
+        \item Psd
+        \item Has rank $m$ iff it is pd
+        \item Invertible iff it has rank $m$ and it is pd
+        \item $\textrm{rank}(\boldsymbol{A}^\intercal\boldsymbol{A}) = \textrm{rank}(\boldsymbol{A}) = \textrm{rank}(\boldsymbol{A}^\intercal)$
+        \item $\textrm{rank}(\boldsymbol{A}^\intercal\boldsymbol{A}) = \textrm{rank}([\boldsymbol{A}^\intercal\boldsymbol{A} | \boldsymbol{A}^\intercal\boldsymbol{x}])$
+    \end{itemize}
+\end{itemize}
+\end{multicols}
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Matrix terminology} ---
+\begin{itemize}
+    \item Image $\textrm{range}(\boldsymbol{X})$ contains set of vectors $\boldsymbol{b}$ generated by linear map $\boldsymbol{X}\boldsymbol{b}$ resp. is space spanned by columns of $(\boldsymbol{X})$
+    \item Row space is space spanned by rows of $(\boldsymbol{X})$ 
+    \item Column rank = $\textrm{dim(colspace}(\boldsymbol{X}))$ = number of linearly independent columns, row rank = $\textrm{dim(rowspace}(\boldsymbol{X}))$ = number of linearly independent rows
+    \item Rank = column rank = row rank = $\textrm{dim(range}(\boldsymbol{X}))$ = $\textrm{dim(range}(\boldsymbol{X}^\intercal))$ $\leq min(n,m)$
+    \item \emph{Rank nullity theorem}: $\textrm{Rank}(\boldsymbol{X}) + \textrm{nullity}(\boldsymbol{X}) = m$
+\end{itemize}
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Matrices as linear maps} ---
+$\boldsymbol{X}$ maps $\boldsymbol{b}$ from $\mathbb{R}^m$ to $\mathbb{R}^n$: $\boldsymbol{X}\boldsymbol{b} = \boldsymbol{y}$ with $\boldsymbol{X} \in \mathbb{R}^{n \times m}$, $\boldsymbol{b} \in \mathbb{R}^{m}$, $\boldsymbol{y} \in \mathbb{R}^{n}$
+
+{\color{black}\hrule height 0.001mm}
+
+\subsection*{Square Matrix Properties}
+
+\emph{Square matrix terminology} ---
+\begin{itemize}
+    \item Symmetric (Hermitian) matrix:
+    \begin{itemize}
+        \item $\boldsymbol{A}^\intercal = \boldsymbol{A}$
+        \item Properties:
+        \begin{itemize}
+            \item $( \boldsymbol{x} + \boldsymbol{A}^{-1} \boldsymbol{b} )^\intercal \boldsymbol{A} ( \boldsymbol{x} + \boldsymbol{A}^{-1} \boldsymbol{b} ) - \boldsymbol{b}^\intercal \boldsymbol{A}^{-1} \boldsymbol{b} = \boldsymbol{x}^\intercal \boldsymbol{A} \boldsymbol{x} + 2 \boldsymbol{x}^\intercal \boldsymbol{b}$
+            \item If $\boldsymbol{A}$ and $\boldsymbol{B}$ are symmetric, $\boldsymbol{A} + \boldsymbol{B}$ is also symmetric
+        \end{itemize}
+    \end{itemize}
+    \item Orthogonal (unitary) matrix: 
+    \begin{itemize}
+        \item Def: $\boldsymbol{A}^\intercal = \boldsymbol{A}^{-1}$
+        \item $\boldsymbol{A}\boldsymbol{A}^\intercal = \boldsymbol{A}^\intercal\boldsymbol{A} = \boldsymbol{I}$
+        \item Rows and columns are orthonormal
+        \item $\|\boldsymbol{A} \boldsymbol{x}\| = \|\boldsymbol{x}\|$
+        \item $(\boldsymbol{A}\boldsymbol{x}) \cdot (\boldsymbol{A}\boldsymbol{y}) = \boldsymbol{x} \cdot \boldsymbol{y}$
+    \end{itemize}    
+\end{itemize}
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Eigenvectors and eigenvalues} --- 
+\begin{itemize}
+    \item $\boldsymbol{q}$ is an eigenvector of $\boldsymbol{A}$ associated with an eigenvalue $\lambda$ if it remains on the same line after transformation by a linear map: $\boldsymbol{A}\boldsymbol{q} = \lambda\boldsymbol{q}$
+\end{itemize}
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Invertible matrix theorem} --- Following statements are equivalent for square matrix $\boldsymbol{A} \in \mathbb{R}^{n \times n}$: 
+\begin{itemize}
+    \item $\boldsymbol{A}$ is invertible
+    \item Only solution to $\boldsymbol{A}\boldsymbol{x} = 0$ is $\boldsymbol{x} = 0_v$\\
+    Proof:
+    \begin{itemize}
+        \item $\boldsymbol{A}^{-1} \boldsymbol{A} \boldsymbol{x} = 0 \Rightarrow \boldsymbol{I} \boldsymbol{x} = 0 \Rightarrow \boldsymbol{x} = 0_v$
+    \end{itemize}
+    \item $\boldsymbol{A}$ is non-singular
+    \item Columns (and rows) of $\boldsymbol{A}$ are linearly independent
+    \item $\textrm{rank}(\boldsymbol{A}) = n$
+    \item $\textrm{det}(\boldsymbol{A}) = 0$
+\end{itemize}
+Inversely, if $\boldsymbol{A}$ is not invertible, the columns and rows are not linearly independent, etc. 
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Positive definite (pd) and positive semi-definite matrices (psd)} --- 
+\begin{multicols}{2}
+\begin{itemize}
+    \item $\boldsymbol{A} \succ 0$ iff $\boldsymbol{x}^\intercal\boldsymbol{A}\boldsymbol{x} > 0$
+    \item $\boldsymbol{A} \succeq 0$ iff $\boldsymbol{x}^\intercal\boldsymbol{A}\boldsymbol{x} \geq 0$
+\end{itemize}
+\end{multicols}
+Properties:
+\begin{itemize}
+    \item If $\boldsymbol{A}$ is p(s)d, $\alpha\boldsymbol{A}$ is also p(s)d
+    \item If $\boldsymbol{A}$ and $\boldsymbol{B}$ are p(s)d, $\boldsymbol{A} + \boldsymbol{B}$ is also p(s)d
+    \item If $\textrm{det}(\boldsymbol{A}) = \prod_{i=1}^n \lambda_i > (\geq) \textrm{ } 0$ resp. $\{\lambda_i\}_{i=1}^n > (\geq) \textrm{ } 0$ for pd (psd)
+\end{itemize}
+
+{\color{black}\hrule height 0.001mm}
+
+\subsection*{Singular Value Decomposition (SVD)}
+\emph{SVD} --- 
+\begin{itemize}
+    \item For $\boldsymbol{A} \in \mathbb{R}^{n \times m}$, orthogonal rotation matrix $\boldsymbol{U} \in \mathbb{R}^{n \times n}$, diagonal scaling and projection matrix $\boldsymbol{S} \in \mathbb{R}^{n \times m}$, and orthogonal rotation matrix $\boldsymbol{V} \in \mathbb{R}^{m \times m}$: $\boldsymbol{A} = \boldsymbol{U} \boldsymbol{S} \boldsymbol{V}^\intercal$
+    \item For symmetric $\boldsymbol{A} \in \mathbb{R}^{n \times n}$: $\boldsymbol{A} = \boldsymbol{U} \boldsymbol{S} \boldsymbol{U}^\intercal$
+    \item In $\boldsymbol{S}$:
+    \begin{itemize}
+        \item Diagonal elements $\sigma_1, ...$ are the \emph{singular values} of $\boldsymbol{A}$
+        \item If $\sigma_1 \geq \sigma_2 ... \geq 0$, $\boldsymbol{S}$ is unique
+        \item \emph{Spectral norm} = $\sigma_{max} = \| \boldsymbol{A} \|_{\textrm{operator}} = sup_{\boldsymbol{x} \neq 0} \frac{\|\boldsymbol{A}\boldsymbol{x}\|_2}{\|\boldsymbol{x}\|_2}$\\
+        Proof:
+        \begin{itemize}
+            \item $\boldsymbol{A} = \boldsymbol{U} \boldsymbol{\Sigma} \boldsymbol{V}^T$
+            \item For any vector $\boldsymbol{x} \in \mathbb{R}^N$, we have:
+            $\|\boldsymbol{A}\boldsymbol{x}\|_2 = \|\boldsymbol{U} \boldsymbol{\Sigma} \boldsymbol{V}^T \boldsymbol{x}\|_2$
+            \item Since $\boldsymbol{U}$ is orthogonal, we can write:
+            $\|\boldsymbol{A}\boldsymbol{x}\|_2 = \|\boldsymbol{\Sigma} \boldsymbol{V}^T \boldsymbol{x}\|_2$
+            \item Let $\boldsymbol{y} = \boldsymbol{V}^T \boldsymbol{x}$. Substituting, we get:
+            $\|\boldsymbol{A}\boldsymbol{x}\|_2 = \|\boldsymbol{\Sigma} \boldsymbol{y}\|_2$ 
+            \item The diagonal matrix $\boldsymbol{\Sigma}$ scales the components of $\boldsymbol{y}$ by the singular values $\sigma_i$:
+            $\|\boldsymbol{\Sigma} \boldsymbol{y}\|_2 = \sqrt{\sum_{i=1}^r (\sigma_i y_i)^2}$
+            \item The supremum of $\|\boldsymbol{\Sigma} \boldsymbol{y}\|_2$ occurs when all the weight is on the largest singular value $\sigma_1$ 
+            \item Then, we see that:
+            $\|\boldsymbol{A}\|_2 = \sup_{\boldsymbol{y} \neq 0} \frac{\|\boldsymbol{\Sigma} \boldsymbol{y}\|_2}{\|\boldsymbol{y}\|_2}$ is achieved when $\boldsymbol{y}$ is aligned with the singular vector corresponding to $\sigma_1$, giving:
+            $\|\boldsymbol{A}\|_2 = \sigma_1 = \sigma_{\max}(\boldsymbol{A})$
+        \end{itemize}
+        \item Largest singular value $\sigma_{max}$ is always greater than largest eigenvalue $\rho(\boldsymbol{A})$
+        \item \emph{Condition number} = $\sigma_{max} / \sigma_{min}$
+        \item For square $\boldsymbol{A}$: Iff $\sigma_1, \sigma_2, ... > 0$, $\boldsymbol{A}$ is invertible 
+    \end{itemize}
+    \item SVD is closely related to spectral theorem:
+    \begin{itemize}
+        \item According to spectral theorem, every matrix $\boldsymbol{A}$ is symmetrically diagonizable (i.e. $\boldsymbol{A} = \boldsymbol{Q} \boldsymbol{\Lambda} \boldsymbol{Q}^\intercal$), iff $\boldsymbol{A}\boldsymbol{A}^\intercal = \boldsymbol{A}^\intercal\boldsymbol{A}$
+        \item If we apply SVD to $\boldsymbol{A}\boldsymbol{A}^\intercal$ resp. $\boldsymbol{A}^\intercal\boldsymbol{A}$:
+        \begin{itemize}
+            \item $\boldsymbol{A}\boldsymbol{A}^\intercal = \boldsymbol{U}\boldsymbol{S}\boldsymbol{V}^\intercal\boldsymbol{V}\boldsymbol{S}^\intercal\boldsymbol{U}^\intercal = \boldsymbol{U}(\boldsymbol{S}\boldsymbol{S}^\intercal)\boldsymbol{U}^\intercal$ since $\boldsymbol{V}$ is orthogonal and $\boldsymbol{V}^\intercal \boldsymbol{V} = \boldsymbol{I}$
+            \item $\boldsymbol{A}^\intercal\boldsymbol{A} = \boldsymbol{V}\boldsymbol{S}^\intercal\boldsymbol{U}^\intercal\boldsymbol{U}\boldsymbol{S}\boldsymbol{V}^\intercal = \boldsymbol{V}(\boldsymbol{S}^\intercal\boldsymbol{S})\boldsymbol{V}^\intercal$ since $\boldsymbol{U}$ is orthogonal and $\boldsymbol{U}^\intercal \boldsymbol{U} = \boldsymbol{I}$
+        \end{itemize}
+        \item $\boldsymbol{S}\boldsymbol{S}^\intercal$ and $\boldsymbol{S}^\intercal\boldsymbol{S}$ are diagonal matrices with elements $\sigma_1^2, \sigma_2^2, ...$
+        \item Given symmetric diagonalization for any matrix, we see that
+        \begin{itemize}
+            \item $\boldsymbol{S}$ contains square root of eigenvalues of $\boldsymbol{A}\boldsymbol{A}^\intercal$ resp. $\boldsymbol{A}^\intercal\boldsymbol{A}$
+            \item $\boldsymbol{U}$ contains eigenvectors of  $\boldsymbol{A}\boldsymbol{A}^\intercal$ as columns resp. $\boldsymbol{V}$ contains eigenvectors of $\boldsymbol{A}^\intercal\boldsymbol{A}$ as columns
+        \end{itemize}
+        \item According to spectral theorem, symmetric matrix $\boldsymbol{A}$ is symmetrically diagonizable (i.e. $\boldsymbol{A} = \boldsymbol{Q} \boldsymbol{\Lambda} \boldsymbol{Q}^\intercal$) 
+        \item If we apply SVD to symmetric matrix $\boldsymbol{A}$, we see that
+        \begin{itemize}
+            \item $\boldsymbol{S}$ contains absolute value of eigenvalues of $\boldsymbol{A}$ 
+            \item $\boldsymbol{U}$ contains eigenvectors of $\boldsymbol{A}$ as columns
+        \end{itemize}
+    \end{itemize}
+\end{itemize}
+
+{\color{black}\hrule height 0.001mm}
+
+\subsection*{Semiring}
+\emph{Semiring} ---
+\begin{itemize}
+    \item A 5-tuple $\mathcal{S} = (\mathcal{A}, \oplus, \otimes, \overline{0}, \overline{1})$ with the following properties:
+    \begin{itemize}
+        \item $(\mathcal{A}, \oplus, \overline{0})$ is a commutative monoid
+        \item $(\mathcal{A}, \otimes, \overline{1})$ is a monoid
+        \item $\otimes$ distributes over $\oplus$:
+        $
+        (a \oplus b) \otimes c = (a \otimes c) \oplus (b \otimes c)
+        $
+        $
+        c \otimes (a \oplus b) = (c \otimes a) \oplus (c \otimes b)
+        $
+        \item $\overline{0}$ is an annihilator for $\otimes$:
+        $
+        a \otimes \overline{0} = \overline{0}, \quad \overline{0} \otimes a = \overline{0}
+        $
+    \end{itemize}
+    \item A \emph{commutative semiring}: Semiring where $\otimes$ is commutative: $a \otimes b = b \otimes a$
+    \item An \emph{idempotent semiring}: 
+    \begin{itemize}
+        \item Semiring where $\oplus$ is idempotent: $a \oplus a = a$
+        \item For idempotent semirings, $\bigoplus_{k=0}^{K} \boldsymbol{M}^k = ( \boldsymbol{I} + \boldsymbol{M})^{K}$\\
+        Proof:
+        \begin{itemize}
+            \item Base case: $(\boldsymbol{I} \oplus \boldsymbol{M})^1 = \boldsymbol{I} \oplus \boldsymbol{M} = \boldsymbol{M}^0 \oplus \boldsymbol{M}^1 = \bigoplus_{k=0}^1 \boldsymbol{M}^k$
+            \item Inductive step: $(\boldsymbol{I} \oplus \boldsymbol{M})^{K+1} = \left( \bigoplus_{k=0}^K \boldsymbol{M}^k \right) \otimes (\boldsymbol{I} \oplus \boldsymbol{M}) = \bigoplus_{k=0}^K (\boldsymbol{M}^k \otimes \boldsymbol{I}) \oplus \bigoplus_{k=0}^K (\boldsymbol{M}^k \otimes \boldsymbol{M}) = \bigoplus_{k=0}^K \boldsymbol{M}^k \oplus \bigoplus_{k=0}^K \boldsymbol{M}^{k+1} = \bigoplus_{k=0}^K \boldsymbol{M}^k \oplus \bigoplus_{k=1}^{K+1} \boldsymbol{M}^k$
+            \item Because of idempotency, the repeated terms $ \boldsymbol{M}^k $ can be simplified ($ \boldsymbol{M}^k \oplus \boldsymbol{M}^k = \boldsymbol{M}^k$)
+            \item Then, we have: $(\boldsymbol{I} \oplus \boldsymbol{M})^{K+1} = \bigoplus_{k=0}^{K+1} \boldsymbol{M}^k$
+        \end{itemize}
+        \item We can also show that, $ \bigoplus_{k=0}^{K} \boldsymbol{M}^k = \bigoplus_{k=0}^{K} \bigotimes_{n=0}^{\lfloor \log_2 N \rfloor} \boldsymbol{M}^{\alpha_n 2^n}$ if we use binary decomposition on matrix $\boldsymbol{M}$\\
+        Proof:
+        \begin{itemize}
+            \item According to binary decomposition: $k = \sum_{n=0}^{\lfloor \log_2 N \rfloor} \alpha_n 2^n$ where $\alpha_n \in \{0, 1\}$ and $\alpha_n = 1$ if $2^n$ is part of the decomposition, otherwise $\alpha_n = 0$
+            \item Then, $\boldsymbol{M}^k = \boldsymbol{M}^{\sum_{n=0}^{\lfloor \log_2 N \rfloor} \alpha_n 2^n} = \bigotimes_{n=0}^{\lfloor \log_2 N \rfloor} \boldsymbol{M}^{\alpha_n 2^n}$
+        \end{itemize}
+    \end{itemize}
+    \item A \emph{closed semiring}: Semiring augmented with additional unary operation: \emph{Kleene star} $*$ (or \emph{asteration}):
+    \begin{itemize}
+        \item $
+        x^* = \bigoplus_{n=0}^\infty x^{\otimes n} = \overline{1} \oplus x \oplus x^{\otimes 2} \oplus x^{\otimes 3} \oplus \cdots
+        $
+        \item Allows computation of infinite sums
+        \item Kleene star must obey:
+        $
+        x^* = \overline{1} \oplus x \otimes x^* = \overline{1} \oplus x^* \otimes x
+        $\\
+        Proof:
+        \begin{itemize}
+            \item $ \overline{1} \oplus x \otimes x^* = \overline{1} \oplus x \otimes \left( \overline{1} \oplus x \oplus x^{\otimes 2} \oplus x^{\otimes 3} \oplus \cdots \right)$
+            \item Using the distributive property of $ \oplus $ over $ \otimes $, we distribute $ x \otimes $ across the terms and get:
+            $
+            \overline{1} \oplus x \otimes x^* = \overline{1} \oplus x \oplus (x \otimes x) \oplus (x \otimes x^{\otimes 2}) \oplus (x \otimes x^{\otimes 3}) \oplus \cdots = \overline{1} \oplus x \oplus x^{\otimes 2} \oplus x^{\otimes 3} \oplus \cdots
+            $
+        \end{itemize}
+        \item Examples:
+        \begin{itemize}
+            \item For the log-sum-exp semiring, the Kleene star is the geometric series:
+            $
+            x^* = \log(\sum_{n=0}^\infty e^{n\times x}) = \log (\frac{1}{1 - e^x})$ for $x < 0$
+            \item For the first part of the expectation semiring, the Kleene star is the geometric series:
+            $
+            x^* = \sum_{n=0}^\infty x^n = \frac{1}{1 - x}$ for $x \in (0, 1)$\\
+            Proof:
+            $
+            x^* = \frac{1}{1 - x} = 1 + \frac{1}{1 - x} -1 = 1 + \frac{1 - 1 + x}{1 - x} = 1 + \frac{x}{1 - x} = 1 + x \frac{1}{1 - x} = 1 + x x^*
+            $
+        \end{itemize}
+        \item As an alternative to Lehmann's algorithm, we can approximate Kleene star:
+        $
+        \sum_{k=0}^{K} \boldsymbol{M}^k \approx \boldsymbol{M}^*$ as $K \to \infty$ if $\rho(\boldsymbol{M}) < 1$ resp. $\sigma_{\max}(\boldsymbol{M}) = \| \boldsymbol{M} \|^2 < 1
+        $, since then $\boldsymbol{M}^k \to 0$ as $k \to \infty$
+        \item Truncation error of this approximation:
+        $
+        || \boldsymbol{M}^* - \sum_{k=0}^K \boldsymbol{M}^k || \leq \frac{\sigma_{\max}(\boldsymbol{M})^{K+1}}{1 - \sigma_{\max}(\boldsymbol{M})}
+        $\\
+        Proof:
+        \begin{itemize}
+            \item $\boldsymbol{M}^* - \sum_{k=0}^K \boldsymbol{M}^k = \sum_{k=K+1}^\infty \boldsymbol{M}^k = \boldsymbol{M}^{K+1} \sum_{k=K+1}^\infty \boldsymbol{M}^{k-(K+1)} = \boldsymbol{M}^{K+1} \sum_{m=0}^\infty \boldsymbol{M}^m = \boldsymbol{M}^{K+1} \boldsymbol{M}^*$
+            \item Then:
+            $
+            || \boldsymbol{M}^* - \sum_{k=0}^K \boldsymbol{M}^k || = || \boldsymbol{M}^{K+1} \boldsymbol{M}^* ||
+            $
+            \item Using the Cauchy-Schwarz inequality:
+            $
+            || \boldsymbol{M}^{K+1} \boldsymbol{M}^* || < || \boldsymbol{M}^{K+1} || \textrm{ } || \boldsymbol{M}^* ||
+            $
+            \item For $|| \boldsymbol{M}^{K+1} ||$:
+            $
+            || \boldsymbol{M}^{K+1} || \leq || \boldsymbol{M} ||^{K+1} = \sigma_{\max}(\boldsymbol{M})^{K+1}
+            $
+            \item For $|| \boldsymbol{M}^* ||$:
+            $
+            \sum_{n=0}^\infty || \boldsymbol{M}^n || \leq \sum_{n=0}^\infty || \boldsymbol{M} ||^n = \sum_{n=0}^\infty \sigma_{\max}(\boldsymbol{M})^n = \frac{1}{1 - \sigma_{\max}(\boldsymbol{M})}
+            $ where the second-to-last term is a geometric series
+            \item Then: $
+            || \boldsymbol{M}^* - \sum_{k=0}^K \boldsymbol{M}^k || \leq \frac{\sigma_{\max}(\boldsymbol{M})^{K+1}}{1 - \sigma_{\max}(\boldsymbol{M})}
+            $
+        \end{itemize}
+        \item Good approximation, especially if $\sigma_{\max} \ll 1$, since then the error becomes very small
+        \item Runtime complexity exponential in $K$
+    \end{itemize}
+    \item A \emph{$\overline{0}$-closed semiring}:
+    \begin{itemize}
+        \item $\overline{1} \oplus a = \overline{1}$
+        \item Examples: tropical and arctic semiring
+        \item Properties:
+        \begin{itemize}
+            \item $
+            x^* = \bigoplus_{n=0}^{N-1} x^{\otimes n}$ since cycles in a path of length $\geq N$ do not contribute 
+            \item Idempotent\\
+            Proof:
+            $a \oplus a = a \otimes (\overline{1} + \overline{1}) = a \otimes \overline{1} = a$ where the second last step follows due to defining property of $\overline{0}$-closed semiring 
+        \end{itemize}
+    \end{itemize}
+\end{itemize}
+Kinds of semirings:
+\begin{itemize}
+    \item Boolean semiring $(\{0, 1\}, \lor, \land, 0, 1)$
+    \item Inside semiring $(\mathbb{R} \cup \{\infty\}, +, \times, 0, 1)$
+    \item Log-sum-exp semiring: $(\mathbb{R} \cup \{-\infty\}, \oplus_{\textrm{log}}, +, -\infty, 0)$ where $a \oplus_{\textrm{log}} b = \log(e^a + e^b)$
+    \item Viterbi semiring $([0,1], \max, \times, 0,1)$ (for original Viterbi algorithm) or $(\mathbb{R}, \max, \times, 0,1)$ (for syntactic parsing)
+    \item Arctic semiring resp. max-plus semiring $(\mathbb{R} \cup \{-\infty\}, \max, +, -\infty, 0)$
+    \item Tropical semiring $(\mathbb{R} \cup \{\infty\}, \min, +, \infty, 0)$
+    \item Language semiring: $(2^{\Sigma^*}, \cup, \circ, \{\}, \{\epsilon\})$ where $2^{\Sigma^*}$ is the set of all possible languages and $A \circ B = \{a \circ b \mid a \in A, b \in B\}$ is the concatenation
+    \item Expectation semiring $
+    ( \langle \mathbb{R} \times \mathbb{R} \rangle, \oplus, \otimes, \overline{0}, \overline{1} )
+    $ where:
+    \begin{itemize}
+        \item
+        $
+        \langle x, y \rangle \oplus \langle x', y' \rangle = \langle x + x', y + y' \rangle
+        $
+        \item $
+        \langle x, y \rangle \otimes \langle x', y' \rangle = \langle x \cdot x', x \cdot y' + x' \cdot y \rangle$
+        \item $\overline{0} = \langle 0,0 \rangle$
+        \item $\overline{1} = \langle 1,0 \rangle$
+    \end{itemize}
+\end{itemize}
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Monoid} ---
+\begin{itemize}
+    \item Consists of a set $\mathcal{A}$, an operation $*$, and an identity element $e$, such that:
+    \begin{itemize}
+        \item Associativity: $(a * b) * c = a * (b * c)$
+        \item Identity: $a * e = e * a = a$
+    \end{itemize}
+    \item A \emph{commutative monoid}: additionally commutative: $a * b = b * a$
+\end{itemize}

@@ -1,0 +1,148 @@
+\section{Linear Algebra}
+\subsection*{Semiring}
+\emph{Monoid} ---
+\begin{itemize}
+    \item Consists of a set $\mathcal{A}$, an operation $*$, and an identity element $e$, such that:
+    \begin{itemize}
+        \item Associativity: $(a * b) * c = a * (b * c)$
+        \item Identity: $a * e = e * a = a$
+    \end{itemize}
+    \item \emph{Commutative monoid}: Additionally commutative: $a * b = b * a$
+\end{itemize}
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Semiring} ---
+\begin{itemize}
+    \item $(\mathcal{A}, \oplus, \otimes, \overline{0}, \overline{1})$:
+    \begin{itemize}
+        \item $(\mathcal{A}, \oplus, \overline{0})$ is a commutative monoid
+        \item $(\mathcal{A}, \otimes, \overline{1})$ is a monoid
+        \item $\otimes$ distributes over $\oplus$:
+        $
+        (a \oplus b) \otimes c = (a \otimes c) \oplus (b \otimes c), \quad
+        c \otimes (a \oplus b) = (c \otimes a) \oplus (c \otimes b)
+        $
+        \item $\overline{0}$ is an annihilator for $\otimes$:
+        $
+        a \otimes \overline{0} = \overline{0}, \quad \overline{0} \otimes a = \overline{0}
+        $
+    \end{itemize}
+    \item \emph{Commutative semiring}: $\otimes$ is commutative: $a \otimes b = b \otimes a$
+    \item \emph{Idempotent semiring}: $\oplus$ is idempotent: $a \oplus a = a$
+    \begin{itemize}
+        \item For idempotent semirings, $\bigoplus_{k=0}^{K} \boldsymbol{M}^k = ( \boldsymbol{I} + \boldsymbol{M})^{K}$\\
+        Proof:
+        \begin{itemize}
+            \item Base case: $(\boldsymbol{I} \oplus \boldsymbol{M})^1 = \boldsymbol{I} \oplus \boldsymbol{M} = \boldsymbol{M}^0 \oplus \boldsymbol{M}^1 = \bigoplus_{k=0}^1 \boldsymbol{M}^k$
+            \item Inductive step: $(\boldsymbol{I} \oplus \boldsymbol{M})^{K+1} = \left( \bigoplus_{k=0}^K \boldsymbol{M}^k \right) \otimes (\boldsymbol{I} \oplus \boldsymbol{M}) = \bigoplus_{k=0}^K (\boldsymbol{M}^k \otimes \boldsymbol{I}) \oplus \bigoplus_{k=0}^K (\boldsymbol{M}^k \otimes \boldsymbol{M}) = \bigoplus_{k=0}^K \boldsymbol{M}^k \oplus \bigoplus_{k=0}^K \boldsymbol{M}^{k+1} = \bigoplus_{k=0}^K \boldsymbol{M}^k \oplus \bigoplus_{k=1}^{K+1} \boldsymbol{M}^k$
+            \item Because of idempotency, the repeated terms $ \boldsymbol{M}^k $ can be simplified ($ \boldsymbol{M}^k \oplus \boldsymbol{M}^k = \boldsymbol{M}^k$)
+            \item Then, we have: $(\boldsymbol{I} \oplus \boldsymbol{M})^{K+1} = \bigoplus_{k=0}^{K+1} \boldsymbol{M}^k$
+        \end{itemize}
+        \item We can also show that, $ \bigoplus_{k=0}^{K} \boldsymbol{M}^k = \bigoplus_{k=0}^{K} \bigotimes_{n=0}^{\lfloor \log_2 N \rfloor} \boldsymbol{M}^{\alpha_n 2^n}$ if we use binary decomposition on matrix $\boldsymbol{M}$\\
+        Proof:
+        \begin{itemize}
+            \item According to binary decomposition: $k = \sum_{n=0}^{\lfloor \log_2 N \rfloor} \alpha_n 2^n$ where $\alpha_n \in \{0, 1\}$ and $\alpha_n = 1$ if $2^n$ is part of the decomposition, otherwise $\alpha_n = 0$
+            \item Then, $\boldsymbol{M}^k = \boldsymbol{M}^{\sum_{n=0}^{\lfloor \log_2 N \rfloor} \alpha_n 2^n} = \bigotimes_{n=0}^{\lfloor \log_2 N \rfloor} \boldsymbol{M}^{\alpha_n 2^n}$
+        \end{itemize}
+    \end{itemize}
+    \item \emph{Closed semiring}: Additional unary operation: \emph{Kleene star} $*$ (\emph{asteration}):
+    \begin{itemize}
+        \item $
+        x^* = \bigoplus_{n=0}^\infty x^{\otimes n} = \overline{1} \oplus x \oplus x^{\otimes 2} \oplus x^{\otimes 3} \oplus \cdots
+        $
+        \item Properties:
+        $
+        x^* = \overline{1} \oplus x \otimes x^* = \overline{1} \oplus x^* \otimes x
+        $\\
+        Proof:
+        \begin{itemize}
+            \item $ \overline{1} \oplus x \otimes x^* = \overline{1} \oplus x \otimes \left( \overline{1} \oplus x \oplus x^{\otimes 2} \oplus x^{\otimes 3} \oplus \cdots \right)$
+            \item Using the distributive property of $ \oplus $ over $ \otimes $, we distribute $ x \otimes $ across the terms and get:
+            $
+            \overline{1} \oplus x \otimes x^* = \overline{1} \oplus x \oplus (x \otimes x) \oplus (x \otimes x^{\otimes 2}) \oplus (x \otimes x^{\otimes 3}) \oplus \cdots = \overline{1} \oplus x \oplus x^{\otimes 2} \oplus x^{\otimes 3} \oplus \cdots
+            $
+        \end{itemize}
+        \item E.g.:
+        \begin{itemize}
+            \item For the log-sum-exp semiring, the Kleene star is the geometric series:
+            $
+            x^* = \log(\sum_{n=0}^\infty e^{n\times x}) = \log (\frac{1}{1 - e^x})$ for $x < 0$
+            \item For the first part of the expectation semiring, the Kleene star is the geometric series:
+            $
+            x^* = \sum_{n=0}^\infty x^n = \frac{1}{1 - x}$ for $x \in (0, 1)$\\
+            Proof:
+            $
+            x^* = \frac{1}{1 - x} = 1 + \frac{1}{1 - x} -1 = 1 + \frac{1 - 1 + x}{1 - x} = 1 + \frac{x}{1 - x} = 1 + x \frac{1}{1 - x} = 1 + x x^*
+            $
+        \end{itemize}
+        \item As an alternative to Lehmann's algorithm, we can approximate Kleene star:
+        $
+        \sum_{k=0}^{K} \boldsymbol{M}^k \approx \boldsymbol{M}^*$ as $K \to \infty$ if $\rho(\boldsymbol{M}) < 1$ resp. $\sigma_{\max}(\boldsymbol{M}) = \| \boldsymbol{M} \|^2 < 1
+        $, since then $\boldsymbol{M}^k \to 0$ as $k \to \infty$
+        \item \emph{Truncation error} of this approximation:
+        $
+        || \boldsymbol{M}^* - \sum_{k=0}^K \boldsymbol{M}^k || \leq \frac{\sigma_{\max}(\boldsymbol{M})^{K+1}}{1 - \sigma_{\max}(\boldsymbol{M})}
+        $\\
+        Proof:
+        \begin{itemize}
+            \item $\boldsymbol{M}^* - \sum_{k=0}^K \boldsymbol{M}^k = \sum_{k=K+1}^\infty \boldsymbol{M}^k = \boldsymbol{M}^{K+1} \sum_{k=K+1}^\infty \boldsymbol{M}^{k-(K+1)} = \boldsymbol{M}^{K+1} \sum_{m=0}^\infty \boldsymbol{M}^m = \boldsymbol{M}^{K+1} \boldsymbol{M}^*$
+            \item Then:
+            $
+            || \boldsymbol{M}^* - \sum_{k=0}^K \boldsymbol{M}^k || = || \boldsymbol{M}^{K+1} \boldsymbol{M}^* ||
+            $
+            \item Using the Cauchy-Schwarz inequality:
+            $
+            || \boldsymbol{M}^{K+1} \boldsymbol{M}^* || < || \boldsymbol{M}^{K+1} || \textrm{ } || \boldsymbol{M}^* ||
+            $
+            \item For $|| \boldsymbol{M}^{K+1} ||$:
+            $
+            || \boldsymbol{M}^{K+1} || \leq || \boldsymbol{M} ||^{K+1} = \sigma_{\max}(\boldsymbol{M})^{K+1}
+            $
+            \item For $|| \boldsymbol{M}^* ||$:
+            $
+            \sum_{n=0}^\infty || \boldsymbol{M}^n || \leq \sum_{n=0}^\infty || \boldsymbol{M} ||^n = \sum_{n=0}^\infty \sigma_{\max}(\boldsymbol{M})^n = \frac{1}{1 - \sigma_{\max}(\boldsymbol{M})}
+            $ where the second-to-last term is a geometric series
+            \item Then: $
+            || \boldsymbol{M}^* - \sum_{k=0}^K \boldsymbol{M}^k || \leq \frac{\sigma_{\max}(\boldsymbol{M})^{K+1}}{1 - \sigma_{\max}(\boldsymbol{M})}
+            $
+        \end{itemize}
+        \item Good approximation, especially if $\sigma_{\max} \ll 1$, since then the error becomes very small
+        \item Runtime complexity exponential in $K$
+    \end{itemize}
+    \item \emph{$\overline{0}$-closed semiring}: $\overline{1} \oplus a = \overline{1}$
+    \begin{itemize}
+        \item Properties:
+        \begin{itemize}
+            \item $
+            x^* = \bigoplus_{n=0}^{N-1} x^{\otimes n}$ since cycles in a path of length $\geq N$ do not contribute 
+            \item Idempotent\\
+            Proof:
+            $a \oplus a = a \otimes (\overline{1} + \overline{1}) = a \otimes \overline{1} = a$ where the second last step follows due to defining property of $\overline{0}$-closed semiring 
+        \end{itemize}
+        \item E.g.: Tropical and arctic semiring
+    \end{itemize}
+\end{itemize}
+Common semirings:
+\begin{itemize}
+    \item \emph{Boolean semiring $(\{0, 1\}, \lor, \land, 0, 1)$
+    \item Inside semiring $(\mathbb{R} \cup \{\infty\}, +, \times, 0, 1)$
+    \item \emph{Log-sum-exp semiring}: $(\mathbb{R} \cup \{-\infty\}, \oplus_{\textrm{log}}, +, -\infty, 0)$ where $a \oplus_{\textrm{log}} b = \log(e^a + e^b)$
+    \item \emph{Viterbi semiring}: $([0,1], \max, \times, 0,1)$ (for original Viterbi algorithm) or $(\mathbb{R}, \max, \times, 0,1)$ (for syntactic parsing)
+    \item \emph{Arctic semiring}: $(\mathbb{R} \cup \{-\infty\}, \max, +, -\infty, 0)$
+    \item \emph{Tropical semiring}: $(\mathbb{R} \cup \{\infty\}, \min, +, \infty, 0)$
+    \item \emph{Language semiring}: $(2^{\Sigma^*}, \cup, \circ, \{\}, \{\epsilon\})$ where $2^{\Sigma^*}$ is the set of all possible languages and $A \circ B = \{a \circ b \mid a \in A, b \in B\}$ is the concatenation
+    \item \emph{Expectation semiring}: $
+    ( \langle \mathbb{R} \times \mathbb{R} \rangle, \oplus, \otimes, \overline{0}, \overline{1} )
+    $ where:
+    \begin{itemize}
+        \item
+        $
+        \langle x, y \rangle \oplus \langle x', y' \rangle = \langle x + x', y + y' \rangle
+        $
+        \item $
+        \langle x, y \rangle \otimes \langle x', y' \rangle = \langle x \cdot x', x \cdot y' + x' \cdot y \rangle$
+        \item $\overline{0} = \langle 0,0 \rangle$
+        \item $\overline{1} = \langle 1,0 \rangle$
+    \end{itemize}
+\end{itemize}

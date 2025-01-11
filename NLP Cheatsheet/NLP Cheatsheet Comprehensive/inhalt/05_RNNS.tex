@@ -1,0 +1,54 @@
+\section{Recurrent Neural Networks (RNN)}
+\subsection*{Formulation}
+\emph{Formulation} --- 
+\begin{itemize}
+    \item Model architecture: 
+    \begin{itemize}
+        \item Input layer
+        \item Hidden layer resp. \emph{memory cell}: \emph{Cell state} $\boldsymbol{h}_t$, \emph{cell output} $\boldsymbol{y}_t$
+        \item Output layer
+    \end{itemize}
+    \item Output of neuron in layer $n$: \\
+    $
+    \boldsymbol{Y}_{t} = \phi \left( \boldsymbol{X}_{t} \boldsymbol{W}_{x} + \boldsymbol{H}_{t-1} \boldsymbol{W}_{y} + \boldsymbol{b} \right) \boldsymbol{V}
+    = \phi \left( \begin{bmatrix} \boldsymbol{X}_{t} \\ \boldsymbol{H}_{t-1} \end{bmatrix} \boldsymbol{W} + \boldsymbol{b} \right) \boldsymbol{V}
+    $
+    \begin{itemize}
+        \item $\boldsymbol{V}$ is optional: If $\boldsymbol{V} = \boldsymbol{I}$ (identity matrix), $\boldsymbol{H}_{t} = \boldsymbol{Y}_{t}$, this is assumed in the following
+        \item $\boldsymbol{Y}_{t}$ is an $n_{\text{instances}} \times n_{\text{neurons}}$ matrix containing layer outputs for instances at time $t$
+        \item $\boldsymbol{X}_{t}$ is an $n_{\text{instances}} \times m$ matrix containing encoded inputs for all instances
+        \item $\boldsymbol{H}_{t-1}$ is an $n_{\text{instances}} \times n_{\text{neurons}}$ matrix containing cell state outputs for instances at time $t-1$
+        \item $\boldsymbol{W}_{x}$ is an $m \times n_{\text{neurons}}$ matrix containing connection weights for $\boldsymbol{X}_{t}$
+        \item $\boldsymbol{W}_{y}$ is an $n_{\text{neurons}} \times n_{\text{neurons}}$ matrix containing connection weights for $\boldsymbol{Y}_{t-1}$ (resp. $\boldsymbol{H}_{t-1}$)
+        \item $\boldsymbol{b}$ is a vector of length $n_{\text{neurons}}$ containing the bias term
+        \item $\boldsymbol{W} = \begin{bmatrix} \boldsymbol{W}_{x} \\ \boldsymbol{W}_{y} \end{bmatrix}$
+        \item $\phi$ is a non-linear activation function
+    \end{itemize}
+\end{itemize}
+
+{\color{black}\hrule height 0.001mm}
+
+\subsection*{Optimization}
+\emph{Parameters} --- Find parameters $\theta = \boldsymbol{W}_x, \boldsymbol{W}_y, \boldsymbol{b}, \boldsymbol{X}_t$, which are shared across time steps
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Objective function} --- 
+\begin{itemize}
+    \item Maximize log likelihood
+\end{itemize}
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Optimization} ---
+\begin{itemize}
+    \item Perform forward pass
+    \item Perform backpropagation
+    \item Gradient:
+    \begin{itemize}
+        \item $\boldsymbol{y} = \varphi( \boldsymbol{X}_h \boldsymbol{W}_h )$
+        \item $\nabla_{\boldsymbol{W}_h} L \propto \sum_{k=1}^t ( \prod_{i=k+1}^t \frac{\partial h_i}{\partial h_{i-1}} ) \frac{\partial h_k}{\partial \boldsymbol{W}_k}$
+        \item $\frac{\partial h_{i+k}}{\partial h_{i}} = \prod_{j=0}^{k-1} \frac{\partial h_{i+k-j}}{\partial h_{i+k-j-1}}$
+    \end{itemize}
+    \item Perform gradient descent
+\end{itemize}

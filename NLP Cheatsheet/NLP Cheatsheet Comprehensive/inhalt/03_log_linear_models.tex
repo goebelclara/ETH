@@ -1,0 +1,99 @@
+\section{Log Linear Models}
+\subsection*{Formulation}
+\begin{itemize}
+    \item Family of probability distributions defined as:
+    $p(y \mid \boldsymbol{x}, \boldsymbol{\theta}) = \frac{\exp(\boldsymbol{\theta} \cdot f(\boldsymbol{x}, y))}{Z(\boldsymbol{\theta})} = \frac{\exp(\boldsymbol{\theta} \cdot f(\boldsymbol{x}, y))}{\sum_{y'} \exp(\boldsymbol{\theta} \cdot f(\boldsymbol{x}, y'))}$ where:
+    \begin{itemize}
+        \item $Z$ is a \emph{partition function} which normalizes 
+        \item $\boldsymbol{\theta} \cdot f(\boldsymbol{x}, y) = \sum_{i=1}^m \theta_i f_i(\boldsymbol{x}, y)$ is a freely chosen scoring function, that says how good $\boldsymbol{x}$ and $y$ are together, where $\boldsymbol{\theta}$ are the \emph{parameters} and $f(\boldsymbol{x}, y)$ is a \emph{feature function}
+    \end{itemize}
+    \item If we take the log of $p(y \mid \boldsymbol{x}, \boldsymbol{\theta})$, we get a linear function: $\log(p(y \mid \boldsymbol{x}, \boldsymbol{\theta})) = \boldsymbol{\theta} \cdot f(\boldsymbol{x}, y) + \textrm{constant}$
+\end{itemize}
+
+{\color{black}\hrule height 0.001mm}
+
+\subsection*{Optimization}
+\emph{Parameters} --- Find parameters $\boldsymbol{\theta}$
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Objective function} --- 
+\begin{itemize}
+    \item $
+    \boldsymbol{\theta} = argmin_{\boldsymbol{\theta}} \textrm{ log loss}
+    $
+    \item $\textrm{Log loss} = -\sum_{i=1}^n \log(p(y^{(i)} \mid \boldsymbol{x}^{(i)}, \boldsymbol{\theta}))$
+    $
+    = -\sum_{i=1}^n \log(\frac{\exp(\boldsymbol{\theta} \cdot f(\boldsymbol{x}^{(i)}, y^{(i)}))}{\sum_{y'} \exp(\boldsymbol{\theta} \cdot f(\boldsymbol{x}^{(i)}, y'))})
+    $
+    $
+    = -\sum_{i=1}^n \boldsymbol{\theta} \cdot f(\boldsymbol{x}^{(i)}, y^{(i)}) - \log(\sum_{y'} \exp(\boldsymbol{\theta} \cdot f(\boldsymbol{x}^{(i)}, y')))
+    $
+\end{itemize}
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Optimization} ---
+First-order derivative:
+\begin{itemize}
+    \item Gradient of log loss given by:
+    $
+    \frac{\partial}{\partial \boldsymbol{\theta}} \textrm{log loss} = -\sum_{i=1}^n \frac{\partial}{\partial \boldsymbol{\theta}} ( \boldsymbol{\theta} \cdot f(\boldsymbol{x}^{(i)}, y^{(i)}) - \log(\sum_{y'} \exp(\boldsymbol{\theta} \cdot f(\boldsymbol{x}^{(i)}, y'))))
+    $
+    \item $
+    = -\sum_{i=1}^n ( f(\boldsymbol{x}^{(i)}, y^{(i)}) - \frac{\sum_{y'} \exp(\boldsymbol{\theta} \cdot f(\boldsymbol{x}^{(i)}, y')) \times f(\boldsymbol{x}^{(i)}, y')}{\sum_{y'} \exp(\boldsymbol{\theta} \cdot f(\boldsymbol{x}^{(i)}, y'))} )
+    $\\
+    since:
+    $\frac{\partial}{\partial x} \log{e^{\alpha x}} = \frac{1}{e^{\alpha x}} \times \frac{\partial e^{\alpha x}}{\partial x} = \frac{1}{e^{\alpha x}} \times e^{\alpha x} \times \frac{\partial \alpha x}{\partial x} = \frac{1}{e^{\alpha x}} \times e^{\alpha x} \times \alpha$
+    \item $
+    = - \sum_{i=1}^n ( f(\boldsymbol{x}^{(i)}, y^{(i)}) - \sum_{y'} p(y' \mid \boldsymbol{x}^{(i)}, \boldsymbol{\theta}) \times f(\boldsymbol{x}^{(i)}, y') )
+    $
+    \item $
+    = - \sum_{i=1}^n f(\boldsymbol{x}^{(i)}, y^{(i)}) + \sum_{i=1}^n \sum_{y'} p(y' \mid \boldsymbol{x}^{(i)}, \boldsymbol{\theta}) \times f(\boldsymbol{x}^{(i)}, y')
+    $
+    \item $
+    = - \sum_{i=1}^n f(\boldsymbol{x}^{(i)}, y^{(i)}) + \sum_{i=1}^n \mathbb{E}(f(\boldsymbol{x}^{(i)}, y'))
+    $
+    \item If we set gradient to 0, we have \emph{expectation matching} (observed features $=$ expected features): $\sum_{i=1}^n f(\boldsymbol{x}^{(i)}, y^{(i)}) = \sum_{i=1}^n \mathbb{E}(f(\boldsymbol{x}^{(i)}, y'))$
+\end{itemize}
+Second-order derivative:
+\begin{itemize}
+    \item Hessian of log loss given by:
+    $
+    \frac{\partial^2 \textrm{ log loss}}{\partial \boldsymbol{\theta} \partial \boldsymbol{\theta}^\intercal} = \frac{\partial}{\partial \boldsymbol{\theta}^\intercal} \textrm{ gradient of log loss}
+    $
+    \item $
+    = \frac{\partial}{\partial \boldsymbol{\theta}^\intercal} ( - \sum_{i=1}^n ( f(\boldsymbol{x}^{(i)}, y^{(i)}) - \frac{\sum_{y'} \exp(\boldsymbol{\theta} \cdot f(\boldsymbol{x}^{(i)}, y')) \times f(\boldsymbol{x}^{(i)}, y')}{\sum_{y'} \exp(\boldsymbol{\theta} \cdot f(\boldsymbol{x}^{(i)}, y'))} ) )
+    $ where
+    \begin{itemize}
+        \item $f(x) = h(x) \times k(x)$
+        \item $h(x) = \exp(\boldsymbol{\theta} \cdot f(\boldsymbol{x}^{(i)}, y'))$
+        \item $k(x) = \frac{1}{\sum_{y'} \exp(\boldsymbol{\theta} \cdot f(\boldsymbol{x}^{(i)}, y'))}$
+        \item $g(x) = f(\boldsymbol{x}^{(i)}, y')$
+    \end{itemize}
+    \item $ = 0 + \sum_{i=1}^n \sum_{y'} ( h'(x)k(x) + k'(x)h(x) ) g(x) + g'(x)h(x)k(x)$ where
+    \begin{itemize}
+        \item $h'(x) = \exp(\boldsymbol{\theta} \cdot f(\boldsymbol{x}^{(i)}, y')) \times f(\boldsymbol{x}^{(i)}, y')$
+        \item $k'(x) = -\frac{1}{(\sum_{y'} \exp(\boldsymbol{\theta} \cdot f(\boldsymbol{x}^{(i)}, y')))^2} \times \sum_{y'} \exp(\boldsymbol{\theta} \cdot f(\boldsymbol{x}^{(i)}, y')) \times f(\boldsymbol{x}^{(i)}, y')$\\
+        since: $\frac{\partial}{\partial x} \frac{1}{e^{\alpha x}} = \frac{\partial}{\partial x} (e^{\alpha x})^{-1} = -\frac{1}{(e^{\alpha x})^2} \times \frac{\partial e^{\alpha x}}{\partial x} = -\frac{1}{(e^{\alpha x})^2} \times e^{\alpha x} \times \frac{\partial \alpha x}{\partial x} = -\frac{1}{(e^{\alpha x})^2} \times e^{\alpha x} \times \alpha$
+        \item $g'(x) = 0$
+    \end{itemize}
+    \item $ = \sum_{i=1}^n \sum_{y'} \exp(\boldsymbol{\theta} \cdot f(\boldsymbol{x}^{(i)}, y')) \times f(\boldsymbol{x}^{(i)}, y')$ 
+    $\times \frac{1}{\sum_{y'} \exp(\boldsymbol{\theta} \cdot f(\boldsymbol{x}^{(i)}, y'))}$
+    $\times f(\boldsymbol{x}^{(i)}, y')$
+    $- \frac{1}{(\sum_{y'} \exp(\boldsymbol{\theta} \cdot f(\boldsymbol{x}^{(i)}, y')))^2} \times \sum_{y'} \exp(\boldsymbol{\theta} \cdot f(\boldsymbol{x}^{(i)}, y')) \times f(\boldsymbol{x}^{(i)}, y')$
+    $\times \exp(\boldsymbol{\theta} \cdot f(\boldsymbol{x}^{(i)}, y'))$
+    $\times f(\boldsymbol{x}^{(i)}, y')$
+    $+0$
+    \item $ = \sum_{i=1}^n \sum_{y'} p(y' \mid \boldsymbol{x}^{(i)}, \boldsymbol{\theta}) f(\boldsymbol{x}^{(i)}, y') f(\boldsymbol{x}^{(i)}, y')^\intercal - p(y' \mid \boldsymbol{x}^{(i)}, \boldsymbol{\theta}) f(\boldsymbol{x}^{(i)}, y') \sum_{y'} p(y' \mid \boldsymbol{x}^{(i)}, \boldsymbol{\theta}) f(\boldsymbol{x}^{(i)}, y')^\intercal$
+    \item $ = \sum_{i=1}^n \mathbb{E}[f(\boldsymbol{x}^{(i)}, y') f(\boldsymbol{x}^{(i)}, y')^\intercal] - \sum_{i=1}^n( (\sum_{y'} p(y' \mid \boldsymbol{x}^{(i)}, \boldsymbol{\theta}) f(\boldsymbol{x}^{(i)}, y')) (\sum_{y'} p(y' \mid \boldsymbol{x}^{(i)}, \boldsymbol{\theta}) f(\boldsymbol{x}^{(i)}, y')^\intercal) )$
+    \item $ = \sum_{i=1}^n \mathbb{E}[f(\boldsymbol{x}^{(i)}, y') f(\boldsymbol{x}^{(i)}, y')^\intercal] - \sum_{i=1}^n( \mathbb{E}[f(\boldsymbol{x}^{(i)}, y')] \mathbb{E}[f(\boldsymbol{x}^{(i)}, y')] )$
+    \item $= \sum_{i=1}^n Cov(f(\boldsymbol{x}^{(i)}, y'))$
+    \item We can set a different prior by introducing an offset:
+    \begin{itemize}
+        \item $
+        p_k = \frac{e^{z_k + t_k}}{\sum_{\ell=1}^k e^{z_\ell + t_\ell}}
+        $ where $t_k = \ln(\frac{q(x_k)}{p(x_k)})$
+        \item Then, the prior on $x$ ($p(x)$) is replaced by $q(x)$
+    \end{itemize}
+\end{itemize}

@@ -1,0 +1,676 @@
+\section{Probability and Statistics}
+\subsection*{Terminology}
+\emph{Kolmogorov axioms} --- 
+Probability space defined by:
+\begin{itemize}
+    \item Sample space: All possible outcomes $\Omega = \{\omega_1,...,\omega_n\}$, e.g. for a dice toss $\{ 1,2,3,4,5,6 \}$
+    \item Event space: 
+    \begin{itemize}
+        \item All possible results
+        \item Corresponds to the powerset of the sample space:
+        \begin{itemize}
+            \item Powerset includes the empty set, single-item sets, ..., full-item sets
+            \item E.g. powerset of $\{ 1,2,3,4,5,6 \}$ is $\{ \{\}, \{1\}, \{2\}, ..., \{1,2\}\ ,  \{2,3\}\, ...,  \{1,2,3,4,5,6\}\}$ where e.g. event $\{1,2\}$ refers to the event of rolling a $1$ or $2$
+            \item Powerset has size $2^{|\Omega|}$
+        \end{itemize}
+        \item An event is a subset of the sample space
+        \item E.g. tossing an even number $\{ 2,4,6 \}$
+    \end{itemize}
+    \item Probability measure: Function that assigns a probability to an event, e.g. $p(\textrm{tossing an even number}) = \frac{3}{6} = \frac{1}{2}$ 
+\end{itemize}
+Axioms:
+\begin{itemize}
+    \item Probability measure must satisfy:
+    \begin{itemize}
+        \item $0 \leq \mathbb{P}(A) \leq 1$
+        \item $\mathbb{P}({\Omega}) = 1$
+        \item If $A_1,A_2,...$ are in sample space and do not intersect, then $\mathbb{P}(A_1 \cup A_2 \cup ...) = \int_{n=1}^{\infty} \mathbb{P}(A_n)$
+    \end{itemize}
+\end{itemize}
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Variables} --- 
+\begin{itemize}
+    \item Target space: Numeric values that the random variable can take, e.g. for a dice toss $\{ 1,2,3,4,5,6\}$
+    \item Random variable:
+    \begin{itemize}
+        \item Function that takes an element in sample space and returns a numeric value, e.g. $\mathcal{X}(3) = 3$
+        \item Discrete random variable: Characterized by pmf
+        \item Continuous random variable: Characterized by pdf
+    \end{itemize}
+    \item Independent random variables:
+    \begin{itemize}
+        \item $\mathbb{P}(A|B) = \mathbb{P}(A)$ and $\mathbb{P}(B|A) = \mathbb{P}(B)$
+        \item From this follows that $f_{A|B}(a|b) = f_A(a)$ and $\mathbb{E}(A|B) = \mathbb{E}(A)$ 
+        \item $\mathbb{P}(A, B) = \mathbb{P}(A)\mathbb{P}(B)$
+        \item From this it follows that $f_{A,B}(a,b) = f_A(a) f_B(b)$ and $\mathbb{E}(A,B) = \mathbb{E}(A)\mathbb{E}(B)$
+        \item Correlation is 0 
+    \end{itemize}
+\end{itemize}
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Events} --- 
+\begin{itemize}
+    \item Complement: $\mathbb{P}(A^C) = 1 - \mathbb{P}(A)$ and $\mathbb{P}(A \cup A^C) = \mathbb{P}(A)\mathbb{P}(A^C)$
+    \item Disjoint / mutually exclusive vs. joint / mutually inclusive
+    \item Subset $A \subset B$ with $\mathbb{P}(A) < \mathbb{P}(B)$
+\end{itemize}
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Probabilities} --- 
+\begin{itemize}
+    \item Marginal probability $\mathbb{P}(A)$: Probability for single variable: $p(\mathcal{X}) = \sum_{\mathcal{Y}}p(x,y)$ resp. $f(\mathcal{X}) = \int_{\mathcal{Y}}f(x,y)dy$
+    \item Joint probability $\mathbb{P}(A, B)$: Probability for combination of variables, given by all possible combinations resp. convolution of their pdfs 
+    \item Conditional probability $\mathbb{P}(A|B) = \frac{\mathbb{P}(A, B)}{\mathbb{P}(B)}$: Probability for variable, given other variable: $p(\mathcal{X}|\mathcal{Y}) = \frac{p(x,y)}{\sum_{\mathcal{X}}p(x,y)}$ resp. $f(\mathcal{X}|\mathcal{Y}) = \frac{f(x,y)}{\int_{\mathcal{X}}f(x,y)dy}$
+    \begin{itemize}
+        \item $\mathbb{P}(A|B) = 1 - \mathbb{P}(A^C|B)$
+        \item $\mathbb{P}(A_1|B) + \mathbb{P}(A_2|B) + ... = 1$
+    \end{itemize}
+    \item Bayesian terminology: 
+    \begin{itemize}
+        \item Prior $\mathbb{P}(\textrm{parameter})$
+        \item Posterior $\mathbb{P}(\textrm{parameter} | \textrm{data})$
+        \item Likelihood $\mathbb{P}(\textrm{data} | \textrm{parameter})$
+        \item Evidence $\mathbb{P}(\textrm{data})$
+    \end{itemize}
+    \item \emph{Bayes theorem}: $\textrm{Posterior } \mathbb{P}(A|B) = \frac{\textrm{Likelihood }\mathbb{P}(B|A) \times  \textrm{Prior }\mathbb{P}(A)}{\textrm{Evidence }\mathbb{P}(B)}$
+\end{itemize}
+
+{\color{black}\hrule height 0.001mm}
+
+\subsection*{Measures}
+\emph{$n^{th}$ moment} --- 
+$\mathbb{E}(\mathcal{X}^n) = \int_{-\infty}^{\infty}x^n \times f(x)dx$
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Expected value} --- 
+$\mathbb{E}(\mathcal{X}) = \sum_{\mathcal{X}}x \times p(x)$ resp. $\mathbb{E}(\mathcal{X}) = \int_{-\infty}^{\infty}x \times f(x)dx$ with pmf resp. pdf --- Properties:
+\begin{multicols}{2}
+\begin{itemize}
+    \item $\mathbb{E}(\alpha)=\alpha$
+    \item $\mathbb{E}(\alpha\mathcal{X}+\beta)=\alpha\mathbb{E}(\mathcal{X})+\beta$
+    \item $\mathbb{E}(\alpha\mathcal{X} + \beta\mathcal{Y})=\alpha\mathbb{E}(\mathcal{X})+\beta\mathbb{E}(\mathcal{Y})$
+    \item For orthogonal variables:
+    \begin{itemize}
+        \item  $\mathbb{E}(\mathcal{X}\mathcal{Y})=0$
+        \item $\mathbb{E}((\mathcal{X}+\mathcal{Y})^2)=\mathbb{E}(\mathcal{X}^2) + \mathbb{E}(\mathcal{Y}^2)$
+    \end{itemize}
+    \item For independent variables: $\mathbb{E}(\mathcal{X}\mathcal{Y})=\mathbb{E}(\mathcal{X})\mathbb{E}(\mathcal{Y})$
+    \item For vector $\boldsymbol{y} = \boldsymbol{A}\boldsymbol{x}$:    $\mathbb{E}_y(\boldsymbol{A}\boldsymbol{x})=\boldsymbol{A}\mathbb{E}_X(\boldsymbol{x})$
+\end{itemize}
+\end{multicols}
+\begin{itemize}
+    \item For conditional probability ($A$ is an event, $X$ is a random variable): \\
+    \begin{itemize}
+        \item $\mathbb{E}[P(X | A)] = \sum_x P(X=x) \times P(X=x | A) $ resp. $\int_{-\infty}^{\infty} f_X(x) \times f_{X|A}(x)dx$ 
+        \item $\mathbb{E}[P(A | X)] = P(A) = \sum_x P(X=x) \times P(A | X=x) $ resp. $\int_{-\infty}^{\infty} f_X(x) \times P(A|X=x) dx$ 
+    \end{itemize}
+    \item For conditional events resp. variables ($A$ is an event, $X$ is a random variable): \\
+    \begin{itemize}
+        \item $\mathbb{E}(X | A) = \sum_x x \times P(X=x | A) $ resp. $\int_{-\infty}^{\infty} x \times f_{X|A}(x)dx$ 
+        \item $\mathbb{E}(A | X) = P(A|X)$
+        \item $\mathbb{E}[\mathbb{E}(X | A)] = \mathbb{E}(X)$\\
+        Proof:
+        \begin{itemize}
+            \item $\mathbb{E}[\mathbb{E}(X | A)] = \int_{-\infty}^{\infty} f_A(a) \mathbb{E}(X | A) da = \int_{-\infty}^{\infty} f_A(a) \int_{-\infty}^{\infty} x f_{X|A}(x|a) dx da = \int_{-\infty}^{\infty} \int_{-\infty}^{\infty} x f_{X,A}(x,a) dx da = \int_{-\infty}^{\infty} x \int_{-\infty}^{\infty} f_{X,A}(x,a) da dx = \int_{-\infty}^{\infty} x f_{X}(x) dx = \mathbb{E}(X)$
+        \end{itemize}
+    \end{itemize}
+    \item \emph{Cauchy Schwarz inequality}: $\mathbb{E}(\mathcal{X},\mathcal{Y})^2 \leq \mathbb{E}(\mathcal{X}^2)\mathbb{E}(\mathcal{Y}^2)$
+\end{itemize}
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Median} --- Real number $M$ defined by $P(X<M) = P(X>M)$
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Standard deviation} --- $\sqrt{\mathbb{V}(\mathcal{X})}$
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Covariance} ---
+\begin{itemize}
+    \item Univariate variance of a random variable: $\mathbb{V}(\mathcal{X}) = \mathbb{E}((\mathcal{X}-\mathbb{E}(\mathcal{X}))^2) = \mathbb{E}(\mathcal{X}^2) - \mathbb{E}(\mathcal{X})^2$ where $\mathbb{E}(\mathcal{X}^2)$ is the unnormalized correlation resp. inner product
+    \item Univariate covariance of two random variables: $\textrm{Cov}(\mathcal{X}, \mathcal{Y}) = \mathbb{E}((\mathcal{X}-\mathbb{E}(\mathcal{X}))(\mathcal{Y}-\mathbb{E}(\mathcal{Y}))) = \mathbb{E}(\mathcal{X}\mathcal{Y}) - \mu_{\mathcal{X}} \mu_{\mathcal{Y}}$ where $\mathbb{E}(\mathcal{X}\mathcal{Y})$ is the unnormalized correlation resp. inner product
+    \item Proof (schematically for variance): $\mathbb{V}(\mathcal{X}) = \mathbb{E}((\mathcal{X}-\mathbb{E}(\mathcal{X}))^2) = \mathbb{E}[ \mathcal{X}^2 - \mathcal{X}\mathbb{E}(\mathcal{X}) - \mathcal{X}\mathbb{E}(\mathcal{X}) + \mathbb{E}(\mathcal{X})^2 ] = \mathbb{E}[ \mathcal{X}^2] - \mathbb{E}[\mathcal{X}]\mathbb{E}(\mathcal{X}) - \mathbb{E}[\mathcal{X}]\mathbb{E}(\mathcal{X}) + \mathbb{E}(\mathcal{X})^2 = \mathbb{E}(\mathcal{X}^2) - \mathbb{E}(\mathcal{X})^2$ where $\mathbb{E}(\mathcal{X}^2)$ 
+    \item Multivariate covariance matrix of a vector: 
+    \begin{itemize}
+        \item $\boldsymbol{\Sigma} = \textrm{Cov}(\boldsymbol{\mathcal{X}}) = \mathbb{E}((\boldsymbol{\mathcal{X}}-\mathbb{E}(\boldsymbol{\mathcal{X}}))(\boldsymbol{\mathcal{X}}-\mathbb{E}(\boldsymbol{\mathcal{X}}))^\intercal) = \mathbb{E}(\boldsymbol{\mathcal{X}}\boldsymbol{\mathcal{X}}^\intercal) - \mathbb{E}(\boldsymbol{\mathcal{X}})\mathbb{E}(\boldsymbol{\mathcal{X}})^\intercal = \begin{bmatrix}
+        \textrm{Var}(\mathcal{X}_1) & ... & \textrm{Cov}(\mathcal{X}_1,\mathcal{X}_m) \\
+        ... & ... & ... \\
+        \textrm{Cov}(\mathcal{X}_m,\mathcal{X}_1) & ... & \textrm{Var}(\mathcal{X}_m)
+        \end{bmatrix}$ where $\boldsymbol{R} = \mathbb{E}(\boldsymbol{\mathcal{X}}\boldsymbol{\mathcal{X}}^\intercal)$ is the unnormalized correlation matrix
+        \item $\boldsymbol{\Sigma}$ and $\boldsymbol{R}$ are symmetric and psd
+        \item $\boldsymbol{\Sigma} = \boldsymbol{R} - \boldsymbol{\mu}_X \boldsymbol{\mu}_X^\intercal$
+    \end{itemize}
+\end{itemize}
+Properties - variance:
+\begin{multicols}{2}
+\begin{itemize}
+    \item $\mathbb{V}(\alpha)=0$
+    \item $\mathbb{V}(\alpha\mathcal{X}+\beta)=\alpha^2\mathbb{V}(\mathcal{X})$
+    \item $\mathbb{V}(\mathcal{X} + \mathcal{Y})=\mathbb{V}(\mathcal{X})+2\textrm{Cov}(\mathcal{X},\mathcal{Y})+\mathbb{V}(\mathcal{Y})$
+    \item For uncorrelated (and independent) variables: $\mathbb{V}(\mathcal{X} + \mathcal{Y})=\mathbb{V}(\mathcal{X})+\mathbb{V}(\mathcal{Y})$
+    \item For independent variables: $\mathbb{V}(\mathcal{X}\mathcal{Y})=\mathbb{E}((\mathcal{X}\mathcal{Y})^2)\mathbb{E}(\mathcal{X}\mathcal{Y})^2$
+    \item For vector $\boldsymbol{y} = \boldsymbol{A}\boldsymbol{x}$:\\ $\mathbb{V}_y = \boldsymbol{A}\mathbb{V}_X\boldsymbol{A}^\intercal$
+    \item For zero-mean variable: $\mathbb{V}(\mathcal{X})= \mathbb{E}(\mathcal{X}^2) - \mathbb{E}(\mathcal{X})^2 = \mathbb{E}(\mathcal{X}^2)$ since $\mathbb{E}(\mathcal{X}) = 0$
+\end{itemize}
+\end{multicols}
+Properties - covariance:
+\begin{itemize}
+    \item $\textrm{Cov}(\mathcal{X},\mathcal{X}) = \mathbb{V}(\mathcal{X})$
+    \item $\textrm{Cov}((\alpha \mathcal{X} + \beta \mathcal{Y}),\mathcal{Z}) = \alpha \textrm{Cov}(\mathcal{X},\mathcal{Z}) + \beta \textrm{Cov}(\mathcal{Y},\mathcal{Z})$
+    \item If covariance of two random variables is 0, they are uncorrelated, but not necessarily independent. Then, $\mathbb{E}(\mathcal{X}\mathcal{Y})=\mathbb{E}(\mathcal{X})\mathbb{E}(\mathcal{Y})$
+    \item If covariance and unnormalized correlation of two random variables is 0, they are orthogonal, but not necessarily independent. Then, $\mathbb{E}(\mathcal{X}\mathcal{Y}) = 0$
+    \item For vector $\boldsymbol{y} = \boldsymbol{A}\boldsymbol{x}$:
+        \begin{itemize}
+            \item $\boldsymbol{\Sigma}_y = \boldsymbol{A}\boldsymbol{\Sigma}_X\boldsymbol{A}^\intercal$
+            \item $\boldsymbol{R}_y = \boldsymbol{A}\boldsymbol{R}_X\boldsymbol{A}^\intercal$
+        \end{itemize}
+    \item For zero-mean variables: $\textrm{Cov}(\mathcal{X},\mathcal{Y})= \mathbb{E}(\mathcal{X}\mathcal{Y}) - \mu_{\mathcal{X}} \mu_{\mathcal{Y}} = \mathbb{E}(\mathcal{X},\mathcal{Y})$ since $\mu_{\mathcal{X}} = \mu_{\mathcal{Y}} = 0$
+\end{itemize}
+\emph{Cauchy Schwarz inequality}: \begin{itemize}
+    \item $\textrm{Cov}(\mathcal{X},\mathcal{Y})^2 \leq \mathbb{V}(\mathcal{X})\mathbb{V}(\mathcal{Y})$
+    \item $\mathbb{E}(\mathcal{X}\mathcal{Y})^2 \leq \mathbb{E}(\mathcal{X}^2)\mathbb{V}(\mathcal{Y}^2)$
+\end{itemize}
+
+{\color{black}\hrule height 0.001mm}
+
+\subsection*{Probability Distributions}
+\emph{PMF, CDF, PDF} --- 
+\begin{itemize}
+    \item Cumulative density function (CDF) $F(r)$: $F(r) = p(x \leq r)$
+    \item Probability mass function $p(x)$ (PMF) for discrete random variables: $p(x)$
+    \item Probability density function (PDF) $f(x)$ for continuous random variables: $\int_{-\infty}^r f(x)dx = p(x \leq r) = \int_{-\infty}^{\infty} \int_{-\infty}^r f(x,y) dx dy = p(x \leq r) = F(r)$
+    \item Properties of CDF and PDF:
+    \begin{itemize}
+        \item Derivative of CDF returns PDF, integral of PDF returns CDF
+        \item $\int_a^b f(x)dx = F(b)-F(a) = p(a < x \leq b)$
+        \item $\int_{-\infty}^\infty f(x)dx = 1$
+    \end{itemize}
+\end{itemize}
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Normal distribution} --- 
+$\mathcal{X} \sim \mathcal{N}(\mu, \sigma^2)$\\
+For univariate, PDF: $\frac{1}{\sqrt{2\pi\sigma}} exp(\frac{-(x-\mu)^2}{2\sigma^2})$\\
+For multivariate, PDF: $\frac{1}{{2\pi\sigma}^{n/2}} \frac{1}{|\boldsymbol{\Sigma}|^{1/2}} exp(-\frac{1}{2} (\boldsymbol{x}-\boldsymbol{\mu})^\intercal \boldsymbol{\Sigma}^{-1} (\boldsymbol{x}-\boldsymbol{\mu}))$ where the term in the exponent is a quadratic form\\
+Convolution: $\int \mathcal{N}(a;Bc,D) \times \mathcal{N}(c;e,F) dc = \int \mathcal{N}(a;Be,D + BFB^\intercal$
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Standard normal distribution} --- Normal distribution, standardized via z-score $z = \frac{x-\mu}{\sigma}$, which results in $\mu = 0$ and $\sigma = 1$
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Bernoulli distribution} --- trial with success (probability $p$) or failure (probability $1-p$)
+\begin{multicols}{2}
+\begin{itemize}
+    \item $\mathcal{X} \sim \textrm{Bernoulli}(p)$
+    \item PDF: $p(x) p^x (1-p)^x$
+    \item Mean: $\mathbb{E}(x) = p$
+    \item Variance: $\mathbb{V}(x) = p(1-p)$
+\end{itemize}
+\end{multicols}
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Binomial distribution} --- $n$ independent Bernoulli trials with $k$ successes
+\begin{multicols}{2}
+\begin{itemize}
+    \item $\mathcal{X} \sim \textrm{Bin}(n,p)$
+    \item PDF: $\binom{n}{k} p^k (1-p)^{n-k}$
+    \item Mean: $\mathbb{E}(x) = np$
+    \item Variance: $\mathbb{V}(x) = np(1-p)$
+\end{itemize}
+\end{multicols}
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Poisson distribution} ---
+\begin{multicols}{2}
+\begin{itemize}
+    \item $\mathcal{X} \sim \textrm{Pois}(\lambda)$
+    \item PDF: $e^{-\lambda} \frac{\lambda^x}{x!}$
+    \item Mean: $\mathbb{E}(x) = \lambda$
+    \item Variance: $\mathbb{V}(x) = \lambda$
+\end{itemize}
+\end{multicols}
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Beta distribution} ---
+\begin{itemize}
+    \item $X$ takes values $\in [0,1]$
+    \item Represents the probability of a Bernoulli process after observing $\alpha-1$ successes and $\beta-1$ failures
+\end{itemize}
+\begin{multicols}{2}
+\begin{itemize}
+    \item $\mathcal{X} \sim \textrm{Beta}(\alpha,\beta)$ where $\alpha,\beta > 0$
+    \item PDF: $\frac{\Gamma(\alpha+\beta)}{\Gamma(\alpha)+\Gamma(\beta)} x^{\alpha-1} (1-x)^{\beta-1}$
+    where $\Gamma(\alpha) = \int_0^\infty u^{\alpha-1} e^{-u} du$
+    \item Mean: $\mathbb{E}(x) = \frac{\alpha}{\alpha+\beta}$
+    \item Variance: $\mathbb{V}(x) = \frac{\alpha\beta}{(\alpha+\beta)^2(\alpha+\beta+1)}$
+\end{itemize}
+\end{multicols}
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Dirichlet distribution} ---
+\begin{itemize}
+    \item $X$ takes values $\in [0,1]$
+    \item Multivariate extension of Beta distribution
+    \item $Dir(\boldsymbol{x} | \boldsymbol{\alpha}) = \frac{1}{B(\boldsymbol{\alpha})} \prod_{k=1}^n u_k^{\alpha_k - 1}$,
+    where $B(\boldsymbol{\alpha})$ is the multivariate generalization of the Beta function:
+    $B(\boldsymbol{\alpha}) = \frac{\prod_{k=1}^n \Gamma(\alpha_k)}{\Gamma\left(\sum_{k=1}^n \alpha_k\right)}$
+\end{itemize}
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Uniform distribution} ---
+\begin{multicols}{2}
+\begin{itemize}
+    \item Assume $x$ is uniformly distributed between $[a,b]$
+    \item PDF: $f(x) =$\\
+        $\left\{
+            \begin{aligned}
+                 & \frac{1}{b-a} \quad & a \leq x \leq b \\
+                 & 0 & \textrm{ otherwise}
+            \end{aligned}
+        \right.$
+    \item CDF: $F(x) =$\\
+        $\left\{
+            \begin{aligned}
+                 & 0 & x < a \\
+                 & \frac{x-a}{b-a} & a \leq x \leq b \\
+                 & 1 & x > b
+            \end{aligned}
+        \right.$
+\end{itemize}
+\end{multicols}
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Exponential families} ---  Family of probability distributions (incl. Gaussian, Poisson, Bernoulli, Categorical, Gamma, Beta) of the form: $ p(x \mid \boldsymbol{\theta}) = \frac{1}{Z(\boldsymbol{\theta})} \boldsymbol{h}(x) \exp\left(\boldsymbol{\theta} \cdot \boldsymbol{\Phi}(x)\right) $ where
+\begin{itemize}
+\item $Z(\boldsymbol{\theta})$ is a \emph{partition function} which acts as a normalization constant to $[0, 1]$
+\item $\boldsymbol{h}(x)$ determines the \emph{support} of the function
+\item $\boldsymbol{\theta}$ are the \emph{parameters}
+\item $\boldsymbol{\Phi}(x)$ are the \emph{sufficient statistics}
+\end{itemize}
+Properties:
+\begin{itemize}
+    \item Finite sufficient statistics
+    \item \emph{Conjugate priors}:
+    \begin{itemize}
+        \item Prior distribution $p$ for a likelihood distribution $q$ such that the posterior distribution induced by $p$ and $q$ is of the same form as $p$
+        \item This helps to conduct Bayesian machine learning: Posterior parameters can be updated using prior parameters and do not have to be re-derived
+        \item Example: Bernoulli distribution with Beta prior:
+        \begin{itemize}
+            \item Assume prior $P(\theta) \sim \textrm{Beta}(\alpha, \beta)$
+            \item Likelihood $P(X \mid \theta) = \theta^k (1 - \theta)^{n-k}$, where $n = \textrm{trials}$ and $k = \textrm{successes}$
+            \item Posterior $P(\theta \mid X) \propto P(X \mid \theta) P(\theta) \propto \theta^k (1 - \theta)^{n-k} \theta^{\alpha-1} (1 - \theta)^{\beta-1} \propto \theta^{k + \alpha - 1} (1 - \theta)^{n - k + \beta - 1}$
+            \item Due to conjugate prior, posterior $\sim \textrm{Beta}(\alpha', \beta')$, with $\alpha' = k + \alpha$ and $\beta' = n - k + \beta$
+        \end{itemize}
+    \end{itemize}
+    \item Corresponds to maximum entropy distributions, if sufficient statistics match training data (see below)
+\end{itemize}
+Derivation from maximum entropy:
+\begin{itemize}
+    \item Maximum entropy principle: When estimating a probability distribution over some constraints (e.g. known \mathbb{E}), we should choose the distribution that has the highest entropy
+    \item Entropy for discrete $x$:
+    $
+    H(x) = -\sum_{x \in \mathcal{X}} p(x) \log p(x)
+    $
+    \item Assume we know $\mathbb{E}(\boldsymbol{\Phi}(x)) = F$
+    \item Using the maximum entropy principle, we want to find $J(p) = -\sum_{x \in \mathcal{X}} p(x) \log p(x)$ subject to
+    \begin{itemize}
+        \item Non-negativity constraint: $p(x) \geq 0 \quad \forall x$
+        \item Sum-to-one constraint: $\sum_{x \in \mathcal{X}} p(x) = 1$
+        \item User-defined constraint: $\mathbb{E}(\boldsymbol{\Phi}(x)) = \sum_{x \in \mathcal{X}} p(x) \boldsymbol{\Phi}(x) = F$
+    \end{itemize}
+    \item This is a constrained optimization problem with the objective function: $
+    J(p, \lambda) = -\sum_{x \in \mathcal{X}} p(x) \log p(x) - \lambda_0 \left(1 - \sum_{x \in \mathcal{X}} p(x)\right) + \sum_k \lambda_k \left(F_k - \sum_{x \in \mathcal{X}} p(x) \Phi_k(x)\right)
+    $
+    \item Then, the gradient is given by:
+    $
+    \frac{\partial J(p, \lambda)}{\partial p(x)} = -1 - \log(p(x)) - \lambda_0 - \sum_k \lambda_k \Phi_k(x) = 0
+    $
+    \item $\Rightarrow \log(p(x)) = -1 - \lambda_0 - \sum_k \lambda_k \Phi_k(x) = \log(\frac{1}{Z} \exp\left(-\sum_k \lambda_k \Phi_k(x)\right))$ where $Z = \exp(1 + \lambda_0)$
+    \item $\Rightarrow p(x) = \frac{1}{Z} \exp\left(-\sum_k \lambda_k \Phi_k(x)\right)$
+    \item $\Rightarrow
+    \sum_{x \in \mathcal{X}} p(x) = \sum_{x \in \mathcal{X}} \frac{1}{Z} \exp\left(-\sum_k \lambda_k \Phi_k(x)\right) = 1
+    $ by sum-to-one constraint
+    \item $\Rightarrow
+    Z = \sum_{x \in \mathcal{X}} \exp\left(-\sum_k \lambda_k \Phi_k(x)\right)$
+    \item If we plug this $Z$ back into $p(x)$, we get:
+    $
+    p(x) = \frac{\exp\left(-\sum_k \lambda_k \Phi_k(x)\right)}{\sum_{x \in \mathcal{X}} \exp\left(-\sum_k \lambda_k \Phi_k(x)\right)} = \frac{1}{\sum_{x \in \mathcal{X}} \exp\left(-\boldsymbol{\lambda}^\intercal \boldsymbol{\Phi}(x)\right)} \exp\left(-\boldsymbol{\lambda}^\intercal \boldsymbol{\Phi}(x)\right)
+    $
+    \item Then, we see that this is in the exponential family
+\end{itemize}
+Proof that Gaussian is an exponential distribution:
+\begin{itemize}
+    \item Gaussian PDF:
+    $
+    f(x \mid \mu, \sigma^2) = \frac{1}{\sqrt{2 \pi \sigma^2}} e^{-\frac{(x - \mu)^2}{2 \sigma^2}} $
+    \item $= \frac{1}{\sqrt{2 \pi \sigma^2}} e^{-\frac{x^2 - 2 \mu x + \mu^2}{2 \sigma^2}}$
+    \item $=\frac{1}{\sqrt{2 \pi \sigma^2}} e^{-\frac{x^2}{2 \sigma^2} + \frac{2 \mu x}{2 \sigma^2} - \frac{\mu^2}{2 \sigma^2}}$
+    \item $= \frac{1}{\sqrt{2 \pi \sigma^2}} e^{-\frac{x^2}{2 \sigma^2}} e^{\frac{\mu x}{\sigma^2}} e^{-\frac{\mu^2}{2 \sigma^2}} 
+    $
+    \item $= \frac{e^{-\frac{\mu^2}{2 \sigma^2}}}{\sqrt{2 \pi \sigma^2}} \times 1 \times e^{\frac{\mu x}{\sigma^2}} e^{-\frac{x^2}{2 \sigma^2}}$
+    \item $= \frac{e^{-\frac{\mu^2}{2 \sigma^2}}}{\sqrt{2 \pi \sigma^2}} \times 1 \times e^{\frac{\mu}{\sigma^2}x-\frac{1}{2 \sigma^2} x^2}$
+    \item $= \frac{e^{-\frac{\mu^2}{2 \sigma^2}}}{\sqrt{2 \pi \sigma^2}} \times 1 \times e^{[\frac{\mu}{\sigma^2},\frac{-1}{2\sigma^2}] \cdot [x,x^2]}$
+    \item Thus, parameters of exponential family given by:
+    \begin{itemize}
+        \item $\frac{1}{Z(\boldsymbol{\theta})} = \frac{e^{-\frac{\mu^2}{2 \sigma^2}}}{\sqrt{2 \pi \sigma^2}}$
+        $ \Rightarrow
+        Z(\boldsymbol{\theta}) = \sqrt{2 \pi \sigma^2} \times \frac{1}{e^{-\frac{\mu^2}{2 \sigma^2}}} = \sqrt{2 \pi \sigma^2} e^{\frac{\mu^2}{2 \sigma^2}}
+        $
+        \item $\boldsymbol{h}(x) = 1$
+        \item $\boldsymbol{\theta} = \begin{bmatrix}
+        \mu / \sigma^2 \\
+        -1 / 2 \sigma^2
+        \end{bmatrix}$
+        \item $
+        \boldsymbol{\Phi}(x) = \begin{bmatrix}
+        x \\
+        x^2
+        \end{bmatrix}
+        $
+    \end{itemize}
+\end{itemize}
+Proof that Poisson is an exponential distribution:
+\begin{itemize}
+    \item Poisson PDF:
+    $
+    f(x \mid \lambda) = \frac{\lambda^x e^{-\lambda}}{x!}
+    $
+    \item $
+    = \frac{1}{x!}e^{-\lambda} \lambda^x
+    $
+    \item $
+    = \frac{1}{e^\lambda}\frac{1}{x!} e^{log(\lambda^x)}
+    $
+    \item Thus, parameters of exponential family given by:
+    \begin{itemize}
+        \item $\frac{1}{Z(\boldsymbol{\theta})} = \frac{1}{e^\lambda}$
+        $ \Rightarrow
+        Z(\boldsymbol{\theta}) = e^\lambda
+        $
+        \item $\boldsymbol{h}(x) = \frac{1}{x!}$
+        \item $\boldsymbol{\theta} = \begin{bmatrix}
+        log(\lambda)
+        \end{bmatrix}$
+        \item $
+        \boldsymbol{\Phi}(x) = \begin{bmatrix}
+        x
+        \end{bmatrix}
+        $
+    \end{itemize}
+\end{itemize}
+Proof that Beta is an exponential distribution:
+\begin{itemize}
+    \item Beta PDF: $
+    f(x \mid \alpha, \beta) = \frac{x^{\alpha - 1} (1 - x)^{\beta - 1}}{B(\alpha, \beta)}
+    $
+    \item 
+    $
+    = \frac{1}{B(\alpha, \beta)} \times 1 \times  e^{(\alpha - 1) \ln(x) + (\beta - 1) \ln(1 - x)}
+    $
+    \item 
+    $
+    = \frac{1}{B(\alpha, \beta)} \times 1 \times  e^{[(\alpha - 1),(\beta - 1)] \times [\ln(x), \ln(1 - x)]}
+    $
+    \item Thus, parameters of exponential family given by:
+    \begin{itemize}
+        \item $\frac{1}{Z(\alpha, \beta)} = \frac{1}{B(\alpha, \beta)}$
+        $ \Rightarrow
+        Z(\alpha, \beta) = B(\alpha, \beta)
+        $
+        $ \Rightarrow
+        Z(\boldsymbol{\theta}) = B(\theta_1 + 1, \theta_2 + 1)
+        $
+        \item $\boldsymbol{h}(x) = 1$
+        \item $\boldsymbol{\theta} = \begin{bmatrix}
+        (\alpha - 1)\\
+        (\beta - 1)
+        \end{bmatrix}$
+        \item $
+        \boldsymbol{\Phi}(x) = \begin{bmatrix}
+        \ln(x)\\
+        \ln(1-x)
+        \end{bmatrix}
+        $
+    \end{itemize}
+\end{itemize}
+Proof that Chi Square is an exponential distribution:
+\begin{itemize}
+    \item Chi Square PDF: $
+    f(x \mid k) = \frac{x^{k/2 - 1} e^{-x/2}}{2^{k/2} \Gamma(k/2)}
+    $
+    \item 
+    $
+    = \frac{1}{2^{k/2}\Gamma(k/2)} e^{- x/2} e^{(k/2 - 1) \ln(x)}
+    $
+    \item Thus, parameters of exponential family given by:
+    \begin{itemize}
+        \item $\frac{1}{Z(k)} = \frac{1}{2^{k/2}\Gamma(k/2)}$
+        $ \Rightarrow
+        Z(k) = 2^{k/2}\Gamma(k/2)
+        $
+        $ \Rightarrow
+        Z(\boldsymbol{\theta}) = 2^{\boldsymbol{\theta} +1}\Gamma(\boldsymbol{\theta} + 1)
+        $
+        \item $\boldsymbol{h}(x) = e^{- x/2}$
+        \item $\boldsymbol{\theta} = \begin{bmatrix}
+        k/2 - 1
+        \end{bmatrix}$
+        \item $
+        \boldsymbol{\Phi}(x) = \begin{bmatrix}
+        \ln(x)
+        \end{bmatrix}
+        $
+    \end{itemize}
+\end{itemize}
+Proof that Binomial is an exponential distribution:
+\begin{itemize}
+    \item Binomial PDF: $
+    f(x \mid n, \pi) = \binom{n}{x} \pi^x (1 - \pi)^{n - x}
+    $
+    \item 
+    $
+    = \binom{n}{x} e^{x \ln(\pi)}  e^{(n - x) \ln(1 - \pi)}
+    $
+    \item 
+    $
+    = \binom{n}{x} e^{x \ln(\pi) - x\ln(1 - \pi) + n\ln(1 - \pi)}
+    $
+    \item 
+    $
+    = \binom{n}{x} e^{x \ln(\frac{\pi}{1-\pi})} e^{n\ln(1 - \pi)}
+    $
+    \item 
+    $
+    = e^{n\ln(1 - \pi)} \binom{n}{x} e^{\ln(\frac{\pi}{1-\pi}) x}
+    $
+    \item Thus, parameters of exponential family given by:
+    \begin{itemize}
+        \item $\frac{1}{Z(\pi)} = e^{n\ln(1 - \pi)}$
+        $ \Rightarrow
+        Z(\pi) = \frac{1}{e^{n\ln(1 - \pi)}}
+        $
+        $ \Rightarrow
+        Z(\boldsymbol{\theta}) = e^{n\ln(1 + e^{\boldsymbol{\theta}})}
+        $
+        \item $\boldsymbol{h}(x) = \binom{n}{x}$
+        \item $\boldsymbol{\theta} = \begin{bmatrix}
+        \ln(\frac{\pi}{1-\pi})
+        \end{bmatrix}$
+        \item $
+        \boldsymbol{\Phi}(x) = \begin{bmatrix}
+        x
+        \end{bmatrix}
+        $
+    \end{itemize}
+\end{itemize}
+
+{\color{black}\hrule height 0.001mm}
+
+\subsection*{Other Concepts}
+\emph{Jensen's inequality} --- Relates expected value of a convex function of a random variable to the convex function of the expected value of that random variable\\
+$\mathbb{E}(f(\mathcal{X})) \geq f(\mathbb{E}(\mathcal{X}))$
+
+{\color{black}\hrule height 0.001mm}
+
+\subsection*{Hypothesis Testing}
+\emph{Terminology} ---
+\begin{itemize}
+    \item Hypothesis:
+    \begin{itemize}
+        \item $H_0$: Accepted null hypothesis, e.g. $p=p_0$, $p_1-p_2=p_{0,1}-p_{0,2}=0$
+        \item $H_A$: Alternative hypothesis, e.g. $p \neq p_0$, $p_1-p_2 \neq p_{0,1}-p_{0,2} \neq 0$
+    \end{itemize}
+    \item Errors:
+    \begin{itemize}
+        \item True positive: Chose $H_0$, and $H_0$ obtains
+        \item False negative, type I error: Chose $H_A$, but $H_0$ obtains
+        \item True negative: Chose $H_A$, and $H_A$ obtains
+        \item False positive, type II error: Chose $H_0$, but $H_A$ obtains
+    \end{itemize}
+    \item Significance level $\alpha$: 
+    \begin{itemize}
+        \item $\alpha \geq p(\textrm{type I error}) = p(\bar{x} \geq c \mid H_0)$ with equality for continuous variables 
+        \item If $\alpha$ is small, the probability that we are erroneously rejecting $H_0$ is very small
+        \item Set by us, typically at $5\%$
+        \item If $\mathcal{X} \sim \mathcal{N}(\theta,1)$ and $H_0: \theta = 0$:
+        $\alpha = p(\bar{x} \geq c \mid H_0) = p(\sqrt{n}\bar{x} \geq \sqrt{n}c \mid H_0) = p(z_n \geq \sqrt{n}c \mid H_0) = 1-\Phi(\sqrt{n}c)$ 
+        where 
+        \begin{itemize}
+            \item $\Phi$ is the CDF of the normal distribution 
+            \item $z_n \mid H_0 = \frac{\bar{x}-0}{1/\sqrt{n}} = \sqrt{n}\bar{x}$
+        \end{itemize}
+    \end{itemize}
+    \item Critical value $z$: 
+    \begin{itemize}
+        \item For two-sided: $z_{\alpha/2}$, $z_{1 - \alpha/2}$
+        \item For one-sided upper tail: $z_{1 - \alpha}$
+        \item For one-sided lower tail: $z_{\alpha}$
+        \item Associated z-score with $\alpha$
+        \item Corresponds to critical value $c$ prior to z-score transformation
+        \item If $\mathcal{X} \sim \mathcal{N}(\theta,1)$ and $H_0: \theta = 0$:
+        $\alpha = 1-\Phi(\sqrt{n}c) \Rightarrow c = \frac{1}{\sqrt{n}} \Phi^{-1}(1 - \alpha)$ where $\Phi$ is the CDF of the normal distribution
+    \end{itemize}
+    \item P-value $p$: 
+    \begin{itemize}
+        \item For two-sided: $p = P(|z| \geq z_n)$
+        \item For one-sided upper tail: $p = P(z \geq z_n)$
+        \item For one-sided lower tail: $p = P(z \leq z_n)$
+        \item Probability, given $H_0$ that we observe a value as or more extreme as the observed value $z_n$ 
+        \item Smallest significance level resp. largest confidence level, at which we can reject $H_0$ given the sample observed
+        \item If p-value is less than significance level resp. if observed value is more extreme than critical value, reject $H_0$, because the probability that we are erroneously doing so is very small
+    \end{itemize}
+    \item Confidence level: $1-\alpha$, probability, given $H_0$, that we retain $H_0$
+    \item Beta: $\beta = p(\textrm{type II error})$
+    \item Power: 
+    \begin{itemize}
+        \item $1-\beta = p(\textrm{type II error}) = p(\bar{x} \geq c \mid H_1)$
+        \item Probability, given $H_A$, that we reject $H_0$
+        \item If $\mathcal{X} \sim \mathcal{N}(\theta,1)$ and $H_0: \theta = 0$:
+        $1-\beta = p(\bar{x} \geq c \mid H_1) = p(\sqrt{n}(\bar{x}-1) \geq \sqrt{n}(c-1) \mid H_1) = p(z_n \geq \sqrt{n}(c-1) \mid H_1) = p(z_n \geq \sqrt{n}(c-1) \mid H_0) = 1-\Phi(\sqrt{n}(c-1))$ where 
+        \begin{itemize}
+            \item $\Phi$ is the CDF of the normal distribution 
+            \item $z_n \mid H_1 = \frac{\bar{x}-1}{1/\sqrt{n}} = \sqrt{n}(\bar{x}-1)$
+            \item We can switch from $\mid H_1$ to $\mid H_2$ because the two distributions follow the same form, just shifted
+        \end{itemize}
+    \end{itemize}
+    \item Test types:
+    \begin{itemize}
+        \item Two-sided: $H_0: p = p_0, H_A: p \neq p_0$
+        \item One-sided upper tail: $H_0: p \leq p_0, H_A: p > p_0$
+        \item One-sided lower tail: $H_0: p \geq p_0, H_A: p < p_0$
+    \end{itemize}
+    \item Calculating test statistic:
+    \begin{itemize}
+        \item $z_n \mid H_0 = \frac{\bar{x}-\mu_0}{\sigma/\sqrt{n}}$
+    \end{itemize}
+\end{itemize}
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Multiple comparisons problem} ---
+Accumulation of false positive rate ($\alpha$) for $K$ tests, due to independence of tests:
+$P(|\textrm{false rejections of }H_0| > 0) = 1-P(|\textrm{false rejections of }H_0| = 0) = 1-(1-\alpha)^K$
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Corrections for multiple comparisons problem} ---
+Bonferroni correction: New significance level set to $\alpha* = \alpha / K$
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Neyman Pearson test} ---
+\begin{itemize}
+    \item Maximizes power while controlling type I errors
+    \item Sets $\alpha$ such that $\alpha \geq p(\textrm{type I error})$
+
+    \item Then minimizes $p(\textrm{type II error})$
+    \item This is achieved by a likelihood-ratio test with threshold $\theta$, such that $\alpha$ equals or is as close as possible to $ p(\textrm{type I error})$: 
+    \begin{itemize}
+        \item If $\Lambda(x) = \frac{p(x|p_0)}{p(x|p_A)} > \theta$, we reject $H_0$
+        \item Then, we have $P(\Lambda(x) > \theta | H_0) = P(\frac{p(x|p_0)}{p(x|p_A)} > \theta | H_0 ) = P(\textrm{type I error}) = \alpha$
+        \item The smaller $\alpha$, the larger $\theta$
+    \end{itemize}
+\end{itemize}
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Bayesian Hypothesis Testing} ---
+\begin{itemize}
+    \item If $\Lambda(x) = \frac{p(x|p_0)}{p(x|p_A)} > \theta$, we reject $H_0$
+    \item $\theta = \frac{k(p_A,p_0)P(p_0)}{k(p_0,p_A)P(p_A)}$
+    \item In this case, $\theta$ subsumes both the prior $p(x)$ and the costs $k(\hat{x},x)$
+\end{itemize}
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Parametric hypothesis tests (Z,T,F)} --- 
+5x2 cross-validation paired t-test:
+\begin{itemize}
+    \item Compares the performance of two classifiers
+    \item Split data in $2$ folds, train each classifier on one fold and test on the other, then swap the folds and repeat
+    \item Repeat this process for $5$ rounds
+    \item For both of the $2$ folds, record the performance difference between the two classifiers: $d_i = p_{1,i} - p_{2,i}$
+    \item The mean performance for each of the $1,...,5$ rounds is $\bar{d} = \frac{d_1+d_2}{2}$, the variance is $s^2 = \frac{(d_1-\bar{d})^2 + (d_2-\bar{d})^2}{2}$
+    \item Test statistic: $t = -\frac{\sum_{i=1}^5 \bar{d}_i}{\sqrt{\sum_{i=1}^5 s_i^2}}$
+    \item Test statistic is compared to the critical value from the t-distribution with 5 degrees of freedom
+    \item If p-value $< \alpha$, reject $H_0$
+\end{itemize}
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Non-parametric hypothesis tests} --- 
+\emph{McNemar’s test}:
+\begin{itemize}
+    \item Compares the disagreement probability of two classifiers 
+    \item In $2 \times 2$ contingency table (correct vs. incorrect predictions for each classifier) focuses on the off-diagonal elements $b$ and $c$ because these represent the cases where classifiers differ in outcomes, with one being correct, and the other incorrect
+    \item $H_0: p_b = p_c$\\
+    $H_A: p_b \neq p_c$
+    \item Test statistic: $\mathcal{X}^2 = \frac{(b-c)^2}{b+c}$
+    \item Test statistic is compared to the critical value from the chi-square distribution table with $1$ degree of freedom
+    \item If p-value $< \alpha$, reject $H_0$
+\end{itemize}
+\emph{Permutation test}:
+\begin{itemize}
+    \item Tests whether a classifier's performance is significantly better than random chance
+    \item $H_0:$ Performance is random, there is no true relationship between the features and the response\\
+    $H_A:$ Performance is not random
+    \item Train classifier and record performance, then shuffle response labels while keeping the features unchanged (simulate $H_0$), re-train classifier and record performance, repeat
+    \item Calculate the p-value, i.e. proportion of shuffled performance values that are greater than or equal to the initially observed performance
+    \item If p-value $< \alpha$, reject $H_0$
+\end{itemize}
