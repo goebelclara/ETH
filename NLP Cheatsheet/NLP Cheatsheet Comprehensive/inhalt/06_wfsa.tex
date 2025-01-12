@@ -571,6 +571,12 @@ Computation of $Z$:
     \end{itemize}
 \end{itemize}
 
+\emph{String edits} --- 
+\begin{itemize}
+    \item \emph{Levenshtein distance}: Minimum number of insertions, substitutions or deletions required to convert one string into another
+    \item An FSA that accepts strings with edit distance $\leq d$ for a given original string $\boldsymbol{s} = s_1, ..., s_N$ has $(d+1)(N+1)$ states resp. $((d+1)N)+1$ states if we merge all end states
+\end{itemize}
+
 \emph{HMMs} --- 
 \hl{TBA}
 
@@ -585,4 +591,6 @@ Computation of $Z$:
 \includegraphics[height=10mm]{inhalt/images/NLP/06_wfsa_3.png}\\\\
 \end{multicols}
 \textit{4) Lehmann's algorithm: Compute pathsum}\\
-\includegraphics[height=40mm]{inhalt/images/NLP/06_wfsa_4.png}
+\includegraphics[height=40mm]{inhalt/images/NLP/06_wfsa_4.png}\\\\
+\textit{5) FSA for string edits with Levenshtein distance $\leq 1$}\\
+\includegraphics[height=10mm]{inhalt/images/NLP/06_wfsa_5.png}

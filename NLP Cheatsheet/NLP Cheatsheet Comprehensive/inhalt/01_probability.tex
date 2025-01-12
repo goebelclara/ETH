@@ -372,3 +372,55 @@ $P(|\textrm{false rejections of }H_0| > 0) = 1-P(|\textrm{false rejections of }H
 
 \emph{Corrections for multiple comparisons problem} ---
 \emph{Bonferroni correction}: New significance level set to $\alpha* = \alpha / K$
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Neyman Pearson test} ---
+\begin{itemize}
+    \item Maximizes power while controlling type I errors
+    \item Sets $\alpha$ such that $\alpha \geq p(\textrm{type I error})$, then minimizes $p(\textrm{type II error})$
+    \item This is achieved by a likelihood ratio test with threshold $\theta$, such that $\alpha$ equals or is as close as possible to $ p(\textrm{type I error})$: 
+    \begin{itemize}
+        \item If $\Lambda(x) = \frac{p(x|p_0)}{p(x|p_A)} > \theta$, we reject $H_0$
+        \item Then, we have $P(\Lambda(x) > \theta | H_0) = P(\frac{p(x|p_0)}{p(x|p_A)} > \theta | H_0 ) = P(\textrm{type I error}) = \alpha$
+        \item The smaller $\alpha$, the larger $\theta$
+    \end{itemize}
+\end{itemize}
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Parametric hypothesis tests (Z,T,F)} --- 
+5x2 cross-validation paired t-test:
+\begin{itemize}
+    \item Compares the performance of two classifiers
+    \item Split data in $2$ folds, train each classifier on one fold and test on the other, then swap the folds and repeat
+    \item Repeat this process for $5$ rounds
+    \item For both of the $2$ folds, record the performance difference between the two classifiers: $d_i = p_{1,i} - p_{2,i}$
+    \item The mean performance for each of the $1,...,5$ rounds is $\bar{d} = \frac{d_1+d_2}{2}$, the variance is $s^2 = \frac{(d_1-\bar{d})^2 + (d_2-\bar{d})^2}{2}$
+    \item Test statistic: $t = -\frac{\sum_{i=1}^5 \bar{d}_i}{\sqrt{\sum_{i=1}^5 s_i^2}}$
+    \item Test statistic is compared to the critical value from the t-distribution with 5 degrees of freedom
+    \item If p-value $< \alpha$, reject $H_0$
+\end{itemize}
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Non-parametric hypothesis tests} --- 
+\emph{McNemar’s test}:
+\begin{itemize}
+    \item Compares the disagreement probability of two classifiers 
+    \item In $2 \times 2$ contingency table (correct vs. incorrect predictions for each classifier) focuses on the off-diagonal elements $b$ and $c$ because these represent the cases where classifiers differ in outcomes, with one being correct, and the other incorrect
+    \item $H_0: p_b = p_c$\\
+    $H_A: p_b \neq p_c$
+    \item Test statistic: $\mathcal{X}^2 = \frac{(b-c)^2}{b+c}$
+    \item Test statistic is compared to the critical value from the chi-square distribution table with $1$ degree of freedom
+    \item If p-value $< \alpha$, reject $H_0$
+\end{itemize}
+\emph{Permutation test}:
+\begin{itemize}
+    \item Tests whether a classifier's performance is significantly better than random chance
+    \item $H_0:$ Performance is random, there is no true relationship between the features and the response\\
+    $H_A:$ Performance is not random
+    \item Train classifier and record performance, then shuffle response labels while keeping the features unchanged (simulate $H_0$), re-train classifier and record performance, repeat
+    \item Calculate the p-value, i.e. proportion of shuffled performance values that are greater than or equal to the initially observed performance
+    \item If p-value $< \alpha$, reject $H_0$
+\end{itemize}

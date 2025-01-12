@@ -331,8 +331,20 @@ Model architecture:
         \item This results in runtime of $O(|\Sigma|^n)$ rather than $O(|\Sigma| \times n)$
         \item Since it is intractable to search for best sequence overall (explore), we turn to deterministic or stochastic variants (exploit): 
         \begin{itemize}
-            \item \emph{Greedy decoding}: Select highest-probability token at each step
-            \item \emph{Beam search}: Keep $n$-highest-probability tokens in memory (beam size) and return $k$-most-likely sequences (top beams)
+            \item \emph{Greedy decoding}: 
+            \begin{itemize}
+                \item Select highest-probability token at each step
+                \item Does not require normalization at each step
+                \item E.g. if we have trigrams and vocabulary $\{a,b\}$. Let first scores be given by $\textrm{BOS}\textrm{BOS}a = 6, \textrm{BOS}\textrm{BOS}b = 4$, we pick $\textrm{BOS}\textrm{BOS}a$. We then check scores for $\textrm{BOS}aa = 7, \textrm{BOS}ab = 3$ and pick $\textrm{BOS}aa$. We then check scores for $aaa = 2, aab = 8$ and so on. 
+            \end{itemize}
+            \item \emph{Beam search}: 
+            \begin{itemize}
+                \item Keep $k$-highest-probability tokens in memory (beam size) at each step
+                \item Requires normalization at each step
+                \item E.g. if we have $k=2$, trigrams and vocabulary $\{a,b\}$. Let first probabilities be given by $\textrm{BOS}\textrm{BOS}a = 0.6, \textrm{BOS}\textrm{BOS}b = 0.4$, we keep both in memory.\\
+                We then check local probabilities for $\textrm{BOS}aa = 0.7, \textrm{BOS}ab = 0.3, \textrm{BOS}ba = 0.1, \textrm{BOS}bb = 0.9$ and calculate total probabilities $\textrm{BOS}aa = 0.7 * 0.6, \textrm{BOS}ab = 0.3 * 0.6, \textrm{BOS}ba = 0.9 * 0.4, \textrm{BOS}bb = 0.1 * 0.4$. Thereof, we keep highest $2$ options, i.e. $\textrm{BOS}aa, \textrm{BOS}ba$.\\
+                We then check local probabilities for $aaa = 0.7, aab = 0.3, baa = 0.1, bab = 0.9$ and so on. 
+            \end{itemize}
             \item \emph{Nucleus sampling}: Sample tokens from items that cover $p\%$ of PMF
         \end{itemize}
     \end{itemize}

@@ -93,9 +93,9 @@
     \begin{itemize}
         \item Time complexity: 
         \begin{itemize}
-            \item For scoring function over tag bigrams: $\mathcal{O}(N |T|^2)$, given that we compute $|T| N$ backward variables and for each of them, compute the sum over $|T|$ successor tags
-            \item For scoring function over tag trigrams: $\mathcal{O}(N |T|^3)$
-            \item For scoring function over tag N-grams of order $n$: $\mathcal{O}(N |T|^{n})$
+            \item For tag bigrams: $\mathcal{O}(N |T|^2)$, given that we compute $|T| N$ backward variables and for each of them, compute the sum over $|T|$ successor tags, repeated for the number of epochs and samples
+            \item For tag trigrams: $\mathcal{O}(N |T|^3)$, repeated for the number of epochs and samples
+            \item For tag N-grams of order $n$: $\mathcal{O}(N |T|^{n})$, repeated for the number of epochs and samples
         \end{itemize}
         \item Space complexity: $\mathcal{O}(N|T|)$, since we have to keep $|T| N$ backward variables in memory
     \end{itemize}
@@ -190,8 +190,8 @@
     \item $v(w, t_n)$ are \emph{Viterbi variables} that contain the score of $t^*$ starting at EOS and ending with tag $t_n$ 
     \item Complexity:
     \begin{itemize}
-        \item For backpointers: $\mathcal{O}(N)$
-        \item For scoring function over tag N-grams of order $n$: $\mathcal{O}(N |T|^n)$ 
+        \item For backpointers: $\mathcal{O}(N)$, repeated for the number of epochs and samples
+        \item For tag N-grams of order $n$: $\mathcal{O}(N |T|^n)$, repeated for the number of epochs and samples
         \item For higher-order N-grams, we apply restriction that transitions must be valid (e.g. in $t_1 \to t_2, t_3 \to t_4$ $t_2$ must equal $t3$)
     \end{itemize}
     \item Alternatively, the same can be achieved with a \emph{forward Viterbi algorithm}
@@ -250,7 +250,7 @@
     \end{enumerate}
     \item Complexity:
     \begin{itemize}
-        \item For scoring function over tag bigrams: $\mathcal{O}(N |T|^2 \log(N |T|))$, where $\log(N |T|)$ stems from push and update operations on the queue
+        \item For tag bigrams: $\mathcal{O}(N |T|^2 \log(N |T|))$, where $\log(N |T|)$ stems from push and update operations on the queue
         \item Dijkstra's is generally slower than Viterbi, unless we leverage early stopping conditions
     \end{itemize}
     \item Dijkstra's as an alternative to Viterbi requires a semiring which guarantees:
@@ -271,7 +271,7 @@
     \item Backward algorithm: Uses inside semiring
     \item Viterbi algorithm: Uses Viterbi semiring
     \item Challenge with this original formulation: Multiplying probabilities for long sequences may cause numbers to go to $0$, leading to numerical underflow
-    \item Solution: Revert to log-sum-exp semiring (backward algorithm) resp. arctic semiring (Viterbi algorithm)
+    \item Solution: Revert to log-sum-exp semiring (backward algorithm) resp. arctic semiring (Viterbi algorithm). Note: The log-sum-exp semiring returns the log normalizer ($log(Z)$) instead of the normalizer ($Z$)
     \item Dijkstra's algorithm: Uses arctic semiring
 \end{itemize}
 
@@ -287,6 +287,7 @@
     \textrm{score}(\langle t_{N-1}, t_N \rangle,w) = \textrm{transition}(t_{N-1}, t_N) + 0
     $
     \item A more complex example of scoring functions is a neural network with inputs $\langle t_{n-1}, t_n \rangle$ and $w$
+    \item Runtime complexity of scoring function for N-grams of order $n$ and output vector dimensionality of feature function $d$ is $\mathcal{O}(d |T|^n)$, repeated for the number of epochs and samples 
     \item E.g. for the sentence 'The girl drinks':
     \begin{itemize}
         \item $\textrm{score}(w = \textrm{The girl drinks}, t = \langle D, N, V \rangle) = \sum_{n=1}^{N} \textrm{score}(\langle t_{n-1}, t_n \rangle, w)$

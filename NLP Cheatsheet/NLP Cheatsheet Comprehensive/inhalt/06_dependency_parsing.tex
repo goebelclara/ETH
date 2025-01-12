@@ -7,11 +7,12 @@ Assign syntactic structure to a string by breaking it down into a hierarchy of d
 
 \subsection*{Formulation}
 \begin{itemize}
-    \item String $w$ of length $N$
+    \item String $w$
     \item \emph{Spanning tree}: 
     \begin{itemize}
         \item Connects $N$ nodes via $N-1$ edges
         \item Contains no cycles
+        \item Number of nodes can be given by number of words in sentence $|w| = N$ or, if there are dependency parsing rules available, by number of items in the dependency rules (counting each item before and after the $\to$ separately, excl. the root, e.g. $\textrm{ROOT}\to\textrm{foo}, \textrm{foo}\to\textrm{bar},\textrm{foo}\to\textrm{baz}$ has 5 nodes)
     \end{itemize}
     \item For dependency parsing, we also require:
     \begin{itemize}
@@ -24,6 +25,7 @@ Assign syntactic structure to a string by breaking it down into a hierarchy of d
     \begin{itemize}
         \item Head of a production rule in syntactic parsing is the head of the dependency relation in dependency parsing
         \item Then, an arrow goes from the head to the sibling
+        \item Then, weight for the given production rule in syntactic parsing is the weight assigned to the head-sibling dependency in dependency parsing
         \item E.g. in $NP \to Adj N$, $N$ is the head, so there is an arrow from $N$ to $Adj$
     \end{itemize}
     \item Types of dependency trees:
@@ -49,18 +51,23 @@ Assign syntactic structure to a string by breaking it down into a hierarchy of d
     \item 
     $
     p(t \mid w) = \frac{\exp(\textrm{score}(t, w))}{Z} = \frac{\exp(\textrm{score}(t, w))}{\sum_{t'} \exp(\textrm{score}(t', w))}
-    $ 
-    \item Challenge: Naively, if $|w| = N$:
+    $
+    \item Challenge: Naively:
     \begin{itemize}
-        \item It takes $\mathcal{O}(N^N)$ time to compute $Z$, if we don't impose a spanning tree structure and every node can depend on any other node, including itself, since there are $N^N$ trees in graph
-        \item \emph{Cayley's formula}: $\mathcal{O}(N^{N-2})$, if we impose a spanning tree structure constraint
-        \item $\mathcal{O}((N-1)^{N-2})$, if we also impose the constraint that there is exactly one root node
+        \item There are $N^N$ undirected trees in graph if we don't impose a spanning tree structure and every node can depend on any other node, including itself, meaning it takes $\mathcal{O}(N^N)$ time to compute $Z$ 
+        \item \emph{Cayley's formula}: There are $N^{N-2}$ undirected trees in graph if we impose a spanning tree structure constraint, meaning it takes $\mathcal{O}(N^{N-2})$ time to compute $Z$
+        \item There are $(N-1)^{N-2}$ undirected trees in graph if we also impose the constraint that there is exactly one root node, meaning it takes  $\mathcal{O}((N-1)^{N-2})$ time to compute $Z$
     \end{itemize}
     \item Solution: 
     \begin{itemize}
-        \item \emph{Edge factored assumption}: $
-        p(t \mid w) = \frac{\prod_{(i \to j) \in t} \exp(\textrm{score}(i, j, w)) \exp(\textrm{score}(r, w))}{Z} = \frac{\prod_{(i \to j) \in t} \exp(\textrm{score}(i, j, w)) \exp(\textrm{score}(r, w))}{\sum_{t'} \prod_{(i \to j) \in t'} \exp(\textrm{score}(i, j, w)) \exp(\textrm{score}(r, w))}
-        $ where $(i \to j)$ is an edge in the tree, $r$ is the root 
+        \item \emph{Edge factored assumption}:
+        \begin{itemize}
+            \item $
+            p(t \mid w) = \frac{\prod_{(i \to j) \in t} \exp(\textrm{score}(i, j, w)) \exp(\textrm{score}(r, w))}{Z} = \frac{\prod_{(i \to j) \in t} \exp(\textrm{score}(i, j, w)) \exp(\textrm{score}(r, w))}{\sum_{t'} \prod_{(i \to j) \in t'} \exp(\textrm{score}(i, j, w)) \exp(\textrm{score}(r, w))}
+            $ where $(i \to j)$ is an edge in the tree, $r$ is the root 
+            \item Sp, in the denominator, we sum over the number of trees ($N^{N-2}$), and in the score, we sum over the number of edges ($N-1$)
+            \item In edge factored assumption, scoring function $\textrm{score}(t, w)$ can only consider features that only depend on the edge $(i \to j)$ (e.g. length $|i-j|$) or do not depend on the edges at all (e.g. length of $\boldsymbol{w}$, tags of $w_i, w_j$, embeddings of $w_i, w_j, \boldsymbol{w}$, identity of words $w_i, w_j$), but not features that depend on other edges (e.g. higher-order dependency parsing, assigned root)
+        \end{itemize}
         \item \emph{Kirchhoff's Matrix-Tree Theorem}: Method for counting the number of undirected spanning trees in $\mathcal{O}(N^3)$ time
         \item \emph{Tutte's Matrix-Tree Theorem}: Generalizes Kirchhoff's Matrix-Tree Theorem to directed spanning trees:
         \begin{itemize}
@@ -98,7 +105,7 @@ Assign syntactic structure to a string by breaking it down into a hierarchy of d
                 \text{- off-diagonal of L (except first row) contains}\\ \text{elements of A multiplied with $-1$ }
             \end{cases}$
             \item According to matrix tree theorem: $|L| = \det(L) = Z =$ number of trees in graph
-            \item According to Cayley's formula: number of trees in graph = $N^{N-2}$
+            \item According to Cayley's formula: number of undirected spanning trees in graph = $N^{N-2}$
         \end{itemize}
         \item Then, we can compute $Z$ under the edge factored assumption in $\mathcal{O}(N^3)$
     \end{itemize}
@@ -110,7 +117,10 @@ Assign syntactic structure to a string by breaking it down into a hierarchy of d
 Construct tree:
 \begin{itemize}
     \item $N$ nodes plus 1 extra root node
-    \item $(N+1)^{(N+1)}$ edges without spanning tree constraint
+    \item $N-1$ edges
+    \item Number of undirected spanning trees: $N^{(N-2)}$
+    \item Number of ways to label edges: $N^{(N-1)}$
+    \item Number of valid spanning trees, including labeling of edges: $N^{(N-2)} \times N^{(N-1)} = N^{(2N-3)}$
 \end{itemize}
 
 Decode tree:
@@ -160,7 +170,7 @@ Decode tree:
 \subsection*{Other}
 \emph{First vs. second-order dependency parsing} ---
 \begin{itemize}
-    \item Order of dependency parsing:
+    \item Above, we have considered first-order dependency parses only, but this can be extended
     \item \emph{Grandparent} $g$, \emph{parent} $h$, \emph{sibling} $s$, \emph{trailing sibling} $t$, \emph{modifier} $m$, where root can be a grandparent or parent
     \begin{itemize}
         \item \emph{First-order dependency parsing}:
@@ -188,7 +198,7 @@ Decode tree:
         \item First-order dependency parsing: Score given by:
         $\Psi(\boldsymbol{y}, \boldsymbol{w}; \theta) =
         \sum_{i \xrightarrow{r} j \in \boldsymbol{y}} \left[ \psi_{\text{parent}}(i \xrightarrow{r} j, \boldsymbol{w}; \theta) \right]
-        $
+        $, i.e. we sum the score from the ROOT to the root node and the scores of all other parent-modifier relationships 
         \item First-order dependency parsing with $N$ scores
         \item Second-order dependency parsing: Score given by: $\Psi(\boldsymbol{y}, \boldsymbol{w}; \theta) =
         \sum_{i \to j \in \boldsymbol{y}} [ \psi_{\text{parent}}(i \xrightarrow{r} j, \boldsymbol{w}; \theta)$

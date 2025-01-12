@@ -68,13 +68,15 @@
             \item For the log-sum-exp semiring, the Kleene star is the geometric series:
             $
             x^* = \log(\sum_{n=0}^\infty e^{n\times x}) = \log (\frac{1}{1 - e^x})$ for $x < 0$
-            \item For the first part of the expectation semiring, the Kleene star is the geometric series:
+            \item For the inside semiring and the first part of the expectation semiring, the Kleene star is the geometric series:
             $
             x^* = \sum_{n=0}^\infty x^n = \frac{1}{1 - x}$ for $x \in (0, 1)$\\
             Proof:
             $
             x^* = \frac{1}{1 - x} = 1 + \frac{1}{1 - x} -1 = 1 + \frac{1 - 1 + x}{1 - x} = 1 + \frac{x}{1 - x} = 1 + x \frac{1}{1 - x} = 1 + x x^*
             $
+            \item For the Boolean semiring, the Kleene star is $
+            x^* = 1$
         \end{itemize}
         \item As an alternative to Lehmann's algorithm, we can approximate Kleene star:
         $
@@ -123,10 +125,11 @@
         \item E.g.: Tropical and arctic semiring
     \end{itemize}
 \end{itemize}
+
 Common semirings:
 \begin{itemize}
-    \item \emph{Boolean semiring $(\{0, 1\}, \lor, \land, 0, 1)$
-    \item Inside semiring $(\mathbb{R} \cup \{\infty\}, +, \times, 0, 1)$
+    \item \emph{Boolean semiring}: $(\{0, 1\}, \lor, \land, 0, 1)$
+    \item \emph{Inside semiring}: $(\mathbb{R} \cup \{\infty\}, +, \times, 0, 1)$
     \item \emph{Log-sum-exp semiring}: $(\mathbb{R} \cup \{-\infty\}, \oplus_{\textrm{log}}, +, -\infty, 0)$ where $a \oplus_{\textrm{log}} b = \log(e^a + e^b)$
     \item \emph{Viterbi semiring}: $([0,1], \max, \times, 0,1)$ (for original Viterbi algorithm) or $(\mathbb{R}, \max, \times, 0,1)$ (for syntactic parsing)
     \item \emph{Arctic semiring}: $(\mathbb{R} \cup \{-\infty\}, \max, +, -\infty, 0)$
@@ -145,4 +148,35 @@ Common semirings:
         \item $\overline{0} = \langle 0,0 \rangle$
         \item $\overline{1} = \langle 1,0 \rangle$
     \end{itemize}
+\end{itemize}
+
+{\color{black}\hrule height 0.001mm}
+
+\subsection*{Other}
+\emph{Common exp and log rules} ---
+\begin{multicols}{2}
+\begin{itemize}
+    \item $a^m \cdot a^n = a^{m+n}$
+    \item $\frac{a^m}{a^n} = a^{m-n}$
+    \item $(ab)^n = a^n b^n$
+    \item $\left(\frac{a}{b}\right)^n = \frac{a^n}{b^n}$
+    \item $a^{-n} = \frac{1}{a^n}$
+    \item $a^0 = 1$
+    \item $a^1 = a$
+    \item $\log(xy) = \log x + \log y$
+    \item $\log\left(\frac{x}{y}\right) = \log x - \log y$
+    \item $\log(x^n) = n \log x$
+    \item $\log 1 = 0$
+    \item $\log (x<1) < 0$
+    \item $\log (x>1) > 0$
+    \item $e^{log(x)} = log(e^x) = x$
+\end{itemize}
+\end{multicols}
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Geometric series} --- 
+\begin{itemize}
+    \item Finite: $S_n = \sum_{i=1}^n a_i r^{i-1} = a_1 (\frac{1-r^n}{1-r})$
+    \item Infinite: $S = \sum_{i=0}^\infty a_i r^i = \frac{a_1}{1-r}$ for $r < 1$
 \end{itemize}

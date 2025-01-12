@@ -62,6 +62,7 @@ Motivation:
 \begin{itemize}
     \item Often, multiple syntactic structures are grammatically admissible, i.e. the string is ambiguous
     \item This is the case when a non-terminal can be produced by $2$ rules
+    \item Even with probabilistic CFGs, if two strings use exactly the same rules the same number of times, we cannot say which one is more likely
 \end{itemize}
 Probabilistic CFGs $(\mathcal{N}, \mathcal{S}, \Sigma, \mathcal{R}, \mathcal{P})$:
 \begin{itemize}
@@ -103,7 +104,7 @@ Probabilistic CFGs $(\mathcal{N}, \mathcal{S}, \Sigma, \mathcal{R}, \mathcal{P})
     \item Transform CFG to CNF:
     \begin{itemize}
         \item Remove null productions $A \to \varepsilon$ by modifying and adding replacements, e.g. if CFG contains $S \to AB | \varepsilon,\ B \to b|\varepsilon$, modify $\ B \to b$ and add $S \to A$, so that we have $S \to AB  | A | \varepsilon,\ B \to b$
-        \item Remove unit productions $A \to B$ by replacing target with all its productions, e.g. if CFG contains $S \to B ,\ B \to bB|B$, replace $B$ with its productions, so that we have $S \to bB|B,\ B \to bB|B$
+        \item Remove unit productions $A \to B$ by replacing target with all its productions, e.g. if CFG contains $S \to B ,\ B \to b$, replace $B$ with its productions, so that we have $S \to b,\ B \to b$
         \item Remove long productions $A \to B_1...B_k$ with $k > 2$ by using intermediate terminals, e.g. if CFG contains $A \to B_1B_2B_3$, add intermediate variable, so that we have $A \to B_1X_1,\ X_1 \to B_2B_3$
         \item Convert terminals in mixed rules $A \to aB$ by using intermediate terminals, e.g. if CFG contains $A \to aB$, add intermediate variable, so that we have $A \to XB,\ X \to a$
     \end{itemize}
@@ -120,12 +121,12 @@ Probabilistic CFGs $(\mathcal{N}, \mathcal{S}, \Sigma, \mathcal{R}, \mathcal{P})
     p(t) = \frac{\prod_{r \in t} \exp(\textrm{score}(r))}{Z} = \frac{\prod_{r \in t} \exp(\textrm{score}(r))}{\sum_{t' \in T} \prod_{r' \in t'} \exp(\textrm{score}(r'))}
     $
     \item Challenge: $Z$ is infinitely large, potentially even larger than $\Sigma^*$ for ambiguous strings
-    \item Initial solution: Probability of a parse tree, conditioned on string $s$:
+    \item Initial solution: Probability of a parse tree, conditioned on string $s$ (note: model is still globally normalized):
     $
     p(t \mid s) = \frac{\prod_{r \in t} \exp(\textrm{score}(r))}{Z(s)} = \frac{\prod_{r \in t} \exp(\textrm{score}(r))}{\sum_{t' \in T(s)} \prod_{r' \in t'} \exp(\textrm{score}(r'))}
     $
     \item Challenge: $Z$ is still potentially infinitely large due to cyclic rules
-    \item Final solution: Revert to CNF. Then, size of $Z$ is the number of rooted binary trees, which is the Catalan number $C_{M-1} = \frac{1}{M} \binom{2(M-1)}{M-1}$
+    \item Final solution: Revert to CNF (note: model is still globally normalized). Then, size of $Z$ is the number of rooted binary trees, which is the Catalan number $C_{M-1} = \frac{1}{M} \binom{2(M-1)}{M-1}$
     \begin{itemize}
         \item For $M\leq2, C_{M-1} = 1$
         \item For $M=3, C_{M-1} = 2$
@@ -179,7 +180,7 @@ Probabilistic CFGs $(\mathcal{N}, \mathcal{S}, \Sigma, \mathcal{R}, \mathcal{P})
     \item Algorithm to compute $Z$:
     \begin{itemize}
         \item Uses inside semiring or log-sum-exp semiring
-        \item Chart is filled bottom-to-top, left-to-right, exhaustively combining lower-level blocks
+        \item Chart is filled bottom-to-top, left-to-right, combining lower-level blocks in MECE manner (exhaustively, not overlapping)
         \item Chart entry $\textrm{Chart}[i, j, X]$ stores the probability that the non-terminal $X$ generates the substring $s_i, ..., s_j$.
     \end{itemize}
     \begin{enumerate}
