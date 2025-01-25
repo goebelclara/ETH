@@ -1,0 +1,745 @@
+\section{Linear Algebra}
+\subsection*{Vector Properties}
+\emph{Linear independence} --- Linear combination $\boldsymbol{A}\boldsymbol{u} = u_1 \boldsymbol{a_1} + ... + u_n \boldsymbol{a_n} = \sum_{i=1}^n u_i \boldsymbol{a_i}$, where $\boldsymbol{A}$ is a vector matrix and $\boldsymbol{u}$ provides scaling values, is linearly independent if any of the following holds:
+\begin{itemize}
+    \item If equation system $\boldsymbol{A}\boldsymbol{u}=0$ then $\boldsymbol{u}=0$
+    \item $\boldsymbol{A}$ is full rank
+\end{itemize}
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Unique representation theorem}: Any vector $\boldsymbol{v}$ that can be represented by a set of linearly independent vectors $\boldsymbol{a_1}, ..., \boldsymbol{a_n}$ has a unique representation $\boldsymbol{v} = \sum_{i=1}^n u_i \boldsymbol{a_i}$ in terms of these vectors
+    
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Unit vector} --- $\boldsymbol{u} = \frac{\boldsymbol{\tilde{u}}}{\|\boldsymbol{\tilde{u}}\|}$, therefore $\|\boldsymbol{u}\|^2 = 1$
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Inner product} --- $\boldsymbol{u} \cdot \boldsymbol{v} = \boldsymbol{u}^\intercal\boldsymbol{v} = \sum_{i=1}^n u_i v_i = cos(\varphi) \textrm{ } \|\boldsymbol{u}\| \textrm{ } 
+ \|\boldsymbol{v}\|$ \\
+resp.\\
+$\langle \boldsymbol{u}, \boldsymbol{v} \rangle_W = \boldsymbol{u}^\intercal \boldsymbol{W} \boldsymbol{v} = \sum_i u_i v_i w_i $ where $\boldsymbol{W}$ is either a diagonal matrix with $w_i > 0$ or a pd matrix --- 
+Properties:
+\begin{multicols}{2}
+\begin{itemize}
+    \item $\boldsymbol{u} \cdot \boldsymbol{v} = \boldsymbol{v} \cdot \boldsymbol{u}$
+    \item $(\boldsymbol{u}+\boldsymbol{v}) \cdot \boldsymbol{w} = \boldsymbol{u} \cdot \boldsymbol{w} + \boldsymbol{v} \cdot \boldsymbol{w}$
+    \item $(\alpha\boldsymbol{u}) \cdot \boldsymbol{v} = \alpha (\boldsymbol{u} \cdot \boldsymbol{v})$
+    \item Positive definite: $\boldsymbol{u} \cdot \boldsymbol{u} \geq 0$
+    \item $\boldsymbol{u} \cdot \boldsymbol{u} = 0 \Leftrightarrow \boldsymbol{u} = 0_v$
+\end{itemize}
+\end{multicols}
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{$\ell_2$ norm} --- 
+$\|\boldsymbol{u}\| = \sqrt{\boldsymbol{u} \cdot \boldsymbol{u}}$\\
+resp.\\
+$\|\boldsymbol{u}\|_W^2 = \boldsymbol{u}^\intercal \boldsymbol{W} \boldsymbol{u} = \sum_i u_i^2 w_i$ where $\boldsymbol{W}$ is a diagonal matrix with $w_i > 0$ --- 
+Properties:
+\begin{multicols}{2}
+\begin{itemize}
+    \item $\|\alpha\boldsymbol{u}\| = |\alpha| \|\boldsymbol{u}\|$
+    \item Positive definite (see inner product)
+    \item Equals 0 for zero vector (see inner product)
+\end{itemize}
+\end{multicols}
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{$\ell_1$ norm} --- 
+$|\boldsymbol{u}| = \sum_i |u_i|$
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Distance and angle between two vectors} --- 
+\begin{itemize}
+    \item Distance: $d = \| \boldsymbol{u} - \boldsymbol{v} \| = \sqrt{(u_1 - v_1)^2+...+(u_n - v_n)^2}$
+    \item Angle: $cos(\varphi) = \frac{\boldsymbol{u} \cdot \boldsymbol{v}}{\textrm{ } \|\boldsymbol{u}\| \textrm{ } 
+ \|\boldsymbol{v}}\|$
+\end{itemize}
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Cauchy Schwarz inequality} --- 
+$|\boldsymbol{u} \cdot \boldsymbol{v}| \leq \|\boldsymbol{u}\| \textrm{ } \|\boldsymbol{v}\|$ with equality iff $\varphi = 0$ i.e. $\boldsymbol{u} = \alpha\boldsymbol{v}$ or if $\boldsymbol{u} \textrm{ or } \boldsymbol{v} = 0_v$\\
+\hl{Proof}:
+\begin{itemize}
+    \item First direction of proof: If $\boldsymbol{u} = \alpha\boldsymbol{v}$ or $\boldsymbol{u} \textrm{ or } \boldsymbol{v} = 0_v$, we can show that the equality holds
+    \item Second direction of proof: If $\boldsymbol{u} \neq \alpha\boldsymbol{v}$ or $\boldsymbol{u} \textrm{ and } \boldsymbol{v} \neq 0_v$, we can show that the inequality cannot hold:
+    \begin{itemize}
+        \item $\boldsymbol{u}$ can be decomposed into $\boldsymbol{u}_v + \boldsymbol{u}_{v^\bot}$
+        \item Then, we have $\|\boldsymbol{u} \cdot \boldsymbol{v}\| = \| (\boldsymbol{u}_v + \boldsymbol{u}_{v^\bot}) \cdot \boldsymbol{v} \| = \|\boldsymbol{u}_v\| \cdot \|\boldsymbol{v}\|$
+        \item Based on Pythagorean theorem, we know that $\|\boldsymbol{u}\|^2 > \|\boldsymbol{u}_v\|^2$
+        \item Then, we have $\|\boldsymbol{u} \cdot \boldsymbol{v}\| = \|\boldsymbol{u}_v\| \cdot \|\boldsymbol{v}\| < \|\boldsymbol{u}\| \cdot \|\boldsymbol{v}\|$
+    \end{itemize}
+\end{itemize}
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Triangle inequality} --- 
+$\|\boldsymbol{u} + \boldsymbol{v}\| \leq \|\boldsymbol{u}\| + \|\boldsymbol{v}\|$ resp. $\|\boldsymbol{u} - \boldsymbol{v}\| \leq \|\boldsymbol{u}\| + \|\boldsymbol{v}\|$ with equality iff $\varphi = 0$ i.e. $\boldsymbol{u} = \alpha\boldsymbol{v}$ or if $\boldsymbol{u} \textrm{ or } \boldsymbol{v} = 0_v$
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Other inequalities} ---  
+
+\begin{itemize}
+    \item $\|n^k\| \leq \|n\|^k$
+    \item $|\sum_i n_i| \leq \sum_i |n_i|$
+\end{itemize}
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Orthogonal vectors} ---  Properties:
+\begin{itemize}
+    \item $\boldsymbol{u} \cdot \boldsymbol{v} = 0$
+    \item $\|\boldsymbol{u} + \boldsymbol{v}\|^2 = \|\boldsymbol{u}\|^2 + \|\boldsymbol{v}\|^2$
+    \item \emph{Pythagorean theorem}: $\|\boldsymbol{u} - \boldsymbol{v}\|^2 = \|\boldsymbol{u}\|^2 + \|\boldsymbol{v}\|^2$
+    \item Non-zero pairwise orthogonal vectors $\boldsymbol{u_n}$ and $\boldsymbol{u_m}$ are linearly independent\\
+    Proof:
+    \begin{itemize}
+        \item Let $\sum_n \alpha_n \boldsymbol{u_n} = 0_v$
+        \item Then, $0_v \cdot \boldsymbol{u_m} = (\sum_n \alpha_n \boldsymbol{u_n}) \cdot \boldsymbol{u_m} = \sum_n \alpha_n (\boldsymbol{u_n} \cdot \boldsymbol{u_m}) = \alpha_m \|\boldsymbol{u_m}\|^2$ for the case $m = n$, since in all other cases $m \neq n$, the inner product $\boldsymbol{u_n} \cdot \boldsymbol{u_m} = 0$ due to orthogonality
+        \item Then, $\alpha_m = 0$ for all m, meaning that all $\boldsymbol{u_m}$ are linearly independent
+    \end{itemize}
+\end{itemize}
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Orthonormal vectors} ---  Vectors are orthonormal iff $\|\boldsymbol{u}\| = \|\boldsymbol{v}\| = 1$ and $\boldsymbol{u} \cdot \boldsymbol{v} = 0$
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Projection} --- Projection of $\boldsymbol{v} \in V$ onto $\boldsymbol{s} \in S$ given by: $\boldsymbol{v}_S = \frac{\boldsymbol{v} \cdot \boldsymbol{s}}{\|\boldsymbol{s}\|^2}\boldsymbol{s} = (\boldsymbol{v} \cdot \boldsymbol{s})\boldsymbol{s}$ if $\boldsymbol{s}$ is a unit vector
+
+{\color{black}\hrule height 0.001mm}
+
+\subsection*{Vector Spaces}
+\emph{Vector space $V$} --- Properties:
+\begin{multicols}{2}
+\begin{itemize}
+    \item Additive closure: If $\boldsymbol{u},\boldsymbol{v} \in V$ then $\boldsymbol{u} + \boldsymbol{v} \in V$ 
+    \item Scalar closure: If $\boldsymbol{u} \in V$ then $\alpha\boldsymbol{u} \in V$ 
+    \item $\exists 0_v$ such that $\boldsymbol{u} + 0_v = \boldsymbol{u}$
+    \item $\exists \boldsymbol{-u}$ such that $\boldsymbol{u} + \boldsymbol{-u} = 0_v$
+    \item $\boldsymbol{u} + \boldsymbol{v} = \boldsymbol{v} + \boldsymbol{u}$ 
+    \item $(\boldsymbol{u} + \boldsymbol{v}) + \boldsymbol{w} = \boldsymbol{u} + (\boldsymbol{v} + \boldsymbol{w})$ 
+    \item $\alpha(\beta\boldsymbol{u})= (\alpha\beta)\boldsymbol{u}$ 
+    \item $\alpha(\boldsymbol{u} + \boldsymbol{v}) = \alpha\boldsymbol{u} + \alpha\boldsymbol{v}$ 
+    \item $\boldsymbol{u}(\alpha + \beta) = \alpha\boldsymbol{u} + \beta\boldsymbol{u}$ 
+\end{itemize}
+\end{multicols}
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Subspace $S$} --- Properties:
+$S$ is a subspace of $V$ iff (\emph{subspace test}):
+\begin{multicols}{2}
+\begin{itemize}
+    \item $0_v \in S$
+    \item Additive closure
+    \item Scalar closure
+\end{itemize}
+\end{multicols}
+\hl{Proof}:
+\begin{itemize}
+    \item If $S$ is a subspace of $V$ subspace properties immediately follow
+    \item If subspace properties are satisfied for $S$, $S$  must be a subspace of $V$ because operations are inherited (for addition, multiplication) resp. can be derived from subspace properties (for $0_V, -v$)
+\end{itemize}
+Extensions of subspaces:
+\begin{itemize}
+    \item The intersection of multiple subspaces is a subspace, since we can derive zero vector, additive closure and scalar closure (subspace test)
+    \item \emph{Direct sum} of multiple subspaces:
+    \begin{itemize}
+        \item Is given by the Cartesian product $U \oplus V = \{ (u,v) \}$, i.e. each element in $U \oplus V$ is an ordered pair of vectors
+        \item Is equipped with componentwise operations: $(u_1,v_1) + (u_2,v_2) = (u_1+u_2,v_1+v_2)$ and $a(u,v) = (au, av)$
+        \item Is a subspace, since we can derive zero vector, additive closure and scalar closure (subspace test)
+    \end{itemize}
+\end{itemize}
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Invariant subspace $H$} --- $H$ is an invariant subspace of $S$ spanned by $\boldsymbol{S}$ if $\boldsymbol{S}\boldsymbol{h} \in H$ for all $\boldsymbol{h} \in H$ --- Properties:
+\begin{itemize}
+    \item $\boldsymbol{S}$ has an eigenvector in $H$
+    \item If $\boldsymbol{S}$ is symmetric, $H^\bot$ is also an invariant subspace of $\boldsymbol{S}$
+\end{itemize}
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Orthogonal complement $S^{\bot}$} --- Subspace, composed of set of vectors that are orthogonal to $S$ --- Properties:
+\begin{multicols}{2}
+\begin{itemize}
+    \item The intersection of $S$ and $S^{\bot}$ is $\{0_v\}$
+    \item $\textrm{dim}(S) + \textrm{dim}(S^{\bot})$ = $\textrm{dim}(V)$
+\end{itemize}
+\end{multicols}
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Span} --- Span of $\{\boldsymbol{s_i}\}_{i=1}^n$ is the set of all vectors that can be expressed as a linear combination of $\{\boldsymbol{s_i}\}_{i=1}^n$:
+$\sum_{i=1}^n u_i \boldsymbol{s_i}$
+\\
+Span of matrix $\boldsymbol{A}$ is the span of its column vectors:
+$\boldsymbol{A}\boldsymbol{u} = u_1 \boldsymbol{a_1} + ... + u_n \boldsymbol{a_n} = \sum_{i=1}^n u_i \boldsymbol{a_i}$
+\\
+A span is a subspace, since for a linear combination, we can derive zero vector, additive closure and scalar closure (subspace test)
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{(Orthonormal) basis} --- Unique set of all (orthonormal) vectors $\{\boldsymbol{s_i}\}_{i=1}^n$ that are linearly independent and span the whole of a subspace.
+\begin{itemize}
+    \item \emph{Orthonormal representation theorem}: Any vector $\boldsymbol{x} \in S$ can be expressed as linear combination of resp. projection to orthonormal basis: $\boldsymbol{x} = \sum_i (\boldsymbol{x} \cdot \boldsymbol{s_i})\boldsymbol{s_i}$
+    \item \emph{Parseval's theorem}: Extension of orthonormal representation theorem: $\boldsymbol{x} \cdot \boldsymbol{y} = \sum_i (\boldsymbol{x} \cdot \boldsymbol{s_i})(\boldsymbol{y} \cdot \boldsymbol{s_i})$ resp. $\| \boldsymbol{x} \|^2 = \sum_i | (\boldsymbol{x} \cdot \boldsymbol{s_i}) |^2$
+    \item \emph{Gram Schmidt orthonormalization}: Procedure to generate orthonormal basis $\{\boldsymbol{s_i}\}_{i=1}^n$ from linearly independent vectors $\{\boldsymbol{x^{(i)}}\}_{i=1}^n$:
+    \begin{itemize}
+        \item $\boldsymbol{\tilde{s_1}} = \boldsymbol{x_1}$
+        \item $\boldsymbol{\tilde{s_k}} = \boldsymbol{x_k} - \sum_{i=1}^{k-1} (\boldsymbol{x_k} \cdot \boldsymbol{s_1})\boldsymbol{s_1}$ for $k > 1$
+        \item $\boldsymbol{s_i} = \frac{\boldsymbol{\tilde{s_i}}}{\|\boldsymbol{\tilde{s_i}}\|}$
+    \end{itemize}    
+\end{itemize}
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Dimension d} --- 
+\begin{itemize}
+    \item A vector space is \emph{finite-dimensional} if $V = span(S)$
+    \item Dimension is given by number of vectors in basis of $S$
+    \item If $V = \mathbb{R}^n$, each vector has $d$ elements
+\end{itemize}
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Convexity} --- 
+\begin{itemize}
+    \item A subspace is convex, if $\alpha \boldsymbol{u} + (1-\alpha) \boldsymbol{v}$ is also in the subspace
+\end{itemize}
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Orthogonal vectors in spaces} --- 
+\begin{itemize}
+    \item Let $S$ be spanned by orthonormal $\boldsymbol{s_1},\boldsymbol{s_2},...$ and $\boldsymbol{v} \in V$
+    \item \emph{Orthogonal decomposition theorem}: $\boldsymbol{v} = \boldsymbol{v}_{S} + \boldsymbol{v}_{S^\bot}$ where $\boldsymbol{v} \in V$, $\boldsymbol{v}_{S} \in S$ and $\boldsymbol{v}_{S^\bot} \in S^\bot$
+    \item \emph{Orthogonality principle}
+    \begin{itemize}
+        \item $\boldsymbol{v}_{S}$ is the projection of $\boldsymbol{v} \in V$ to $S$ iff $(\boldsymbol{v}-\boldsymbol{v}_{S}) \cdot \boldsymbol{s_i} = 0$
+        \item This can be rewritten to linear equation system $\boldsymbol{v} \cdot \boldsymbol{s_i} = \boldsymbol{v}_{S} \cdot \boldsymbol{s_i} = \sum_k \alpha_k (\boldsymbol{s_k} \cdot \boldsymbol{s_i})$ since $\boldsymbol{v}_{S}$ can be expressed as linear combination of resp. projection to orthonormal basis $\boldsymbol{v}_{S} = \sum_k \alpha_k \boldsymbol{s_k}$
+    \end{itemize}
+    \item $\boldsymbol{v}_{S^\bot} = \boldsymbol{v} - \boldsymbol{v}_{S} = \boldsymbol{v} - \sum_k (\boldsymbol{v} \cdot \boldsymbol{s_k}) \boldsymbol{s_k}$ 
+    \item \emph{Approximation in a subspace theorem}: 
+    \begin{itemize}
+        \item Unique best representation of $\boldsymbol{v}$ in $S$ is given by projection of $\boldsymbol{v}$ to $S$: $\|\boldsymbol{v} - \boldsymbol{s'}\| \geq \|\boldsymbol{v} - \boldsymbol{v}_S\|$ for some arbitrary $\boldsymbol{s'} \in S$
+        \item Any subset $U$ of $S$ is closest to $\boldsymbol{v}$  iff it is closest to $\boldsymbol{v}_S$\\
+        \hl{Proof}:
+        \begin{itemize}
+            \item $\arg\min_u \| \boldsymbol{v} - \boldsymbol{u} \| = \arg\min_u \| \boldsymbol{v} - \boldsymbol{u} \|^2 = \arg\min_u \| \boldsymbol{v}_S + \boldsymbol{v}_{S^\bot} - \boldsymbol{u} \|^2 = \arg\min_u \| \boldsymbol{v}_S - \boldsymbol{u}\|^2 + \|\boldsymbol{v}_{S^\bot}\|^2$ given Pythagorean theorem $ = \arg\min_u \| \boldsymbol{v}_S - \boldsymbol{u}\|^2$
+        \end{itemize}
+    \end{itemize}
+    \item We have:
+    \begin{itemize}
+        \item $\| \boldsymbol{v}_S + \boldsymbol{v} \|^2 = \|\boldsymbol{v}_S\|^2 + \|\boldsymbol{v}\|^2 + 2\boldsymbol{v}_S \cdot \boldsymbol{v} = \|\boldsymbol{v}_S\|^2 + \|\boldsymbol{v}\|^2 + 2 \boldsymbol{v}_S \cdot (\boldsymbol{v}_S + \boldsymbol{v}_{S^\bot}) = 3\|\boldsymbol{v}_S\|^2 + \|\boldsymbol{v}\|^2$
+        \item $\| \boldsymbol{v}_S - \boldsymbol{v} \|^2 = \|\boldsymbol{v}_S\|^2 + \|\boldsymbol{v}\|^2 - 2\boldsymbol{v}_S \cdot \boldsymbol{v} = \|\boldsymbol{v}_S\|^2 + \|\boldsymbol{v}\|^2 - 2 \boldsymbol{v}_S \cdot (\boldsymbol{v}_S + \boldsymbol{v}_{S^\bot}) =  \|\boldsymbol{v}\|^2 -\|\boldsymbol{v}_S\|^2$
+    \end{itemize}
+\end{itemize}
+
+{\color{black}\hrule height 0.001mm}
+
+\subsection*{Linear Equations}
+Let $\boldsymbol{X}\boldsymbol{b} = \boldsymbol{y}$ where $\boldsymbol{X} \in \mathbb{R}^{n \times m}$, $\boldsymbol{b} \in \mathbb{R}^{m}$, $\boldsymbol{y} \in \mathbb{R}^{n}$ and $\boldsymbol{b}$ is unknown
+\begin{itemize}
+    \item Number of distinct equations = Number of linearly independent rows in $[\boldsymbol{X} | \boldsymbol{b}]$ = $\textrm{rank}([\boldsymbol{X} | \boldsymbol{b}])$ $\leq$ $\textrm{min}(n,m+1)$
+    \item Number of LHS solutions should = Number of RHS solutions = $\textrm{rank}(\boldsymbol{X})$ $\leq$ $\textrm{min}(n,m)$
+\end{itemize}
+Solutions:
+\begin{itemize}
+    \item If $\textrm{rank}(\boldsymbol{X}) < \textrm{rank}([\boldsymbol{X} | \boldsymbol{b}])$, system is inconsistent (no solution)
+    \item If $\textrm{rank}(\boldsymbol{X}) = \textrm{rank}([\boldsymbol{X} | \boldsymbol{b}]) < m$, system is singular  (infinitely many solutions) and underdetermined because we have fewer distinct equations than unknowns
+    \item If $\textrm{rank}(\boldsymbol{X}) = \textrm{rank}([\boldsymbol{X} | \boldsymbol{b}]) = m = n$, system is non-singular (exactly one solution) and exactly determined 
+    \item If $\textrm{rank}(\boldsymbol{X}) = \textrm{rank}([\boldsymbol{X} | \boldsymbol{b}]) = m < n$, system is non-singular and overdetermined 
+\end{itemize}
+
+{\color{black}\hrule height 0.001mm}
+
+\subsection*{General Matrix Properties}
+\emph{Matrices} ---
+\begin{itemize}
+    \item $\boldsymbol{A} \in \mathbb{R}^{n \times m}$ with elements $A_{ij}$, rows $i = 1,...,n$, columns $j = 1,...,m$
+    \item Transpose $\boldsymbol{A^\intercal}$
+    \item Identity matrix $\boldsymbol{I}$ with 1 on diagonal, 0 elsewhere
+    \item Scalar matrix $\boldsymbol{K}$ with $k$ on diagonal, 0 elsewhere
+\end{itemize}
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Operations} ---
+\begin{itemize}
+    \item Element-wise addition: Returns matrix of same size
+    \item Element-wise scalar multiplication: Returns matrix of same size
+    \item Matrix multiplication: 
+    \begin{itemize}
+        \item $\boldsymbol{A}^{n \times p}\boldsymbol{B}^{p \times m}=\boldsymbol{C}^{n \times m}$
+        \begin{multicols}{2}
+        \begin{itemize}
+            \item $r_v \times c_v = s$
+            \item $c_v \times r_v = M$
+            \item $M \times c_v = c_v$
+            \item $r_v \times M = r_v$ 
+            \item $M \times M = M$
+        \end{itemize}
+        \end{multicols}
+        \item Element in $\boldsymbol{C}$ is sum-product of row in $\boldsymbol{A}$ and column in $\boldsymbol{B}$: $C_{ij} = \boldsymbol{A}^{(i)} \cdot \boldsymbol{B}^{(j)}$
+        \item Column vector in $\boldsymbol{C}$ is a linear combination of the columns in $\boldsymbol{A}$: $\boldsymbol{C}^{(j)} = \boldsymbol{A} \boldsymbol{B}^{(j)} = \sum_p \boldsymbol{A}^{(j=p)} b_{p}^{(j)}$
+        \item Row vector in $\boldsymbol{C}$ is a linear combination of the rows in $\boldsymbol{B}$: $\boldsymbol{C}^{(i)} = \boldsymbol{A}^{(i)} \boldsymbol{B} = \sum_p a_{p}^{(i)} \boldsymbol{B}^{(i=p)}$
+        \item $\boldsymbol{C} = \boldsymbol{A}[\boldsymbol{B^{(j=1)}} | ... | \boldsymbol{B^{(j=m)}}]$
+        \item $\boldsymbol{C} = [\boldsymbol{A^{(i=1)}} | ... | \boldsymbol{A^{(i=n)}}]^\intercal \boldsymbol{B} = [\boldsymbol{A^{(i=1)}} \boldsymbol{B} | ... | \boldsymbol{A^{(i=n)}} \boldsymbol{B}]^\intercal$
+    \end{itemize}
+\end{itemize}
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Implications} ---
+
+\begin{itemize}
+    \item $\boldsymbol{A} \boldsymbol{e_k} = \boldsymbol{A^{(j=k)}}$ and $\boldsymbol{e_k}^\intercal \boldsymbol{A} = \boldsymbol{A^{(i=k)}}$ where $\boldsymbol{e_k}$ = 1 on $k^{th}$ element and 0 everywhere else
+    \item Matrix form:
+    \begin{itemize}
+        \item In following $^{(j)}$ refers to column vector and $^{(i)}$ to row vector, however written as column vector
+        \item $\boldsymbol{u} \cdot \boldsymbol{v} = \boldsymbol{u}^\intercal \boldsymbol{v} = \sum_i u_i v_i = c$
+        \item $\boldsymbol{u} \boldsymbol{v}^\intercal = \boldsymbol{C}$\\
+        with $u_i v_j = C_{ij}$
+        \item $\boldsymbol{A} \boldsymbol{u} = \sum_{j=i} \boldsymbol{A}^{(j)} u_i = \boldsymbol{c}$\\
+        with $\boldsymbol{A}^{(i)} \cdot \boldsymbol{u} = \boldsymbol{A}^{(i) \intercal} \boldsymbol{u} = c_i$
+        \item $\boldsymbol{u}^\intercal \boldsymbol{A} = \sum_{j=i} \boldsymbol{A}^{(i) \intercal} u_j = \boldsymbol{c}^\intercal$\\
+        with $\boldsymbol{u} \cdot \boldsymbol{A}^{(j)} = \boldsymbol{u}^\intercal \boldsymbol{A}^{(j)} = c_j$
+        \item $\boldsymbol{A} \boldsymbol{B} = \sum_{j=i} \boldsymbol{A}^{(j)} \boldsymbol{B}^{(i) \intercal} = \boldsymbol{C}$\\
+        with $\boldsymbol{A}^{(i)} \cdot \boldsymbol{B}^{(j)} = \boldsymbol{A}^{(i) \intercal} \boldsymbol{B}^{(j)} = C_{ij}$
+        \item $\boldsymbol{u}^\intercal \boldsymbol{A} \boldsymbol{u} = \sum_i \sum_j x_i A_{ij} x_j$, which we can specify:
+        \begin{itemize}
+            \item If $A$ is symmetric: $= \sum_{i < j} x_i (A_{ij} + A_{ji}) x_j + \sum_{i} A_{ii} x_i^2$, since $ A_{ij} =  A_{ji}$ and so we can only sum over $i \leq j$
+            \item If $A$ is diagonal: $= \sum_i x_i A_{ii} x_i$ since all off-diagonal terms are $0$
+        \end{itemize}
+        \item Indexing a vector $\boldsymbol{u}$ on $i$ returns the $i^{th}$ element: $\boldsymbol{u}_i = u_i$
+        \item Indexing $(\boldsymbol{A}\boldsymbol{u})$ on $i$ returns the $i^{th}$ element for the vector, generated via the $i^{th}$ row for the matrix: $(\boldsymbol{A}\boldsymbol{u})_i = \boldsymbol{A}^{(i)}\boldsymbol{u}$ (! here the row is not written as a column vector, but as a true row vector)
+    \end{itemize}
+    \item Moving between instance-level $\rightarrow$ data-level:
+    \begin{itemize}
+        \item $\boldsymbol{x^{(i)}} \boldsymbol{y} = \boldsymbol{a}$ $\rightarrow$ $\boldsymbol{X}^\intercal \boldsymbol{y} = \boldsymbol{a}$ where $\boldsymbol{X}$ consists of rows $\boldsymbol{x^{(i)}}$
+        \item $\boldsymbol{x^{(i)}} \boldsymbol{x^{(i)}}^\intercal = \boldsymbol{A}$ $\rightarrow$ $\boldsymbol{X}^\intercal \boldsymbol{X} = \boldsymbol{A}$ where $\boldsymbol{X}$ consists of rows $\boldsymbol{x^{(i)}}$
+        \item $\boldsymbol{x^{(i)}} \cdot \boldsymbol{\beta} = y_i$ $\rightarrow$ $\boldsymbol{X}\boldsymbol{\beta} = \boldsymbol{y}$ where $\boldsymbol{X}$ consists of rows $\boldsymbol{x^{(i)}}$
+    \end{itemize}
+\end{itemize}
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Properties} ---
+\begin{multicols}{2}
+\begin{itemize}
+    \item $(\boldsymbol{A} + \boldsymbol{B})^\intercal = \boldsymbol{A}^\intercal + \boldsymbol{B}^\intercal$
+    \item $(\alpha\boldsymbol{A})^\intercal = \alpha \boldsymbol{A}^\intercal$
+    \item $(\boldsymbol{A} \boldsymbol{B})^\intercal = \boldsymbol{B}^\intercal \boldsymbol{A}^\intercal$
+    \item $(\boldsymbol{A} + \boldsymbol{B}) + \boldsymbol{C} = \boldsymbol{A} + (\boldsymbol{B} + \boldsymbol{C})$
+    \item $\boldsymbol{A} + \boldsymbol{B} = \boldsymbol{B} + \boldsymbol{A}$
+    \item $\alpha(\boldsymbol{A} + \boldsymbol{B}) = \alpha\boldsymbol{A} + \alpha\boldsymbol{B}$
+    \item $(\alpha + \beta)\boldsymbol{A}= \alpha\boldsymbol{A} + \beta\boldsymbol{A}$
+    \item $(\alpha\beta)\boldsymbol{A}= \alpha(\beta\boldsymbol{A})$
+    \item $(\boldsymbol{A} + \boldsymbol{B})\boldsymbol{x} = \boldsymbol{A}\boldsymbol{x} + \boldsymbol{B}\boldsymbol{x} = \boldsymbol{C}\boldsymbol{x}$
+    \item $(\boldsymbol{A} \boldsymbol{B})\boldsymbol{x} = \boldsymbol{A} (\boldsymbol{B} \boldsymbol{x}) = \boldsymbol{C}\boldsymbol{x}$
+    \item $\boldsymbol{A} = 0.5(\boldsymbol{A} + \boldsymbol{A}^\intercal) + 0.5(\boldsymbol{A} - \boldsymbol{A}^\intercal) = \boldsymbol{B} + \boldsymbol{C}$ where $\boldsymbol{B}$ is symmetric, but not $\boldsymbol{C}$
+    \item $\boldsymbol{A} = \boldsymbol{A}\boldsymbol{I} = \boldsymbol{I}\boldsymbol{A}$
+    \item $\boldsymbol{A}k = \boldsymbol{A}\boldsymbol{K} = \boldsymbol{K}\boldsymbol{A}$
+    \item $\textrm{rank}(\boldsymbol{A}\boldsymbol{B}) = \textrm{min(rank}(\boldsymbol{A}), \textrm{rank}(\boldsymbol{B}))$
+    \item $\boldsymbol{A}^\intercal\boldsymbol{A}$ satisfies: 
+    \begin{itemize}
+        \item Symmetric
+        \item Psd
+        \item Has rank $m$ iff it is pd
+        \item Invertible iff it has rank $m$ and it is pd
+        \item $\textrm{rank}(\boldsymbol{A}^\intercal\boldsymbol{A}) = \textrm{rank}(\boldsymbol{A}) = \textrm{rank}(\boldsymbol{A}^\intercal)$
+        \item $\textrm{rank}(\boldsymbol{A}^\intercal\boldsymbol{A}) = \textrm{rank}([\boldsymbol{A}^\intercal\boldsymbol{A} | \boldsymbol{A}^\intercal\boldsymbol{x}])$
+    \end{itemize}
+\end{itemize}
+\end{multicols}
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Matrix terminology} ---
+\begin{itemize}
+    \item \emph{Kernel} $\textrm{null}(\boldsymbol{X})$ contains set of vectors $\boldsymbol{b}$ such that linear map $\boldsymbol{X}\boldsymbol{b} = 0$
+    \item \emph{Nullity} = $\textrm{dim(null}(\boldsymbol{X}))$
+    \item \emph{Image} $\textrm{range}(\boldsymbol{X})$ contains set of vectors $\boldsymbol{b}$ generated by linear map $\boldsymbol{X}\boldsymbol{b}$ resp. is space spanned by columns of $\boldsymbol{X}$
+    \item \emph{Row space} is space spanned by rows of $\boldsymbol{X}$ 
+    \item \emph{Column rank} = $\textrm{dim(colspace}(\boldsymbol{X}))$ = number of linearly independent columns
+    \item \emph{Row rank} = $\textrm{dim(rowspace}(\boldsymbol{X}))$ = number of linearly independent rows
+    \item \emph{Rank} = column rank = row rank = $\textrm{dim(range}(\boldsymbol{X}))$ = $\textrm{dim(range}(\boldsymbol{X}^\intercal))$ $\leq min(n,m)$
+    \item For invertible $\boldsymbol{B}$, $\textrm{colspace}(\boldsymbol{X}\boldsymbol{B}) = \textrm{colspace}(\boldsymbol{X})$ and $\textrm{rowspace}(\boldsymbol{X}\boldsymbol{B}) = \textrm{rowspace}(\boldsymbol{X})$
+    \item \emph{Rank nullity theorem}: $\textrm{Rank}(\boldsymbol{X}) + \textrm{nullity}(\boldsymbol{X}) = m$
+\end{itemize}
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Matrices as linear maps} ---
+$\boldsymbol{X}$ maps $\boldsymbol{b}$ from $\mathbb{R}^m$ to $\mathbb{R}^n$: $\boldsymbol{X}\boldsymbol{b} = \boldsymbol{y}$ with $\boldsymbol{X} \in \mathbb{R}^{n \times m}$, $\boldsymbol{b} \in \mathbb{R}^{m}$, $\boldsymbol{y} \in \mathbb{R}^{n}$
+\begin{itemize}
+    \item \emph{Injective}: $\boldsymbol{X}\boldsymbol{b} = \boldsymbol{y}$ has at most one solution, happens iff columns of X are linearly independent ($\textrm{rank}(\boldsymbol{X}) = m \leq n$)
+    \item \emph{Surjective}: $\boldsymbol{X}\boldsymbol{b} = \boldsymbol{y}$ has at least one solution, happens iff rows of X are linearly independent ($\textrm{rank}(\boldsymbol{X}) = n \leq m$)
+    \item \emph{Bijective}: Mapping is both injective and surjective, i.e. $m=n$
+\end{itemize}
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Projection matrices} ---\\
+Generally:
+\begin{itemize}
+    \item Projection matrix satisfies $\boldsymbol{P} = \boldsymbol{P}^2$
+    \item Proof:
+    \begin{itemize}
+        \item Let $S$ be spanned by $\{\boldsymbol{y_i}\}_{i=1}^n$, which are column vectors of the matrix $\boldsymbol{A} \in \mathbb{R}^{m \times n}$
+        \item Then, $\boldsymbol{A} \boldsymbol{c}$ are linear combinations of $\{\boldsymbol{y_i}\}_{i=1}^n$
+        \item A vector $(\boldsymbol{x} - \boldsymbol{A} \boldsymbol{c})$ is orthogonal to the columnspace of $\boldsymbol{A}$, if: $\textrm{columnspace}(\boldsymbol{A}) \cdot (\boldsymbol{x} - \boldsymbol{A} \boldsymbol{c}) = \boldsymbol{A}^\intercal (\boldsymbol{x} - \boldsymbol{A} \boldsymbol{c}) = \boldsymbol{A}^\intercal \boldsymbol{x} - \boldsymbol{A}^\intercal \boldsymbol{A} \boldsymbol{c} = 0$
+        \item Then, $\boldsymbol{c} = (\boldsymbol{A}^\intercal\boldsymbol{A})^{-1} \boldsymbol{A}^\intercal \boldsymbol{x}$ 
+        \item With this definition of $\boldsymbol{c}$, we have $\boldsymbol{A} (\boldsymbol{A}^\intercal\boldsymbol{A})^{-1} \boldsymbol{A}^\intercal$ as the projection matrix $\boldsymbol{P}$
+        \item $\boldsymbol{P}^2 = (\boldsymbol{A} (\boldsymbol{A}^\intercal\boldsymbol{A})^{-1} \boldsymbol{A}^\intercal) (\boldsymbol{A} (\boldsymbol{A}^\intercal\boldsymbol{A})^{-1} \boldsymbol{A}^\intercal) = \boldsymbol{A} (\boldsymbol{A}^\intercal\boldsymbol{A})^{-1} \boldsymbol{A}^\intercal = \boldsymbol{P}$
+    \end{itemize}
+\end{itemize}
+Via orthonormal basis: Let $S$ be spanned by orthonormal $\{\boldsymbol{b_i}\}_{i=1}^n$, which are column vectors of the matrix $\boldsymbol{B} \in \mathbb{R}^{m \times n}$
+\begin{itemize}
+    \item Projection of $\boldsymbol{x}$ onto $S$ is given by: $\boldsymbol{u} = \sum_i (\boldsymbol{x} \cdot \boldsymbol{b_i}) \boldsymbol{b_i} = \sum_i \boldsymbol{b_i} \boldsymbol{b_i}^\intercal \boldsymbol{x} = \boldsymbol{B}\boldsymbol{B}^\intercal\boldsymbol{x} = \boldsymbol{C}\boldsymbol{x}$
+    \item Projection of $\boldsymbol{x}$ onto $S^\bot$ is given by: $\boldsymbol{x} - \boldsymbol{u} = \boldsymbol{I}\boldsymbol{x} - \boldsymbol{C}\boldsymbol{x}$
+\end{itemize}
+Via SVD: Let $S$ be spanned by $\{\boldsymbol{y_i}\}_{i=1}^n$, which are column vectors of the matrix $\boldsymbol{A} \in \mathbb{R}^{m \times n}$
+\begin{itemize}
+    \item Projection of $\boldsymbol{x}$ onto $S$ is given by: $\boldsymbol{s} = \boldsymbol{A}\boldsymbol{A}^{\#}\boldsymbol{x}$ since $\boldsymbol{A}\boldsymbol{A}^{\#}$ is a projection matrix due to $\boldsymbol{A}\boldsymbol{A}^{\#} = (\boldsymbol{A}\boldsymbol{A}^{\#})^2$
+    \item $\boldsymbol{s} = \boldsymbol{U}_{+} \boldsymbol{U}_{+}^\intercal \boldsymbol{x}$ 
+    \item \emph{SVD Projection Energy}: $\sum_{l=1}^m | \boldsymbol{u}_k \cdot \boldsymbol{y}_l |^2 = \sigma_k^2$\\
+    Proof:
+    $\sum_{l=1}^m | \boldsymbol{u}_k \cdot \boldsymbol{y}_l |= \| \boldsymbol{u}_k^\intercal \boldsymbol{A} \| = \boldsymbol{u}_k^\intercal \boldsymbol{A} \boldsymbol{A}^\intercal \boldsymbol{u}_k = \boldsymbol{u}_k^\intercal \boldsymbol{U} \boldsymbol{S} \boldsymbol{V}^\intercal \boldsymbol{V} \boldsymbol{S}^\intercal \boldsymbol{U}^\intercal \boldsymbol{u}_k = \boldsymbol{e}_k^\intercal  \boldsymbol{S}  \boldsymbol{S}^\intercal \boldsymbol{e}_k = \sigma_k^2$
+\end{itemize}
+
+{\color{black}\hrule height 0.001mm}
+
+\subsection*{Square Matrix Properties}
+
+\emph{Square matrix terminology} ---
+\begin{itemize}
+    \item \emph{Diagonal matrix}:
+    \begin{itemize}
+        \item Def: Has $\{d_i\}_{i=1}^n$ on diagonal and 0 everywhere else
+        \item For diagonal matrices: $\boldsymbol{D}\boldsymbol{D}^\intercal = \boldsymbol{D}^\intercal\boldsymbol{D}$
+    \end{itemize} 
+    \item \emph{Inverse matrix}:
+    \begin{itemize}
+        \item Def: $\boldsymbol{A}^{-1}\boldsymbol{A} = \boldsymbol{I}$
+        \item Is unique
+        \item For diagonal matrices: $\boldsymbol{A}^{-1}$ can be calculated by inverting all diagonal elements  
+    \end{itemize} 
+    \item \emph{Symmetric (Hermitian) matrix}:
+    \begin{itemize}
+        \item $\boldsymbol{A}^\intercal = \boldsymbol{A}$
+        \item Properties:
+        \begin{itemize}
+            \item $( \boldsymbol{x} + \boldsymbol{A}^{-1} \boldsymbol{b} )^\intercal \boldsymbol{A} ( \boldsymbol{x} + \boldsymbol{A}^{-1} \boldsymbol{b} ) - \boldsymbol{b}^\intercal \boldsymbol{A}^{-1} \boldsymbol{b} = \boldsymbol{x}^\intercal \boldsymbol{A} \boldsymbol{x} + 2 \boldsymbol{x}^\intercal \boldsymbol{b}$
+            \item If $\boldsymbol{A}$ and $\boldsymbol{B}$ are symmetric, $\boldsymbol{A} + \boldsymbol{B}$ is also symmetric
+        \end{itemize}
+    \end{itemize}
+    \item \emph{Orthogonal (unitary) matrix}: 
+    \begin{itemize}
+        \item Def: $\boldsymbol{A}^\intercal = \boldsymbol{A}^{-1}$
+        \item $\boldsymbol{A}\boldsymbol{A}^\intercal = \boldsymbol{A}^\intercal\boldsymbol{A} = \boldsymbol{I}$
+        \item Rows and columns are orthonormal
+        \item $\|\boldsymbol{A} \boldsymbol{x}\| = \|\boldsymbol{x}\|$
+        \item $(\boldsymbol{A}\boldsymbol{x}) \cdot (\boldsymbol{A}\boldsymbol{y}) = \boldsymbol{x} \cdot \boldsymbol{y}$
+    \end{itemize}
+    \item \emph{Involution matrix}: $\boldsymbol{A}^{-1} = \boldsymbol{A}$
+    \item \emph{Determinant}: 
+    \begin{itemize}
+        \item Function which maps $\boldsymbol{A}$ to a scalar
+        \item Properties:
+        \begin{multicols}{2}
+        \begin{itemize}
+            \item $\textrm{det}(\boldsymbol{I}) = 1$
+            \item $\textrm{det}(\boldsymbol{A}\boldsymbol{B}) = \textrm{det}(\boldsymbol{A})\textrm{det}(\boldsymbol{B})$
+            \item $\textrm{det}(\boldsymbol{A}^\intercal) = \textrm{det}(\boldsymbol{A})$
+            \item $\textrm{det}(\boldsymbol{A}^{-1}) = (\textrm{det}(\boldsymbol{A}))^{-1}$
+            \item $\textrm{det}(\alpha\boldsymbol{A}) = \alpha^2\textrm{det}(\boldsymbol{A})$
+            \item Determinant of diagonal matrix is product of diagonal elements
+        \end{itemize}
+        \end{multicols}
+    \end{itemize}
+    
+\end{itemize}
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Invertible matrix theorem} --- Following statements are equivalent for square matrix $\boldsymbol{A} \in \mathbb{R}^{n \times n}$: 
+\begin{itemize}
+    \item $\boldsymbol{A}$ is invertible
+    \item Only solution to $\boldsymbol{A}\boldsymbol{x} = 0$ is $\boldsymbol{x} = 0_v$\\
+    Proof:
+    \begin{itemize}
+        \item $\boldsymbol{A}^{-1} \boldsymbol{A} \boldsymbol{x} = 0 \Rightarrow \boldsymbol{I} \boldsymbol{x} = 0 \Rightarrow \boldsymbol{x} = 0_v$
+    \end{itemize}
+    \item $\boldsymbol{A}$ is non-singular
+    \item Columns (and rows) of $\boldsymbol{A}$ are linearly independent
+    \item $\textrm{rank}(\boldsymbol{A}) = n$
+    \item $\textrm{det}(\boldsymbol{A}) = 0$
+    \item Singular values of $\boldsymbol{A}$ are strictly positive
+\end{itemize}
+Inversely, if $\boldsymbol{A}$ is not invertible, the columns and rows are not linearly independent, etc. 
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Matrix inversion lemma} ---
+\begin{itemize}
+    \item Let $\boldsymbol{B} \in \mathbb{R}^{n \times n}$, $\boldsymbol{D} \in \mathbb{R}^{m \times m}$, $\boldsymbol{C} \in \mathbb{R}^{n \times m}$.\\
+    Then, $\boldsymbol{A} = \boldsymbol{B}^{-1} + \boldsymbol{C}\boldsymbol{D}^{-1}\boldsymbol{C}^\intercal$ is invertible: $\boldsymbol{A}^{-1} = \boldsymbol{B} - \boldsymbol{B}\boldsymbol{C} (\boldsymbol{D}+\boldsymbol{C}^\intercal\boldsymbol{B}\boldsymbol{C})^{-1}\boldsymbol{C}^\intercal\boldsymbol{B}$
+    \item Let $\boldsymbol{v} \in \mathbb{R}^{n}$.\\
+    Then, $(\alpha \boldsymbol{I} + \boldsymbol{v}\boldsymbol{v}^\intercal)^{-1}\boldsymbol{v} = (\alpha + \|\boldsymbol{v}\|^2)^{-1}\boldsymbol{v} = \boldsymbol{v}^\intercal(\alpha \boldsymbol{I} + \boldsymbol{v}\boldsymbol{v}^\intercal)^{-1} = \boldsymbol{v}^\intercal(\alpha + \|\boldsymbol{v}\|^2)^{-1}$
+\end{itemize}
+ 
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Quadratic form} --- Quadratic form of square matrix $\boldsymbol{M}$: $\boldsymbol{x}^\intercal\boldsymbol{M}\boldsymbol{x}$. Can be expressed as quadratic form of a symmetric matrix $\boldsymbol{A}$: $\boldsymbol{x}^\intercal\boldsymbol{A}\boldsymbol{x}$ where $\boldsymbol{A} = 0.5 \times (\boldsymbol{M} + \boldsymbol{M}^\intercal) + 0.5 \times (\boldsymbol{M} - \boldsymbol{M}^\intercal)$.
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Eigenvectors and eigenvalues} --- 
+\begin{itemize}
+    \item $\boldsymbol{q}$ is an eigenvector of $\boldsymbol{A}$ associated with an eigenvalue $\lambda$ if it remains on the same line after transformation by a linear map: $\boldsymbol{A}\boldsymbol{q} = \lambda\boldsymbol{q}$
+    \item Let $\boldsymbol{A} \in \mathbb{R}^{n \times n}$. $\boldsymbol{A}$ can have between $1-n$ eigenvalues, each with multiple eigenvectors. Eigenvectors for distinct eigenvalues are linearly independent
+    \item \emph{Spectral radius}: $\rho(\boldsymbol{A})$ is the largest eigenvalue of $\boldsymbol{A}$
+    \item If there exists a non-trivial solution for $\boldsymbol{q}$, $(\boldsymbol{A}-\lambda\boldsymbol{I})$ is not invertible and characteristic polynomial $\textrm{det}(\boldsymbol{A}-\lambda\boldsymbol{I}) = 0$
+    \item \emph{Eigendecomposition resp. diagonalization}: $\boldsymbol{A} = \boldsymbol{Q}\boldsymbol{\Lambda}\boldsymbol{Q}^{-1}$ where $\boldsymbol{Q}$ is a matrix with the eigenvectors as columns and $\boldsymbol{\Lambda}$ is a diagonal matrix with the eigenvalues on the diagonal
+    \item $\textrm{det}(\boldsymbol{A}) = \textrm{det}(\boldsymbol{Q}\boldsymbol{\Lambda}\boldsymbol{Q}^{-1}) = \prod_{i=1}^n \lambda_i$
+    \item \emph{Symmetric eigendecomposition resp. unitary diagonalization}: For symmetric $\boldsymbol{A}$: $\boldsymbol{A} = \boldsymbol{Q}\boldsymbol{\Lambda}\boldsymbol{Q}^\intercal$ where $\boldsymbol{Q}$ is an orthogonal matrix with the eigenvectors as columns and $\boldsymbol{\Lambda}$ is a diagonal matrix with the eigenvalues on the diagonal
+    \item \emph{Spectral theorem}: Square matrix $\boldsymbol{A}$ is symmetrically diagonizable, iff $\boldsymbol{A}\boldsymbol{A}^\intercal = \boldsymbol{A}^\intercal\boldsymbol{A}$
+    \item \emph{Spectral theorem for symmetric matrices}: Every symmetric matrix $\boldsymbol{A}$ is symmetrically diagonizable (due to Spectral theorem) and all its eigenvalues are real
+\end{itemize}
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Positive definite (pd) and positive semi-definite matrices (psd)} --- 
+\begin{multicols}{2}
+\begin{itemize}
+    \item $\boldsymbol{A} \succ 0$ iff $\boldsymbol{x}^\intercal\boldsymbol{A}\boldsymbol{x} > 0$
+    \item $\boldsymbol{A} \succeq 0$ iff $\boldsymbol{x}^\intercal\boldsymbol{A}\boldsymbol{x} \geq 0$
+\end{itemize}
+\end{multicols}
+Properties:
+\begin{itemize}
+    \item If $\boldsymbol{A}$ is p(s)d, $\alpha\boldsymbol{A}$ is also p(s)d
+    \item If $\boldsymbol{A}$ and $\boldsymbol{B}$ are p(s)d, $\boldsymbol{A} + \boldsymbol{B}$ is also p(s)d
+    \item If $\textrm{det}(\boldsymbol{A}) = \prod_{i=1}^n \lambda_i > (\geq) \textrm{ } 0$ resp. $\{\lambda_i\}_{i=1}^n > (\geq) \textrm{ } 0$ for pd (psd)
+\end{itemize}
+Pd properties:
+\begin{itemize}
+    \item $\boldsymbol{I}$ is pd
+    \item If $\boldsymbol{A}$ is pd, $\boldsymbol{A}^{-1}$ is pd
+    \item \emph{Cholesky decomposition}: If $\boldsymbol{A}$ is pd, $\boldsymbol{A} = \boldsymbol{B}\boldsymbol{B}^\intercal$
+    \item If $\boldsymbol{A}$ and $\boldsymbol{B}$ are pd, $(\boldsymbol{A}\boldsymbol{B})^{-1} = \boldsymbol{B}^{-1}\boldsymbol{A}^{-1}$
+\end{itemize}
+Psd properties:
+\begin{itemize}
+    \item If $\boldsymbol{A}$ is psd, $\boldsymbol{B}\boldsymbol{A}\boldsymbol{B}^\intercal$ is psd
+\end{itemize}
+
+{\color{black}\hrule height 0.001mm}
+
+\subsection*{Singular Value Decomposition (SVD)}
+\emph{SVD} --- 
+\begin{itemize}
+    \item For $\boldsymbol{A} \in \mathbb{R}^{n \times m}$, orthogonal rotation matrix $\boldsymbol{U} \in \mathbb{R}^{n \times n}$, diagonal scaling and projection matrix $\boldsymbol{S} \in \mathbb{R}^{n \times m}$, and orthogonal rotation matrix $\boldsymbol{V} \in \mathbb{R}^{m \times m}$: $\boldsymbol{A} = \boldsymbol{U} \boldsymbol{S} \boldsymbol{V}^\intercal$
+    \item For symmetric $\boldsymbol{A} \in \mathbb{R}^{n \times n}$: $\boldsymbol{A} = \boldsymbol{U} \boldsymbol{S} \boldsymbol{U}^\intercal$
+    \item In $\boldsymbol{S}$:
+    \begin{itemize}
+        \item Diagonal elements $\sigma_1, ...$ are the \emph{singular values} of $\boldsymbol{A}$
+        \item If $\sigma_1 \geq \sigma_2 ... \geq 0$, $\boldsymbol{S}$ is unique
+        \item \emph{Spectral norm} = $\sigma_{max} = \| \boldsymbol{A} \|_{\textrm{operator}} = sup_{\boldsymbol{x} \neq 0} \frac{\|\boldsymbol{A}\boldsymbol{x}\|_2}{\|\boldsymbol{x}\|_2}$\\
+        Proof:
+        \begin{itemize}
+            \item $\boldsymbol{A} = \boldsymbol{U} \boldsymbol{\Sigma} \boldsymbol{V}^T$
+            \item For any vector $\boldsymbol{x} \in \mathbb{R}^N$, we have:
+            $\|\boldsymbol{A}\boldsymbol{x}\|_2 = \|\boldsymbol{U} \boldsymbol{\Sigma} \boldsymbol{V}^T \boldsymbol{x}\|_2$
+            \item Since $\boldsymbol{U}$ is orthogonal, we can write:
+            $\|\boldsymbol{A}\boldsymbol{x}\|_2 = \|\boldsymbol{\Sigma} \boldsymbol{V}^T \boldsymbol{x}\|_2$
+            \item Let $\boldsymbol{y} = \boldsymbol{V}^T \boldsymbol{x}$. Substituting, we get:
+            $\|\boldsymbol{A}\boldsymbol{x}\|_2 = \|\boldsymbol{\Sigma} \boldsymbol{y}\|_2$ 
+            \item The diagonal matrix $\boldsymbol{\Sigma}$ scales the components of $\boldsymbol{y}$ by the singular values $\sigma_i$:
+            $\|\boldsymbol{\Sigma} \boldsymbol{y}\|_2 = \sqrt{\sum_{i=1}^r (\sigma_i y_i)^2}$
+            \item The supremum of $\|\boldsymbol{\Sigma} \boldsymbol{y}\|_2$ occurs when all the weight is on the largest singular value $\sigma_1$ 
+            \item Then, we see that:
+            $\|\boldsymbol{A}\|_2 = \sup_{\boldsymbol{y} \neq 0} \frac{\|\boldsymbol{\Sigma} \boldsymbol{y}\|_2}{\|\boldsymbol{y}\|_2}$ is achieved when $\boldsymbol{y}$ is aligned with the singular vector corresponding to $\sigma_1$, giving:
+            $\|\boldsymbol{A}\|_2 = \sigma_1 = \sigma_{\max}(\boldsymbol{A})$
+        \end{itemize}
+        \item Largest singular value $\sigma_{max}$ is always greater than largest eigenvalue $\rho(\boldsymbol{A})$
+        \item \emph{Condition number} = $\sigma_{max} / \sigma_{min}$
+        \item For square $\boldsymbol{A}$: Iff $\sigma_1, \sigma_2, ... > 0$, $\boldsymbol{A}$ is invertible 
+    \end{itemize}
+    \item SVD is closely related to spectral theorem:
+    \begin{itemize}
+        \item According to spectral theorem, every matrix $\boldsymbol{A}$ is symmetrically diagonizable (i.e. $\boldsymbol{A} = \boldsymbol{Q} \boldsymbol{\Lambda} \boldsymbol{Q}^\intercal$), iff $\boldsymbol{A}\boldsymbol{A}^\intercal = \boldsymbol{A}^\intercal\boldsymbol{A}$
+        \item If we apply SVD to $\boldsymbol{A}\boldsymbol{A}^\intercal$ resp. $\boldsymbol{A}^\intercal\boldsymbol{A}$:
+        \begin{itemize}
+            \item $\boldsymbol{A}\boldsymbol{A}^\intercal = \boldsymbol{U}\boldsymbol{S}\boldsymbol{V}^\intercal\boldsymbol{V}\boldsymbol{S}^\intercal\boldsymbol{U}^\intercal = \boldsymbol{U}(\boldsymbol{S}\boldsymbol{S}^\intercal)\boldsymbol{U}^\intercal$ since $\boldsymbol{V}$ is orthogonal and $\boldsymbol{V}^\intercal \boldsymbol{V} = \boldsymbol{I}$
+            \item $\boldsymbol{A}^\intercal\boldsymbol{A} = \boldsymbol{V}\boldsymbol{S}^\intercal\boldsymbol{U}^\intercal\boldsymbol{U}\boldsymbol{S}\boldsymbol{V}^\intercal = \boldsymbol{V}(\boldsymbol{S}^\intercal\boldsymbol{S})\boldsymbol{V}^\intercal$ since $\boldsymbol{U}$ is orthogonal and $\boldsymbol{U}^\intercal \boldsymbol{U} = \boldsymbol{I}$
+        \end{itemize}
+        \item $\boldsymbol{S}\boldsymbol{S}^\intercal$ and $\boldsymbol{S}^\intercal\boldsymbol{S}$ are diagonal matrices with elements $\sigma_1^2, \sigma_2^2, ...$
+        \item Given symmetric diagonalization for any matrix, we see that
+        \begin{itemize}
+            \item $\boldsymbol{S}$ with $\sigma_i$ contains square root of eigenvalues of $\boldsymbol{A}\boldsymbol{A}^\intercal$ resp. $\boldsymbol{A}^\intercal\boldsymbol{A}$
+            \item $\boldsymbol{U}$ contains eigenvectors of  $\boldsymbol{A}\boldsymbol{A}^\intercal$ as columns resp. $\boldsymbol{V}$ contains eigenvectors of $\boldsymbol{A}^\intercal\boldsymbol{A}$ as columns
+        \end{itemize}
+        \item According to spectral theorem, symmetric matrix $\boldsymbol{A}$ is symmetrically diagonizable (i.e. $\boldsymbol{A} = \boldsymbol{Q} \boldsymbol{\Lambda} \boldsymbol{Q}^\intercal$) 
+        \item If we apply SVD to symmetric matrix $\boldsymbol{A}$, we see that
+        \begin{itemize}
+            \item $\boldsymbol{S}$ contains absolute value of eigenvalues of $\boldsymbol{A}$ 
+            \item $\boldsymbol{U}$ contains eigenvectors of $\boldsymbol{A}$ as columns
+        \end{itemize}
+    \end{itemize}
+    \item Note for exam: Find orthonormal decomposition resp. SVD decomposition of matrix $\boldsymbol{A} \in \mathbb{R}^{2 \times 2}$:\\
+    1) Orthonormal decomposition\\
+    If rows of $\boldsymbol{A}$ are orthogonal:
+    \begin{enumerate}
+        \item If required: Take non-zero submatrix of A $\boldsymbol{A}$
+        \item Calculate diagonal scaling matrix $\boldsymbol{S}$ with $\boldsymbol{S}_{ii} = f_i$, where $f_i$ represents how much bigger the norm for the row vector in row $i$ is vs. the norm for the row vector in row $1$
+        \item Divide elements in row $i$ of $\boldsymbol{A}$ by $f_i$ to obtain $\boldsymbol{A}'$
+        \item Then, we have: $\boldsymbol{A} = \boldsymbol{S}\boldsymbol{A}'$
+        \item This ensures that $\boldsymbol{A}'$ has orthogonal columns
+        \item Calculate the norm of the rows in $\boldsymbol{A}'$ with the norm for the $i^{th}$ row being $n_i$
+        \item Divide elements in row $i$ of $\boldsymbol{A}'$ by $n_i$ to obtain $\boldsymbol{A}''$
+        \item Multiply elements $\boldsymbol{S}_{ii}$ in diagonal scaling matrix $\boldsymbol{S}$ by $n_i$ to obtain $\boldsymbol{S}'$ 
+        \item Then, we have: $\boldsymbol{A} = \boldsymbol{S}'\boldsymbol{A}''$
+        \item This ensures that $\boldsymbol{A}''$ is orthonormal
+    \end{enumerate}
+    If columns of $\boldsymbol{A}$ are orthogonal: Similar to above\\
+    2) SVD decomposition:
+    \begin{enumerate}
+        \item $\boldsymbol{A} = \boldsymbol{I}\boldsymbol{S}'\boldsymbol{A}''$
+        \item Then, $\boldsymbol{I} = \boldsymbol{U}$ in SVD
+        \item If submatrix was taken previously, fill up remaining diagonal elements of $\boldsymbol{S}'$ with $0$ to match size of original matrix. Then, $\boldsymbol{S}' = \boldsymbol{S}$ in SVD
+        \item If submatrix was taken previously, fill up remaining diagonal elements of $\boldsymbol{A}''$ with $1$ to guarantee size of original matrix. Then, $\boldsymbol{A}''^\intercal = \boldsymbol{V}$ in SVD
+    \end{enumerate}
+\end{itemize}
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Pseudo Inverse} --- 
+\begin{itemize}
+    \item Pseudo Inverse satisfies certain conditions that make it behave like an inverse for matrices that might not be invertible in the usual sense
+    \item $\boldsymbol{A}^{\#} = \boldsymbol{V} \boldsymbol{S}^{\#} \boldsymbol{U}^\intercal$
+    \item $ \boldsymbol{S}^{\#} = \begin{bmatrix}
+        \boldsymbol{S}_+^{-1} & ... & 0 \\
+        ... & ... & ... \\
+        0 & ... & 0
+        \end{bmatrix}$ is obtained from $ \boldsymbol{S}$ by first transposing it and then taking the inverse of non-zero singular values
+    \item $\boldsymbol{A}^{\#}$ is unique
+    \item If $rank(\boldsymbol{A})$ = number of rows in $\boldsymbol{A}$ then:
+    \begin{itemize}
+        \item $\boldsymbol{S}^\intercal$ and $\boldsymbol{S}^{\#}$ have full column rank and $\boldsymbol{S}^{\#} = \boldsymbol{S}^\intercal( \boldsymbol{S}\boldsymbol{S}^\intercal)^{-1} $
+        \item $\boldsymbol{A}\boldsymbol{A}^{\#} = \boldsymbol{I}$
+        \item $\boldsymbol{A}^{\#} = \boldsymbol{A}^\intercal (\boldsymbol{A}\boldsymbol{A}^\intercal)^{-1}$
+        \item Pseudo inverse provides mininum norm solution, when system $\boldsymbol{y} = \boldsymbol{A}\boldsymbol{x}$ is underdetermined: $\boldsymbol{x} = \boldsymbol{A}^\intercal (\boldsymbol{A}\boldsymbol{A}^\intercal)^{-1} \boldsymbol{y}$
+    \end{itemize}
+    \item If $rank(\boldsymbol{A})$ = number of columns in $\boldsymbol{A}$ then:
+    \begin{itemize}
+        \item $\boldsymbol{S}^\intercal$ and $\boldsymbol{S}^{\#}$ have full row rank and $\boldsymbol{S}^{\#} = (\boldsymbol{S}^\intercal \boldsymbol{S})^{-1} \boldsymbol{S}^\intercal$
+        \item $\boldsymbol{A}^{\#}\boldsymbol{A} = \boldsymbol{I}$
+        \item $\boldsymbol{A}^{\#} =  (\boldsymbol{A}^\intercal\boldsymbol{A})^{-1} \boldsymbol{A}^\intercal$
+        \item Pseudo inverse provides least squares solution, when system $\boldsymbol{y} = \boldsymbol{A}\boldsymbol{x}$ is overdetermined: $\boldsymbol{x} = (\boldsymbol{A}^\intercal\boldsymbol{A})^{-1} \boldsymbol{A}^\intercal\boldsymbol{y}$
+    \end{itemize}
+\end{itemize}
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Properties} --- 
+\begin{multicols}{2}
+\begin{itemize}
+    \item $\boldsymbol{A}\boldsymbol{A}^{\#}\boldsymbol{A} = \boldsymbol{A}$
+    \item $\boldsymbol{A}^{\#}\boldsymbol{A}\boldsymbol{A}^{\#} = \boldsymbol{A}^{\#}$
+    \item $(\boldsymbol{A}^\intercal)^{\#} = (\boldsymbol{A}^{\#})^\intercal$
+    \item $(\boldsymbol{A}\boldsymbol{A}^\intercal)^{\#} = (\boldsymbol{A}^{\#})^\intercal\boldsymbol{A}^{\#}$
+    \item $\boldsymbol{A}^{\#} \boldsymbol{x} = 0 \Leftrightarrow \boldsymbol{x}^\intercal \boldsymbol{A} = 0 \Leftrightarrow \boldsymbol{A}^\intercal \boldsymbol{x} = 0$
+    \item Properties can be proven by replacing $\boldsymbol{A}$ by its SVD and $\boldsymbol{A}^{\#}$ by its definition
+    \item Column space of $\boldsymbol{A}^{\#}$ equals column space of 
+    $\boldsymbol{A}^\intercal$
+    \item $\boldsymbol{A}\boldsymbol{A}^{\#} = \boldsymbol{U}\boldsymbol{S}\boldsymbol{S}^{\#}\boldsymbol{U}^\intercal = \boldsymbol{U}_+\boldsymbol{U}_+^\intercal$ 
+    \item Property can be proven by replacing $\boldsymbol{A}$ and $\boldsymbol{A}^{\#}$ by their SVD 
+    \item $\boldsymbol{S}\boldsymbol{S}^{\#} = \boldsymbol{I}_+$
+\end{itemize}
+\end{multicols}
+
+{\color{black}\hrule height 0.001mm}
+
+\subsection*{Hilbert Space $S$}
+Equivalence modulo norm zero:
+\begin{itemize}
+    \item Challenge: In some cases, $\boldsymbol{v} \cdot \boldsymbol{v} = \Leftrightarrow \boldsymbol{v} = 0_v$ does not hold
+    \item Issue is resolved by defining equivalence classes of vectors: $[\boldsymbol{v}] = \{\boldsymbol{v}' \in V : \|\boldsymbol{v} - \boldsymbol{v}'\| = 0\}$\\
+    \hl{Proof}:
+    \begin{itemize}
+        \item $v \, R \, v' \iff \|v - v'\| = 0$
+        \item We want to show that the relation $R$ is an equivalence relation
+        \item For this, we show reflexivity, symmetry, and transitivity
+        \item Reflexivity: since $\|v - v\| = 0$, then $v \, R \, v$
+        \item Symmetry: since $\|v - v'\| = \|v' - v\| = 0$, then, if $v \, R \, v'$, then $v' \, R \, v$
+        \item Transitivity: if $v \, R \, v'$ and $v' \, R \, v''$, then $\|v - v'\| = \|v' - v''\| = 0$. Since from the triangle inequality we obtain
+        $
+        \|v - v''\| = \|(v - v') + (v' - v'')\| \leq \|v - v'\| + \|v' - v''\| = 0
+        $, then $v \, R \, v''$
+    \end{itemize}
+    \item Implications: Modified meaning of equality: 
+    \begin{itemize}
+        \item For functions: $f = g$ means $\int_T |f(t) - g(t)|^2 dt = 0$
+        \item For random variables: $X = Y$ means $\mathbb{E}[|X - Y|^2] = 0$
+    \end{itemize}
+\end{itemize} 
+
+Existence (convergence) of the inner product:
+\begin{itemize}
+    \item Challenge: In some cases, inner product does not exist for all $\boldsymbol{v}, \boldsymbol{w} \in V$
+    \item Issue is resolved by restricting attention to subsets of $V$ where the norm is finite: $V_{fn} = \{ \boldsymbol{v} \in | \| \boldsymbol{v} \| < \infty \}$
+\end{itemize}
+
+Hilbert spaces:
+\begin{itemize}
+    \item Vector space with an inner product that satisfies the additional condition of \emph{completeness}:
+    \begin{itemize}
+        \item Every Cauchy sequence in $V$ converges to an element in $V$\\
+        resp.\\
+        limit vectors, that Cauchy sequences tend towards, are also elements of $V$
+        \item \emph{Cauchy sequence}: Sequence of points that get closer and closer
+    \end{itemize}
+    \item If we make modifications for above challenges (equivalence modulo norm zero, existence of inner product), vector spaces can be transformed to Hilbert spaces
+\end{itemize}
+
+{\color{black}\hrule height 0.001mm}
+
+\subsection*{Other}
+\emph{Common exp and log rules} ---
+\begin{multicols}{2}
+\begin{itemize}
+    \item $a^m \cdot a^n = a^{m+n}$
+    \item $\frac{a^m}{a^n} = a^{m-n}$
+    \item $(ab)^n = a^n b^n$
+    \item $\left(\frac{a}{b}\right)^n = \frac{a^n}{b^n}$
+    \item $a^{-n} = \frac{1}{a^n}$
+    \item $a^0 = 1$
+    \item $a^1 = a$
+    \item $\log(xy) = \log x + \log y$
+    \item $\log\left(\frac{x}{y}\right) = \log x - \log y$
+    \item $\log(x^n) = n \log x$
+    \item $\log 1 = 0$
+    \item $\log (x<1) < 0$
+    \item $\log (x>1) > 0$
+    \item $e^{log(x)} = log(e^x) = x$
+\end{itemize}
+\end{multicols}
+
+{\color{lightgray}\hrule height 0.001mm}
+\emph{Geometric series} --- 
+\begin{itemize}
+    \item Finite: $S_n = \sum_{i=1}^n a_i r^{i-1} = a_1 (\frac{1-r^n}{1-r})$
+    \item Infinite: $S = \sum_{i=0}^\infty a_i r^i = \frac{a_1}{1-r}$ for $r < 1$
+\end{itemize}

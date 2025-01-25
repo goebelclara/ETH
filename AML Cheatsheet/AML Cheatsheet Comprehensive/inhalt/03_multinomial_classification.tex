@@ -1,0 +1,152 @@
+\section{Multinomial Logistic Regression}
+\subsection*{Description}
+\emph{Task} --- Multiclass classification
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Description} --- 
+\begin{itemize}
+    \item Supervised
+    \item Parametric
+\end{itemize}
+
+{\color{black}\hrule height 0.001mm}
+
+\subsection*{Formulation}
+
+\begin{itemize}
+    \item Probability of each class is estimated via the softmax function (generalizes the sigmoid function to multiple classes):
+    $
+    P(y=k|\boldsymbol{x}) = \frac{e^{\boldsymbol{f}_i(\boldsymbol{x}) / T}}{\sum_{j=1}^k e^{\boldsymbol{f}_j(\boldsymbol{x}) / T}} = \frac{e^{\boldsymbol{\beta}_k \cdot \boldsymbol{x} / T}}{\sum_{j=1}^k e^{\boldsymbol{\beta}_j \cdot \boldsymbol{x} / T}}
+    $ where $T$ is the temperature and allows to smoothly interpolate between the differentiable softmax ($T=1$) and the non-differentiable argmax ($T=0$)
+    \item The predicted class is the one with the highest probability:
+    $
+    \hat{y} = \arg \max_k P(y=k|\boldsymbol{x})
+    $
+    \item Geometrically, the softmax defines $k-1$ linear separating hyperplanes
+\end{itemize}
+Proof of softmax function:
+\begin{itemize}
+    \item Take class $k$ as reference class
+    \item We start with log-odds:
+    \begin{itemize}
+        \item $\log\left(\frac{P_y(y = i \mid \boldsymbol{x})}{P_y(y = k \mid \boldsymbol{x})}\right) = f_i(\boldsymbol{x}) - f_k(\boldsymbol{x}) = (\boldsymbol{\beta}_i - \boldsymbol{\beta}_k) \cdot \boldsymbol{x} + (\beta_{i0} - \beta_{K0})$
+        \item $\frac{P_y(y = i \mid \boldsymbol{x})}{P_y(y = k \mid \boldsymbol{x})} = \exp(f_i(\boldsymbol{x}) - f_k(\boldsymbol{x})) = \exp((\boldsymbol{\beta}_i - \boldsymbol{\beta}_k) \cdot \boldsymbol{x} + (\beta_{i0} - \beta_{K0}))$
+        \item $\sum_{i=1}^{k-1} (\frac{P_y(y = i \mid \boldsymbol{x})}{P_y(y = k \mid \boldsymbol{x})}) = \frac{1 - P_y(y = k \mid \boldsymbol{x})}{P_y(y = k \mid \boldsymbol{x})} = \sum_{i=1}^{k-1} \exp(f_i(\boldsymbol{x}) - f_k(\boldsymbol{x}))$
+    \end{itemize}
+    \item We can re-form last equation to posterior: $P_y(y = k \mid \boldsymbol{x}) = \frac{1}{1 + \sum_{i=1}^{k-1} \exp(f_i(\boldsymbol{x}) - f_k(\boldsymbol{x}))}$
+    \item We can re-form secondlast equation to posterior:
+    \begin{itemize}
+        \item $P_y(y = i \mid \boldsymbol{x}) = 1 - \frac{1}{1 + \sum_{i=1}^{k-1} \exp(f_i(\boldsymbol{x}) - f_k(\boldsymbol{x}))}$
+        \item $= \frac{\exp(f_i(\boldsymbol{x}) - f_k(\boldsymbol{x}))}{1 + \sum_{i=1}^{k-1} \exp(f_i(\boldsymbol{x}) - f_k(\boldsymbol{x}))}$
+        \item $= \frac{\frac{\exp(f_i(\boldsymbol{x}))}{\exp(f_k(\boldsymbol{x}))}}{1+ \sum_{i=1}^{k-1} \frac{\exp(f_i(\boldsymbol{x}))}{\exp(f_k(\boldsymbol{x}))}}$
+        \item $= \frac{\frac{\exp(f_i(\boldsymbol{x}))}{\exp(f_k(\boldsymbol{x}))}}{ \sum_{i=1}^{k-1} \frac{\exp(f_k(\boldsymbol{x})) + \exp(f_i(\boldsymbol{x}))}{\exp(f_k(\boldsymbol{x}))}}$
+        \item $= \frac{\exp(f_i(\boldsymbol{x})) \times \exp(f_k(\boldsymbol{x}))}{\exp(f_k(\boldsymbol{x})) \times \sum_{i=1}^{k-1}( \exp(f_k(\boldsymbol{x})) + \exp(f_i(\boldsymbol{x})) )}$
+        \item $= \frac{\exp(f_i(\boldsymbol{x}))}{\sum_{j=1}^k \exp(f_j(\boldsymbol{x}))}$
+    \end{itemize}
+\end{itemize}
+Proof that softmax $\to$ argmax if $T \to 0$:
+\begin{itemize}
+    \item Assume $\boldsymbol{x} = [x_1, x_2]^\intercal$
+    \item $\lim_{T \to 0} p(\boldsymbol{x}) = \lim_{T \to 0} \frac{e^{x_1 / T}}{e^{x_1 / T} + e^{x_2 / T}}$
+    \item $= \lim_{T \to 0} \frac{e^{x_1 / T}e^{-x_1 / T}}{(e^{x_1 / T} + e^{x_2 / T})e^{-x_1 / T}}$
+    \item $= \lim_{T \to 0} \frac{1}{1 + e^{(x_2 - x_1) / T}}$
+    \item $\lim_{T \to 0} e^{(x_2 - x_1) / T} =
+  \begin{cases}
+    0 & \textrm{if } x_1 > x_2 \\
+    1 & \textrm{if } x_1 = x_2 \\
+    \infty & \textrm{otherwise}
+  \end{cases}$
+  \item Plugging back into $\lim_{T \to 0} p(\boldsymbol{x}) =\frac{1}{1 + e^{(x_2 - x_1) / T}}$:
+  $
+  p(\boldsymbol{x}) =
+  \begin{cases}
+    [1, 0]^\intercal & \textrm{if } x_1 > x_2 \\
+    [0.5, 0.5]^\intercal & \textrm{if } x_1 = x_2\\
+    [0, 1]^\intercal & \textrm{otherwise}
+  \end{cases}
+  $ 
+\end{itemize}
+
+{\color{black}\hrule height 0.001mm}
+
+\subsection*{Optimization}
+\emph{Parameters} --- Find parameters $\boldsymbol{\beta}_1, \dots, \boldsymbol{\beta}_k$
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Objective function} --- 
+\begin{itemize}
+    \item Likelihood: 
+    $
+    L(\boldsymbol{\beta}) = \prod_{i=1}^n P(y^{(i)} | \boldsymbol{x}^{(i)}; \boldsymbol{\beta})
+    = \prod_{i=1}^n \prod_{\ell=1}^k ( \frac{e^{\boldsymbol{\beta}_{\ell} \cdot \boldsymbol{x}^{(i)}}}{\sum_{j=1}^k e^{\boldsymbol{\beta}_j \cdot \boldsymbol{x}^{(i)}}} )^{\delta\{y^{(i)} = \ell\}}
+    $
+    \item Maximize log-likelihood:
+    $
+    \log L(\boldsymbol{\beta}) = \sum_{i=1}^n \sum_{\ell=1}^k \delta\{y^{(i)} = \ell\} [ \boldsymbol{\beta}_{\ell} \cdot \boldsymbol{x}^{(i)} - \log ( \sum_{j=1}^k e^{\boldsymbol{\beta}_j \cdot \boldsymbol{x}^{(i)}} ) ]
+    $
+    \item Minimize log-loss:
+    $
+    -\log L(\boldsymbol{\beta})
+    $
+\end{itemize}
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Optimization} ---
+\begin{itemize}
+    \item
+    $
+    \frac{\partial -\log L(\boldsymbol{\beta})}{\partial \boldsymbol{\beta}_k} = -\sum_{i=1}^n \sum_{\ell=1}^k \frac{\partial}{\partial \boldsymbol{\beta}_k} [ \delta\{y^{(i)} = \ell\} [ \boldsymbol{\beta}_{\ell} \cdot \boldsymbol{x}^{(i)}- \log ( \sum_{j=1}^k e^{\boldsymbol{\beta}_j \cdot \boldsymbol{x}^{(i)}} ) ] ] = - \sum_{i=1}^n \delta\{y^{(i)} = k\} \boldsymbol{x}^{(i)} - P(y = k | \boldsymbol{x}^{(i)}) \boldsymbol{x}^{(i)}
+    $\\
+    Proof:
+    \begin{itemize}
+        \item Derivative of the first term: $\frac{\partial}{\partial \boldsymbol{\beta}_k} ( \sum_{\ell=1}^k \delta\{y^{(i)} = \ell\} \boldsymbol{\beta}_\ell \cdot \boldsymbol{x}^{(i)} ) = \delta\{y^{(i)} = k\} \boldsymbol{x}^{(i)}$
+        \item Derivative of the second term: $\frac{\partial}{\partial \boldsymbol{\beta}_k} ( -\log ( \sum_{j=1}^k e^{\boldsymbol{\beta}_j \cdot \boldsymbol{x}^{(i)}} ) ) = -\frac{1}{\sum_{j=1}^k e^{\boldsymbol{\beta}_j \cdot \boldsymbol{x}^{(i)}}} \frac{\partial}{\partial \boldsymbol{\beta}_k} ( \sum_{j=1}^k e^{\boldsymbol{\beta}_j \cdot \boldsymbol{x}^{(i)}} ) = -\frac{e^{\boldsymbol{\beta}_k \cdot \boldsymbol{x}^{(i)}}}{\sum_{j=1}^k e^{\boldsymbol{\beta}_j \cdot \boldsymbol{x}^{(i)}}} \boldsymbol{x}^{(i)} = -P(y = k | \boldsymbol{x}^{(i)}) \boldsymbol{x}^{(i)}$
+        \item For reference: Softmax derivative if $\ell = k$: $\frac{\partial P(y = \ell | \boldsymbol{x})}{\partial \boldsymbol{\beta}_k}$:
+        \begin{itemize}
+            \item Using the quotient rule:
+            $
+            \frac{\partial P(y = \ell | \boldsymbol{x})}{\partial \boldsymbol{\beta}_\ell} = \frac{\frac{\partial}{\partial \boldsymbol{\beta}_\ell} e^{\boldsymbol{\beta}_\ell \cdot \boldsymbol{x}} ( \sum_{j=1}^k e^{\boldsymbol{\beta}_j \cdot \boldsymbol{x}} ) - e^{\boldsymbol{\beta}_\ell \cdot \boldsymbol{x}} \frac{\partial}{\partial \boldsymbol{\beta}_\ell} ( \sum_{j=1}^k e^{\boldsymbol{\beta}_j \cdot \boldsymbol{x}} )}{( \sum_{j=1}^k e^{\boldsymbol{\beta}_j \cdot \boldsymbol{x}} )^2}
+            $
+            \item 
+            $
+            \frac{\partial}{\partial \boldsymbol{\beta}_\ell} e^{\boldsymbol{\beta}_\ell \cdot \boldsymbol{x}} = \frac{\partial}{\partial \boldsymbol{\beta}_\ell} ( \sum_{j=1}^k e^{\boldsymbol{\beta}_j \cdot \boldsymbol{x}} ) = e^{\boldsymbol{\beta}_\ell \cdot \boldsymbol{x}} \boldsymbol{x}$
+            \item After plugging this in, we get: $
+            \frac{\partial P_\ell}{\partial \boldsymbol{\beta}_\ell} = \frac{e^{\boldsymbol{\beta}_\ell \cdot \boldsymbol{x}} ( \sum_{j=1}^k e^{\boldsymbol{\beta}_j \cdot \boldsymbol{x}} ) - e^{\boldsymbol{\beta}_\ell \cdot \boldsymbol{x}}  e^{\boldsymbol{\beta}_\ell \cdot \boldsymbol{x}} \boldsymbol{x}}{( \sum_{j=1}^k e^{\boldsymbol{\beta}_j \cdot \boldsymbol{x}} )^2} = P(y = \ell | \boldsymbol{x}) (1 - P(y = \ell | \boldsymbol{x})) \boldsymbol{x}
+            $
+        \end{itemize}
+        \item For reference: Softmax derivative if $\ell \neq k$: $\frac{\partial P(y = \ell | \boldsymbol{x})}{\partial \boldsymbol{\beta}_k}$:
+        \begin{itemize}
+            \item Using the quotient rule:
+            $
+            \frac{\partial P(y = \ell | \boldsymbol{x})}{\partial \boldsymbol{\beta}_k} = \frac{\frac{\partial}{\partial \boldsymbol{\beta}_k} e^{\boldsymbol{\beta}_\ell \cdot \boldsymbol{x}} ( \sum_{j=1}^k e^{\boldsymbol{\beta}_j \cdot \boldsymbol{x}} ) - e^{\boldsymbol{\beta}_\ell \cdot \boldsymbol{x}} \frac{\partial}{\partial \boldsymbol{\beta}_k} ( \sum_{j=1}^k e^{\boldsymbol{\beta}_j \cdot \boldsymbol{x}} )}{( \sum_{j=1}^k e^{\boldsymbol{\beta}_j \cdot \boldsymbol{x}} )^2}
+            $
+            \item First term vanishes, since it does not depend on $\boldsymbol{\beta}_k$
+            \item 
+            $
+            \frac{\partial}{\partial \boldsymbol{\beta}_k} ( \sum_{j=1}^k e^{\boldsymbol{\beta}_j \cdot \boldsymbol{x}} ) = e^{\boldsymbol{\beta}_k \cdot \boldsymbol{x}} \boldsymbol{x}
+            $ 
+            \item After plugging this in, we get: $
+            \frac{\partial P_\ell}{\partial \boldsymbol{\beta}_k} = \frac{- e^{\boldsymbol{\beta}_\ell \cdot \boldsymbol{x}}  e^{\boldsymbol{\beta}_k \cdot \boldsymbol{x}} \boldsymbol{x}}{( \sum_{j=1}^k e^{\boldsymbol{\beta}_j \cdot \boldsymbol{x}} )^2} = -P(y = \ell | \boldsymbol{x}) P(y = k | \boldsymbol{x}) \boldsymbol{x}
+            $
+        \end{itemize}
+    \end{itemize}
+    \item If we set gradient to 0, we have expectation matching:
+    \begin{itemize}
+        \item $\sum_{i=1}^n \delta\{y^{(i)} = k\} \boldsymbol{x}^{(i)} = \sum_{i=1}^n P(y = k | \boldsymbol{x}^{(i)}) \boldsymbol{x}^{(i)}$
+        \item $\boldsymbol{x}^{(l)} = \mathbb{E}_{j \sim \textrm{softmax}} [ \boldsymbol{x}^{(l)} ]$
+        \item Optimum is where observed features $=$ expected features
+    \end{itemize}
+\end{itemize}
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Characteristics} --- 
+\begin{itemize}
+    \item Convex (sum of convex functions in log-loss is convex) with psd Hessian
+    \item Has global minimum
+    \item Has unique or infinitely many solutions (depending on feature linear independence)
+    \item Can be solved numerically
+\end{itemize}

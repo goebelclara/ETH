@@ -1,0 +1,183 @@
+\section{Estimating Common Distributions}
+\subsection*{Gaussian}
+\emph{Frequentism (MLE)} --- 
+\begin{itemize}
+    \item Likelihood (excl. constants): $L = (\frac{1}{\boldsymbol{\sigma}})^n \prod_{i=1}^n exp( -\frac{1}{2\boldsymbol{\sigma}^2} (\boldsymbol{x}^{(i)} - \boldsymbol{\mu} )^2) = \frac{1}{\boldsymbol{\sigma}^n} exp( -\frac{1}{2\boldsymbol{\sigma}^2} \sum_{i=1}^n (\boldsymbol{x}^{(i)} - \boldsymbol{\mu} )^2) = \frac{1}{\boldsymbol{\sigma}^n} exp( -\frac{1}{2\boldsymbol{\sigma}^2} \sum_{i=1}^n (\boldsymbol{x}^{(i)} - \bar{\boldsymbol{x}} + \bar{\boldsymbol{x}} - \boldsymbol{\mu} )^2) = \frac{1}{\boldsymbol{\sigma}^n} exp( -\frac{\sum_{i=1}^n (\boldsymbol{x}^{(i)} - \bar{\boldsymbol{x}})^2}{2\boldsymbol{\sigma}^2}) exp(- \frac{n (\bar{\boldsymbol{x}} - \boldsymbol{\mu})^2}{2\boldsymbol{\sigma}^2}) = \frac{1}{\boldsymbol{\sigma}^n} exp( -\frac{n \boldsymbol{S}^2}{2\boldsymbol{\sigma}^2}) exp(- \frac{n (\bar{\boldsymbol{x}} - \boldsymbol{\mu})^2}{2\boldsymbol{\sigma}^2})$ where $\boldsymbol{S} = \frac{1}{n} (\boldsymbol{x}^{(i)} - \bar{\boldsymbol{x}})^2$ is the covariance matrix
+    \item Log-likelihood: $LL = -n log(\boldsymbol{\sigma}) - \sum_{i=1}^n (\frac{1}{2\boldsymbol{\sigma}^2} (\boldsymbol{x}^{(i)} - \boldsymbol{\mu} )^2) = -n log(\boldsymbol{\sigma})  -\frac{n \boldsymbol{S}^2}{2\boldsymbol{\sigma}^2} - \frac{n (\bar{\boldsymbol{x}} - \boldsymbol{\mu})^2}{2\boldsymbol{\sigma}^2}$
+    \item $\boldsymbol{\mu}_{MLE}$ is sample mean: $ \frac{1}{n}\sum_{i=1}^n \boldsymbol{x}^{(i)}$:
+    \begin{itemize}
+        \item Derivative of log-likelihood wrt $\boldsymbol{\mu}$: $\nabla_{\boldsymbol{\mu}} LL = \nabla_{\boldsymbol{\mu}} (- \sum_{i=1}^n (\frac{{\boldsymbol{x}^{(i)}}^2 - 2 \boldsymbol{x}^{(i)} \boldsymbol{\mu} + \boldsymbol{\mu}^2}{2\boldsymbol{\sigma}^2})) = \nabla_{\boldsymbol{\mu}} (- \sum_{i=1}^n (-\frac{ \boldsymbol{x}^{(i)} \boldsymbol{\mu}}{\boldsymbol{\sigma}^2} + \frac{ \boldsymbol{\mu}^2}{2\boldsymbol{\sigma}^2} )) = - \sum_{i=1}^n (-\frac{ \boldsymbol{x}^{(i)}}{\boldsymbol{\sigma}^2} + \frac{ 2\boldsymbol{\mu}}{2\boldsymbol{\sigma}^2} ) =  \sum_{i=1}^n (\frac{ \boldsymbol{x}^{(i)} - \boldsymbol{\mu}}{\boldsymbol{\sigma}^2}) = \sum_{i=1}^n \boldsymbol{x}^{(i)} - n\boldsymbol{\mu} = 0 $
+    \end{itemize}
+    \item $\boldsymbol{\mu}_{MLE}$ is an unbiased estimator:
+    \begin{itemize}
+        \item $\mathbb{E}[\boldsymbol{\mu}_{MLE}] = \mathbb{E}\left[\frac{1}{n} \sum_{i=1}^n \boldsymbol{x}_i\right] 
+        = \frac{1}{n} \sum_{i=1}^n \mathbb{E}[\boldsymbol{x}_i] = \boldsymbol{\mu}$
+    \end{itemize}
+    \item $\boldsymbol{\sigma^2}_{MLE}$ is sample variance: $ \frac{1}{n}\sum_{i=1}^n (\boldsymbol{x}^{(i)} - \boldsymbol{\mu})^2$:
+    \begin{itemize}
+        \item Derivative of log-likelihood wrt $\boldsymbol{\sigma}$: $\nabla_{\boldsymbol{\sigma}} LL = 
+        -n \nabla_{\boldsymbol{\sigma}} log(\boldsymbol{\sigma}) -
+        \nabla_{\boldsymbol{\sigma}} (\sum_{i=1}^n (\frac{(\boldsymbol{x}^{(i)} - \boldsymbol{\mu} )^2}{2\boldsymbol{\sigma}^2})) =
+        \frac{-n}{\boldsymbol{\sigma}} - \nabla_{\boldsymbol{\sigma}} (\sum_{i=1}^n \frac{1}{2} \boldsymbol{\sigma}^{-2} (\boldsymbol{x}^{(i)} - \boldsymbol{\mu} )^2) = \frac{-n}{\boldsymbol{\sigma}} - (\sum_{i=1}^n -1 \boldsymbol{\sigma}^{-3} (\boldsymbol{x}^{(i)} - \boldsymbol{\mu} )^2) = -n + \sum_{i=1}^n (\frac{ (\boldsymbol{x}^{(i)} - \boldsymbol{\mu} )^2 }{ \boldsymbol{\sigma}^{2} })
+        = 0 $
+    \end{itemize}
+    \item $\boldsymbol{\sigma^2}_{MLE}$ is a biased estimator:
+    \begin{itemize}
+        \item $\mathbb{E}[\boldsymbol{\Sigma}_{MLE}] = \frac{1}{n} \sum_{i=1}^n \mathbb{E}\left[\left(\boldsymbol{x}_i - \boldsymbol{\mu}_{MLE}\right)\left(\boldsymbol{x}_i - \boldsymbol{\mu}_{MLE}\right)^\intercal\right]$
+        \item $= \frac{1}{n} \sum_{i=1}^n \mathbb{E}\left[\boldsymbol{x}_i \boldsymbol{x}_i^\intercal\right] - \frac{1}{n} \sum_{i=1}^n \mathbb{E}\left[\boldsymbol{x}_i \boldsymbol{\mu}_{MLE}^\intercal\right] - \frac{1}{n} \sum_{i=1}^n \mathbb{E}\left[\boldsymbol{\mu}_{MLE} \boldsymbol{x}_i^\intercal\right] + \mathbb{E}\left[\boldsymbol{\mu}_{MLE} \boldsymbol{\mu}_{MLE}^\intercal\right]$
+        \item $= \frac{1}{n} \sum_{i=1}^n \mathbb{E}\left[\boldsymbol{x}_i \boldsymbol{x}_i^\intercal\right] - \frac{1}{n^2} \sum_{i=1}^n \sum_{j=1}^n \mathbb{E}\left[\boldsymbol{x}_i \boldsymbol{x}_j^\intercal\right] - \frac{1}{n^2} \sum_{i=1}^n \sum_{j=1}^n \mathbb{E}\left[\boldsymbol{x}_i \boldsymbol{x}_j^\intercal\right] + \frac{1}{n^2} \sum_{i=1}^n \sum_{j=1}^n \mathbb{E}\left[\boldsymbol{x}_i \boldsymbol{x}_j^\intercal\right]$
+        \item $= \frac{1}{n} \sum_{i=1}^n \mathbb{E}\left[\boldsymbol{x}_i \boldsymbol{x}_i^\intercal\right] - \frac{1}{n^2} \sum_{i=1}^n \sum_{j=1}^n \mathbb{E}\left[\boldsymbol{x}_i \boldsymbol{x}_j^\intercal\right]$
+        \item $= \frac{1}{n} n \left(\boldsymbol{\Sigma} + \boldsymbol{\mu}\boldsymbol{\mu}^\intercal\right) - \frac{1}{n^2} \left(n^2 \boldsymbol{\mu}\boldsymbol{\mu}^\intercal + n\boldsymbol{\Sigma}\right)$\\
+        Proof:
+        \begin{itemize}
+            \item $\mathbb{E}\left[\boldsymbol{x}_i \boldsymbol{x}_j^\intercal\right] = \delta_{ij} \boldsymbol{\Sigma} + \boldsymbol{\mu}\boldsymbol{\mu}^\intercal$ where $\delta = 1$ if $i = j$\\
+            Proof:\\
+            \begin{itemize}
+                \item $\Sigma = \mathbb{E}\left[\left(\boldsymbol{x}_i - \boldsymbol{\mu}\right)\left(\boldsymbol{x}_i - \boldsymbol{\mu}\right)^\intercal\right] 
+                = \mathbb{E}\left[\boldsymbol{x}_i \boldsymbol{x}_i^\intercal - 2\boldsymbol{x}_i \boldsymbol{\mu}^\intercal + \boldsymbol{\mu}\boldsymbol{\mu}^\intercal\right] 
+                = \mathbb{E}\left[\boldsymbol{x}_i \boldsymbol{x}_i^\intercal\right] - \boldsymbol{\mu}\boldsymbol{\mu}^\intercal$
+                \item For $i \neq j$, covariance is $0$: 
+                $\mathbb{E}\left[\boldsymbol{x}_i \boldsymbol{x}_j^\intercal\right] = \mathbb{E}[\boldsymbol{x}_i]\mathbb{E}[\boldsymbol{x}_j] = \boldsymbol{\mu}\boldsymbol{\mu}^\intercal$
+            \end{itemize}
+            \item $...+ n\boldsymbol{\Sigma}$ since in $n$ cases $\delta = 1$
+        \end{itemize}
+        \item $= \boldsymbol{\Sigma} - \frac{1}{n} \boldsymbol{\Sigma}$
+        \item $\mathbb{E}[\boldsymbol{\Sigma}_{MLE}] = \boldsymbol{\Sigma} - \frac{1}{n} \boldsymbol{\Sigma}$
+    \end{itemize}
+\end{itemize}
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Bayesianism} ---
+Univariate:
+\begin{itemize}
+    \item Assume $\sigma^2$ is known and $\mu \sim \mathcal{N}(\mu_0, \sigma_0^2)$ is the outcome of a random variable
+    \item $p(\mu | \boldsymbol{x}, \mu_0, \sigma_0^2) \propto p(\boldsymbol{x} | \mu, \sigma^2)p(\mu | \mu_0, \sigma_0^2)$
+    \item The likelihood is $p(\boldsymbol{x} | \mu, \sigma^2) = \prod_{i=1}^n \frac{1}{\sqrt{2\pi\sigma^2}} \exp\left(-\frac{(x_i - \mu)^2}{2\sigma^2}\right)$
+    \item The prior is $p(\mu | \mu_0, \sigma_0^2) = \frac{1}{\sqrt{2\pi\sigma_0^2}} \exp\left(-\frac{(\mu - \mu_0)^2}{2\sigma_0^2}\right)$
+    \item The, the posterior is given by:
+    $
+    p(\mu | \boldsymbol{x}, \mu_0, \sigma_0^2) \propto \exp\left(-\frac{1}{2\sigma^2} \sum_{i=1}^n (x_i - \mu)^2 - \frac{1}{2\sigma_0^2} (\mu - \mu_0)^2\right)
+    $
+    \item Expanding the likelihood term:
+    $
+    \sum_{i=1}^n (x_i - \mu)^2 = \sum_{i=1}^n (x_i^2 - 2\mu x_i + \mu^2) = \sum_{i=1}^n x_i^2 - 2\mu \sum_{i=1}^n x_i + n\mu^2
+    $
+    \item Expanding the prior term:
+    $
+    (\mu - \mu_0)^2 = (\mu^2 - 2\mu\mu_0 + \mu_0^2)
+    $
+    \item This yields:
+    $
+    p(\mu | \bolsymbol{x}, \mu_0, \sigma_0^2) \propto \exp\left(-\frac{1}{2} \left(\frac{n}{\sigma^2} + \frac{1}{\sigma_0^2}\right)\mu^2 + \left(\frac{\sum_{i=1}^n x_i}{\sigma^2} + \frac{\mu_0}{\sigma_0^2}\right)\mu + \text{(constant terms)}\right)
+    $
+    where the constant terms include terms that do not depend on $\mu$, such as $\sum_{i=1}^n x_i^2$ and $\mu_0^2$ 
+    \item Based on the parametric form of the Gaussian distribution, this yields $\left(\frac{n}{\sigma^2} + \frac{1}{\sigma_0^2}\right)\mu^2 = \frac{1}{2\sigma_n{^2}}\mu^2$ and $\left(\frac{\sum_{i=1}^n x_i}{\sigma^2} + \frac{\mu_0}{\sigma_0^2}\right)\mu = \frac{\mu_n}{\sigma_n{^2}}\mu$
+    \item Solving for $\sigma_n$ and $\mu_n$:
+    \begin{itemize}
+        \item $
+        \mu_n = \frac{\frac{\sum_{i=1}^n x_i}{\sigma^2} + \frac{\mu_0}{\sigma_0^2}}{\frac{n}{\sigma^2} + \frac{1}{\sigma_0^2}} = \frac{\frac{n \bar{x}}{\sigma^2} + \frac{\mu_0}{\sigma_0^2}}{\frac{n}{\sigma^2} + \frac{1}{\sigma_0^2}} = \frac{\frac{n \bar{x} \sigma_0^2 + \mu_0 \sigma^2}{\sigma^2 \sigma_0^2}}{\frac{n \sigma_0^2 + \sigma^2}{\sigma^2 \sigma_0^2}} = \frac{n \bar{x} \sigma_0^2 + \mu_0 \sigma^2}{n \sigma_0^2 + \sigma^2}
+        $
+        \item $
+        \sigma_n = \frac{1}{\frac{n}{\sigma^2} + \frac{1}{\sigma_0^2}} = \frac{1}{\frac{n\sigma_0^2 + \sigma^2}{\sigma^2 \sigma_0^2}} = \frac{\sigma^2 \sigma_0^2}{n\sigma_0^2 + \sigma^2}
+        $
+    \end{itemize}
+    \item Thus, the posterior is $p(\mu | \boldsymbol{x}, \mu_0, \sigma_0^2) \sim \mathcal{N}(\mu_n, \sigma_n^{2})$
+\end{itemize}
+Multivariate:
+\begin{itemize}
+    \item Assume $\boldsymbol{\Sigma}$ is known and $\boldsymbol{\mu} \sim \mathcal{N}(\boldsymbol{\mu_0}, \boldsymbol{\Sigma_0})$ is the outcome of a random variable
+    \item $p(\boldsymbol{\mu} | \boldsymbol{X}, \boldsymbol{\mu_0}, \boldsymbol{\Sigma_0}) \propto p(\boldsymbol{X} | \boldsymbol{\mu}, \boldsymbol{\Sigma})p(\boldsymbol{\mu} | \boldsymbol{\mu_0}, \boldsymbol{\Sigma_0})$
+    \item $p(\boldsymbol{X} | \boldsymbol{\mu}, \boldsymbol{\Sigma}) = \frac{1}{2\pi^{mn/2}} \frac{1}{|\boldsymbol{\Sigma}|^{n/2}} exp(\frac{1}{2} \sum_{i=1}^n ( \boldsymbol{\boldsymbol{x^{(i)}}} - \boldsymbol{\mu} )^\intercal \boldsymbol{\Sigma}^{-1} ( \boldsymbol{\boldsymbol{x^{(i)}}} - \boldsymbol{\mu} ) )$
+    \item $p(\boldsymbol{\mu} | \boldsymbol{\mu_0}, \boldsymbol{\Sigma_0}) = \frac{1}{2\pi^{m/2}} \frac{1}{|\boldsymbol{\Sigma_0}|^{n/2}} exp(\frac{1}{2} \sum_{i=1}^n ( \boldsymbol{\mu} - \boldsymbol{\mu_0} )^\intercal \boldsymbol{\Sigma_0}^{-1} ( \boldsymbol{\mu} - \boldsymbol{\mu_0} ) )$
+    \item $p(\boldsymbol{\mu} | \boldsymbol{X}, \boldsymbol{\mu_0}, \boldsymbol{\Sigma_0}) \propto exp( -\frac{1}{2} ( \boldsymbol{\mu}^\intercal \boldsymbol{\Sigma_0}^{-1} \boldsymbol{\mu} + n \boldsymbol{\mu}^\intercal \boldsymbol{\Sigma}^{-1} \boldsymbol{\mu} - 2 \boldsymbol{\mu_0}^\intercal \boldsymbol{\Sigma_0}^{-1} \boldsymbol{\mu} - 2 n \overline{\boldsymbol{x}}^\intercal \boldsymbol{\Sigma}^{-1} \boldsymbol{\mu} ) )$ after combining exponents of the prior and likelihood, expanding, absorbing terms unrelated to $\boldsymbol{\mu}$ into a constant, and replacing $\sum_{i=1}^n {\boldsymbol{x^{(i)}}}^\intercal$ by $n \overline{\boldsymbol{x}}^\intercal$
+    \item We now apply a symmetric matrix property $\boldsymbol{x}^\intercal \boldsymbol{A} \boldsymbol{x} + 2 \boldsymbol{x}^\intercal \boldsymbol{b} = ( \boldsymbol{x} + \boldsymbol{A}^{-1} \boldsymbol{b} )^\intercal \boldsymbol{A} ( \boldsymbol{x} + \boldsymbol{A}^{-1} \boldsymbol{b} ) - \boldsymbol{b}^\intercal \boldsymbol{A}^{-1} \boldsymbol{b}$, with $\boldsymbol{\mu} = \boldsymbol{x}$, $-( \boldsymbol{\Sigma_0}^{-1} + n \boldsymbol{\Sigma}^{-1} )^{-1} = \boldsymbol{A}^{-1}$ and $(\boldsymbol{\Sigma}^{-1} n \overline{\boldsymbol{x}} + \boldsymbol{\Sigma_0}^{-1} \boldsymbol{\mu_0}) = \boldsymbol{b}$
+    \item Through this, we get $p(\boldsymbol{\mu} | \boldsymbol{X}, \boldsymbol{\mu_0}, \boldsymbol{\Sigma_0}) \propto \exp (  \frac{1}{2}  ( \boldsymbol{\mu} (  \boldsymbol{\Sigma_0}^{-1} + n \boldsymbol{\Sigma}^{-1} )^{-1} ( \boldsymbol{\Sigma}^{-1} n \overline{\boldsymbol{x}} + \boldsymbol{\Sigma_0}^{-1} \boldsymbol{\mu_0} ) )^\intercal ( \boldsymbol{\Sigma_0}^{-1} + n \boldsymbol{\Sigma}^{-1} ) ( \boldsymbol{\mu} - ( \boldsymbol{\Sigma_0}^{-1} + n \boldsymbol{\Sigma}^{-1} )^{-1} ( \boldsymbol{\Sigma}^{-1} n \overline{\boldsymbol{x}} + \boldsymbol{\Sigma_0}^{-1} \boldsymbol{\mu_0} ) ) ) = exp( \frac{1}{2} ( \boldsymbol{\mu} - \boldsymbol{\mu}_n )^\intercal  \boldsymbol{\Sigma}_n^{-1} ( \boldsymbol{\mu} - \boldsymbol{\mu}_n ) )$
+    \item Thus, $p(\boldsymbol{\mu} | \boldsymbol{X}, \boldsymbol{\mu_0}, \boldsymbol{\Sigma_0}) \sim \mathcal{N}(\boldsymbol{\mu}_n, \boldsymbol{\Sigma}_n)$ with
+    \begin{itemize}
+        \item $\boldsymbol{\mu}_n = (\boldsymbol{\Sigma_0}^{-1} + n \boldsymbol{\Sigma}^{-1})^{-1} (\boldsymbol{\Sigma}^{-1} n \overline{\boldsymbol{x}} + \boldsymbol{\Sigma_0}^{-1} \boldsymbol{\mu_0}) = \textrm{(if } \boldsymbol{\Sigma} \textrm{ equals 1) } \frac{n \overline{\boldsymbol{x}} \boldsymbol{\Sigma_0} + \boldsymbol{\mu_0}}{n \boldsymbol{\Sigma_0} + 1}$
+        \item $\boldsymbol{\Sigma}_n = (\boldsymbol{\Sigma_0}^{-1} + n \boldsymbol{\Sigma}^{-1})^{-1} = \textrm{(if } \boldsymbol{\Sigma} \textrm{ equals 1) } \frac{\boldsymbol{\Sigma_0}}{n \boldsymbol{\Sigma_0} + 1}$
+    \end{itemize}
+\end{itemize}
+Implications:
+\begin{itemize}
+    \item The Gaussian distribution is a conjugate prior for the mean of a Gaussian distribution, if $\boldsymbol{\Sigma}$ is known
+    \item For Bayesian parameter $\boldsymbol{\mu}_n$: 
+    \begin{itemize}
+        \item $\boldsymbol{\mu}_n$ is a compromise between MLE and prior, approximating prior for small n and MLE for large n
+        \item If prior variance is small (i.e. if we are certain of our prior), prior mean weighs more strongly
+    \end{itemize}
+    \item For Bayesian parameter $\boldsymbol{\Sigma}_n$: \begin{itemize}
+        \item $\boldsymbol{\Sigma}_n$ approximates prior for small n and MLE for large n
+        \item If prior variance is small (i.e. if we are certain of our prior), posterior variance is also small
+    \end{itemize}
+\end{itemize}
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Bayesianism: Absolute Error} --- 
+\begin{itemize}
+    \item Conditional median of $y$ given $X = x$ is the Bayesian estimation of $y$ from $X = x$, when we take the absolute error $|\hat{y}-y|$ as the cost function: $\mathbb{E}[|\hat{y}-y| | X = x]$
+\end{itemize}
+
+{\color{black}\hrule height 0.001mm}
+
+\subsection*{Binomial}
+\emph{Frequentism} --- 
+MLE:
+\begin{itemize}
+    \item Likelihood $P(\delta |p)$ has a binomial distribution: $P(\delta |p) \sim p^{ \alpha _1} (1-p)^{ \alpha _2}$ where $ \alpha _1 =$ number of successes, $ \alpha _2 =$ number of failures
+    \item $\hat{p}_{\text{MLE}} = \arg\max (p^{ \alpha _1} (1-p)^{ \alpha _2}) =  \alpha _1 / ( \alpha _1 +  \alpha _2)$ after logarithmizing and finding local minimum
+\end{itemize}
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Bayesianism} --- 
+\begin{itemize}
+    \item Likelihood $P(\delta |p)$ has a binomial distribution: $P(\delta |p) \sim p^{ \alpha _1} (1-p)^{ \alpha _2}$ where $ \alpha _1 =$ number of successes, $ \alpha _2 =$ number of failures
+    \item Prior $P(p)$ has a beta distribution: $P(p) \sim \frac{\Gamma (\beta_1 + \beta_2)}{\Gamma (\beta_1) \Gamma (\beta_2)} p^{ \beta _1 - 1} (1-p)^{ \beta _2 - 1}$
+    \item Posterior is:
+    \item $P(p |\delta) = \frac{P(\delta |p)P(p)}{P(\delta)} \propto p^{\alpha_1} (1-p)^{\alpha_2} p^{\beta_1-1} (1-p)^{\beta_2-1} = p^{\alpha_1 + \beta_1 - 1} (1-p)^{\alpha_2 + \beta_2 - 1}$
+    \item For a binomial likelihood, the conjugate prior is the beta distribution, which guarantees that the posterior is also a beta distribution:
+    \item $P(p | \delta) \sim \text{Beta}(\alpha_1 + \beta_1, \alpha_2 + \beta_2)$
+    \item $P(p | \delta) = \frac{\Gamma(\alpha_1 + \beta_1 + \alpha_2 + \beta_2)}{\Gamma(\alpha_1 + \beta_1) \Gamma(\alpha_2 + \beta_2)} p^{\alpha_1 + \beta_1 - 1} (1-p)^{\alpha_2 + \beta_2 - 1}$
+\end{itemize}
+MAP:
+\begin{itemize}
+    \item Posterior $P(p |\delta)$ has a beta distribution: $P(p | \delta) = \frac{\Gamma(\alpha_1 + \beta_1 + \alpha_2 + \beta_2)}{\Gamma(\alpha_1 + \beta_1) \Gamma(\alpha_2 + \beta_2)} p^{\alpha_1 + \beta_1 - 1} (1-p)^{\alpha_2 + \beta_2 - 1}$
+    \item $\hat{p}_{\text{MAP}} = \frac{\alpha_1 + \beta_1 - 1}{\alpha_1 + \beta_1 + \alpha_2 + \beta_2 - 2}$ after logarithmizing and finding local minimum
+    \item Thus, if our prior belief $P(p) \sim \text{Beta}(\beta_1, \beta_2)$ is strong, $\beta_1$ and $\beta_2$ will be large and the prior dominates the posterior
+    \item If we gather more data, $\alpha_1$ and $\alpha_2$ will be large and the posterior will begin to dominate the prior
+    \item If we have no strong prior belief, we can select $\beta_1 = \beta_2 = 1$, and thus $p_{\text{MLE}} = p_{\text{MAP}}$
+\end{itemize}
+
+{\color{black}\hrule height 0.001mm}
+
+\subsection*{Poisson}
+\emph{Frequentism} --- 
+MLE:
+\begin{itemize}
+    \item Likelihood $P(x | \lambda)$ has a Poisson distribution:  $P(x | \lambda) = \prod_{i=1}^{n} \frac{\lambda^{x_i} e^{-\lambda}}{x_i!} = \frac{\lambda^{ \sum_{i=1}^{n} x_i} e^{-\lambda n}}{ \prod_{i=1}^{n} x_i!}$
+    \item Log-likelihood is given by $ \log(P(x | \lambda)) = \sum_{i=1}^{n} x_i \log(\lambda) - \lambda n - \sum_{i=1}^{n} \log(x_i!)$
+    \item Derivative of log-likelihood is given by $\frac{\partial \log(P(x | \lambda))}{\partial \lambda} = \frac{\sum_{i=1}^{n} x_i}{\lambda} - n = 0$
+    \item $ \Rightarrow \hat{\lambda}_{\textrm{MLE}} = \frac{1}{n} \sum_{i=1}^{n} x_i$
+    \item Log likelihood is concave, so $\hat{\lambda}_{\textrm{MLE}}$ is the maximizer
+\end{itemize}
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Bayesianism} --- 
+\begin{itemize}
+    \item Likelihood $P(x | \lambda)$ has a Poisson distribution:  $P(x | \lambda) = \prod_{i=1}^{n} \frac{\lambda^{x_i} e^{-\lambda}}{x_i!} = \frac{\lambda^{ \sum_{i=1}^{n} x_i} e^{-\lambda n}}{ \prod_{i=1}^{n} x_i!}$
+    \item Prior $P(\lambda)$ has a Gamma distribution: $P(\lambda) = \frac{\beta^\alpha}{\Gamma(\alpha)} \lambda^{\alpha - 1} e^{-\beta \lambda}$
+    \item Posterior is given by $P(\lambda | x) \propto P(x | \lambda) P(\lambda) = \lambda^{\sum_{i=1}^{n} x_i} e^{-\lambda n} \times \lambda^{\alpha - 1} e^{-\beta \lambda} = \lambda^{\sum_{i=1}^{n} x_i + \alpha - 1} \times e^{-\lambda n} \times e^{-\beta \lambda} = \lambda^{\sum_{i=1}^{n} x_i + \alpha - 1} \times e^{-(n + \beta)\lambda}$
+    \item For a Poisson likelihood, the conjugate prior is the Gamma distribution, which guarantees that the posterior is also a Gamma distribution: $P(\lambda | x) \sim \text{Beta}(\alpha^{'}, \beta^{'})$
+    \item where $\alpha^{'} = \alpha + \sum_{i=1}^{n} x_i$ and $\beta^{'} = \beta + n$
+\end{itemize}
+MAP:
+\begin{itemize}
+    \item Log-posterior is given by $\log(P(\lambda | x)) = (\alpha + \sum_{i=1}^{n} x_i - 1) \log(\lambda) - (\beta + n)\lambda + \textrm{constant}$
+    \item Derivative of log-posterior is given by $\frac{\partial \log(P(\lambda | x))}{\partial \lambda} = \frac{\alpha + \sum_{i=1}^{n} x_i - 1}{\lambda} - (\beta + n) = 0$
+    \item $ \Rightarrow \hat{\lambda}_{\textrm{MAP}} = \frac{\alpha + \sum_{i=1}^{n} x_i - 1}{\beta + n}$
+    \item This corresponds to the posterior mean, since the mean of a Gamma distribution is $\alpha / \beta$
+\end{itemize}

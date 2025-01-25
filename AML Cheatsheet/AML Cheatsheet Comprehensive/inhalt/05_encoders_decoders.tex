@@ -1,0 +1,474 @@
+\section{Attention}
+\subsection*{Description}
+\begin{itemize}
+    \item Attention helps specify which inputs we need to pay attention to when producing a given output
+    \item Can be used:
+    \begin{itemize}
+        \item As cross-attention: Between encoder and decoder
+        \item As self-attention: Within a single hidden layer resp. within the encoder or decoder
+    \end{itemize}
+    \item Usually applied after embedding and before applying an activation function
+\end{itemize}
+
+{\color{black}\hrule height 0.001mm}
+
+\subsection*{Naive method}
+\begin{itemize}
+    \item Let $\boldsymbol{E}$ be the embedding matrix $\mathbb{R}^{s \times d}$ where $s$ = number of tokens, $d$ = embedding dimensionality
+    \item Steps:
+    \begin{itemize}
+        \item Re-weight embeddings: $\tilde{\boldsymbol{E}} = \boldsymbol{E} \boldsymbol{w}$
+        \item Compute similarity matrix: $\boldsymbol{S} = \sigma( \tilde{\boldsymbol{E}} \tilde{\boldsymbol{E}}^\intercal )$ where $\sigma$ is softmax, normalizing the rows of $\boldsymbol{S}$ to sum to 1, $\tilde{\boldsymbol{E}} \tilde{\boldsymbol{E}}^\intercal$ is similarity between two tokens in $\tilde{\boldsymbol{E}}$
+        \item Compute attention-weighted embedding matrix: $\boldsymbol{A} = \boldsymbol{S}\tilde{\boldsymbol{E}}$
+    \end{itemize}
+    \item In this context, $\boldsymbol{E}$ and $\boldsymbol{w}$ are trainable parameters
+    \item Challenge: Similarity matrix is symmetric, given that dot product $\tilde{\boldsymbol{E}} \tilde{\boldsymbol{E}}^\intercal$ is symmetric, i.e. attention paid by token $i$ to token $j$ ($S_{ij}$) is same as attention paid by token $j$ to token $i$ ($S_{ji}$)
+\end{itemize}
+
+{\color{black}\hrule height 0.001mm}
+
+\subsection*{Adjusted method}
+\begin{itemize}
+    \item Steps:
+    \begin{itemize}
+        \item Generate three sets of re-weighted embeddings: 
+        \begin{itemize}
+            \item $\boldsymbol{Q} = \boldsymbol{E} \boldsymbol{W}^q$ resp. $\boldsymbol{q}_i = \boldsymbol{e}_i \boldsymbol{W}^q$
+            \begin{itemize}
+                \item $\boldsymbol{E}$ $(m \times h)$
+                \item $\boldsymbol{W}_q$ $(h \times d_k)$
+                \item $\boldsymbol{Q}$ $(m \times d_k)$
+                \item $\boldsymbol{q}_i$ is row vector $(1 \times d_k)$
+                \item $\boldsymbol{e}_i$ is row vector $(1 \times h)$
+            \end{itemize}
+            \item $\boldsymbol{K} = \boldsymbol{E} \boldsymbol{W}^k$ resp. $\boldsymbol{k}_i = \boldsymbol{e}_i \boldsymbol{W}^k$
+            \begin{itemize}
+                \item $\boldsymbol{E}$ $(n \times h)$
+                \item $\boldsymbol{W}_k$ $(h \times d_k)$
+                \item $\boldsymbol{K}$ $(n \times d_k)$
+                \item $\boldsymbol{k}_i$ is row vector $(1 \times d_k)$
+                \item $\boldsymbol{e}_i$ is row vector $(1 \times h)$
+            \end{itemize}
+            \item $\boldsymbol{V} = \boldsymbol{E} \boldsymbol{W}^v$ resp. $\boldsymbol{v}_i = \boldsymbol{e}_i \boldsymbol{W}^v$ where 
+            \begin{itemize}
+                \item $\boldsymbol{E}$ $(n \times h)$
+                \item $\boldsymbol{W}_v$ $(h \times d_v)$
+                \item $\boldsymbol{V}$ $(n \times d_v)$
+                \item $\boldsymbol{v}_i$ is row vector $(1 \times d_v)$
+                \item $\boldsymbol{e}_i$ is row vector $(1 \times h)$
+            \end{itemize}
+            \item (Note: if $\boldsymbol{Q,K,V}$ contain multiple heads, they are expanded in this step)
+        \end{itemize}
+        \item Compute similarity matrix: $\boldsymbol{A} = \sigma(\frac{\boldsymbol{Q}\boldsymbol{K}^\intercal}{\sqrt{d_k}})$ in $(m \times n)$ resp. $\boldsymbol{\alpha}_{t} = \sigma(\frac{\boldsymbol{q}_t\boldsymbol{K}^\intercal}{\sqrt{d_k}})$ resp. $\alpha_{ti} = \frac{exp( \boldsymbol{q}_t \cdot \boldsymbol{k}_i )}{\sum_{i'} exp( \boldsymbol{q}_t \cdot \boldsymbol{k}_{i'} )}$
+        \begin{itemize}
+            \item $\sum_i \alpha_{ti} = 1$
+            \item $\alpha_{ti} \geq 0$
+        \end{itemize}
+        \item Compute attention-weighted embedding matrix: $\boldsymbol{Z} = \boldsymbol{A}\boldsymbol{V}$ in $(m \times d_v)$ in $(m \times d_v)$ resp. $\boldsymbol{z}_t = \boldsymbol{\alpha}_t\boldsymbol{V} = \sum_i \alpha_{ti} \boldsymbol{v}_i$ 
+        \item (Note: if $\boldsymbol{A}$ contains multiple heads, they are flattened in this step by multiplying with $d_v$)
+    \end{itemize}
+    \item In cross-attention:
+    \begin{itemize}
+        \item Attention for decoder-encoder alignment
+        \item $\boldsymbol{Q}$ is generated with decoder input during training with $m$
+        \item $\boldsymbol{V},\boldsymbol{K}$ are generated with encoder outputs during training with $n$
+    \end{itemize}
+    \item In self-attention:
+    \begin{itemize}
+        \item Attention for encoder resp. decoder inputs
+        \item $\boldsymbol{Q}, \boldsymbol{V},\boldsymbol{K}$ are generated with input during training with all either $n$ or $m$
+        \item In masked self-attention:
+        \begin{itemize}
+            \item We first calculate $\boldsymbol{P} =\boldsymbol{Q}\boldsymbol{K}^\intercal$ where masked elements (e.g. states with time $\geq m$ in decoder) are set to $-\infty$
+            \item $\boldsymbol{S} = \sigma(\frac{\boldsymbol{P}}{\sqrt{d_k}})$
+        \end{itemize}
+    \end{itemize}
+    \item In multi-head attention:
+    \begin{itemize}
+        \item Creates multiple sets of $\boldsymbol{Q,K,V}$ and calculates attention correspondingly
+        \item Concatenates generated matrices $\boldsymbol{Z}$
+        \item $\text{Multi Head Attention} \ \boldsymbol{Z} = \text{Concat}(\boldsymbol{Z}_{\text{head}_1}, \ldots, \boldsymbol{Z}_{\text{head}_h}) \boldsymbol{W}_O + \boldsymbol{b}_O$
+        where 
+        \begin{itemize}
+            \item $\text{Concat}(...)$ in $(m \times (n \times n_{heads}))$
+            \item $\boldsymbol{W}_O$ in $((n_{heads} \times n) \times d_v)$
+            \item $\boldsymbol{b}_O$ in $1 \times d_v)$
+        \end{itemize}
+    \end{itemize}
+\end{itemize}
+
+{\color{black}\hrule height 0.001mm}
+
+\subsection*{Further proofs}
+\emph{Self-attention without positional encodings is permutation equivariant} ---
+\begin{itemize}
+    \item Permutation equivariance: $\text{Attention} \ \boldsymbol{\Pi}\boldsymbol{Z} = \boldsymbol{\Pi} \ \text{Attention} \ \boldsymbol{Z}$
+    \item The self-attention is given by:
+    $
+    \boldsymbol{A} = \boldsymbol{Z}\boldsymbol{W}_q \boldsymbol{W}_k^\intercal \boldsymbol{Z}^\intercal
+    $
+    \item After permutation, self-attention is given by: 
+    $
+    \boldsymbol{A}' = (\boldsymbol{\Pi} \boldsymbol{Z})\boldsymbol{W}_q \boldsymbol{W}_k^\intercal (\boldsymbol{\Pi} \boldsymbol{Z})^\intercal = \boldsymbol{\Pi} \boldsymbol{Z}\boldsymbol{W}_q \boldsymbol{W}_k^\intercal \boldsymbol{Z}^\intercal \boldsymbol{\Pi}^\intercal = \boldsymbol{\Pi} (\boldsymbol{Z}\boldsymbol{W}_q \boldsymbol{W}_k^\intercal \boldsymbol{Z}^\intercal) \boldsymbol{\Pi}^\intercal = \boldsymbol{\Pi} \boldsymbol{A} \boldsymbol{\Pi}^\intercal
+    $
+    \item Applying softmax:
+    $
+    \text{softmax}(\boldsymbol{A}') = \text{softmax}(\boldsymbol{\Pi} \boldsymbol{A} \boldsymbol{\Pi}^\intercal) = \boldsymbol{\Pi} \ \text{softmax}(\boldsymbol{A})\ \boldsymbol{\Pi}^\intercal 
+    $ since permutation matrix simply swaps rows and columns. The softmax operates on a matrix row-wise, i.e. the normalization for each row only depends on entries in that row. For this reason, it does not matter whether the permutation happens before or after applying the softmax
+    \item Final output: $
+    \boldsymbol{Z}' = \text{softmax}(\boldsymbol{A}') (\boldsymbol{\Pi} \boldsymbol{Z}) W_v = \boldsymbol{\Pi} \ \text{softmax}(\boldsymbol{A}) \ \boldsymbol{\Pi}^\intercal(\boldsymbol{\Pi} \boldsymbol{Z}) W_v = \boldsymbol{\Pi} \ \text{softmax}(\boldsymbol{A})(\boldsymbol{\Pi}^{-1}\boldsymbol{\Pi}) \boldsymbol{Z} W_v = \boldsymbol{\Pi} \ \text{softmax}(\boldsymbol{A})\boldsymbol{Z} W_v
+    $ because $\boldsymbol{\Pi}$, as a permutation matrix, has exactly one $1$ in each row and each column and $0$ everywhere else. It is an orthogonal matrix, thus $\boldsymbol{\Pi}^\intercal = \boldsymbol{\Pi}^{-1}$ and $\boldsymbol{\Pi} \ \boldsymbol{\Pi}^{-1} = I$
+\end{itemize}
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Self-attention with learned $\boldsymbol{Q}$ and without positional encodings is permutation invariant} ---
+\begin{itemize}
+    \item Permutation invariance: $\text{Attention} \ \boldsymbol{\Pi}\boldsymbol{Z} = \text{Attention} \ \boldsymbol{Z}$
+    \item See proof above, but do not decompose $\boldsymbol{Q}$
+\end{itemize}
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Self-attention with positional encodings is not permutation equi- or invariant} ---
+\begin{itemize}
+    \item $\boldsymbol{P}$ encodes absolute positions that are altered when permuted
+    \item This disrupts the symmetry introduced by the permutation matrix
+    \item Therefore, the positional encoding $\boldsymbol{P}$ introduces information that is not equi- or invariant to permutations
+\end{itemize}
+
+\section{Positional Embeddings}
+\begin{itemize}
+    \item Can be absolute or relative
+    \item Attention with absolute positional encodings: $
+    \boldsymbol{A}_{q,k}^{\text{absolute}} = \left( \boldsymbol{Z}_{q} + \boldsymbol{P}_{q} \right) \boldsymbol{W}_q \boldsymbol{W}_k^\intercal \left( \boldsymbol{Z}_{k} + \boldsymbol{P}_{k} \right)^\intercal
+    = \boldsymbol{Z}_{q} \boldsymbol{W}_q \boldsymbol{W}_k^\intercal \boldsymbol{Z}_{k}^\intercal 
+    + \boldsymbol{Z}_{q} \boldsymbol{W}_q \boldsymbol{W}_k^\intercal \boldsymbol{P}_{k}^\intercal 
+    + \boldsymbol{P}_{q} \boldsymbol{W}_q \boldsymbol{W}_k^\intercal \boldsymbol{Z}_{k}^\intercal 
+    + \boldsymbol{P}_{q} \boldsymbol{W}_q \boldsymbol{W}_k^\intercal \boldsymbol{P}_{k}^\intercal
+    $
+    \item Attention with relative positional encodings, where relative difference $\boldsymbol{\delta} = \boldsymbol{q}-\boldsymbol{k}$: 
+    $
+    \boldsymbol{A}_{q,k}^{\text{relative}} := \boldsymbol{Z}_{q} \boldsymbol{W}_q \boldsymbol{W}_k^\intercal \boldsymbol{Z}_{k}^\intercal 
+    + \boldsymbol{Z}_{q} \boldsymbol{W}_q \widetilde{\boldsymbol{W}}_k \boldsymbol{r}_\delta 
+    + \boldsymbol{u}^\intercal \boldsymbol{W}_k \boldsymbol{Z}_{k} 
+    + \boldsymbol{v}^\intercal \widetilde{\boldsymbol{W}}_k \boldsymbol{r}_\delta
+    $ where \emph{Gaussian encodings} are given by parameters
+    \begin{itemize}
+        \item $
+        \boldsymbol{W}_q = \boldsymbol{W}_k = 0
+        $
+        \item $
+        \widetilde{\boldsymbol{W}}_k = \boldsymbol{I}
+        $
+        \item $
+        \boldsymbol{r}_\delta = 
+        \begin{pmatrix}
+        \|\delta\|^2 \\
+        \delta_1 \\
+        \delta_2
+        \end{pmatrix}
+        $
+        \item $
+        \boldsymbol{v} = -\alpha 
+        \begin{pmatrix}
+        1 \\
+        -2\Delta_1 \\
+        -2\Delta_2
+        \end{pmatrix}
+        $
+        \item $\boldsymbol{v}$ and $\boldsymbol{r}_\delta$ are in $(1 \times d_p)$
+        \item If these parameters are plugged into formula for attention with relative positional encodings, we recover formula for attention with absolute positional encodings
+    \end{itemize}
+    \item Relative encodings speed up the calculation of the attention vs. absolute encodings (since $d_p$ is very small), but applying softmax and calculating $\boldsymbol{Z}$ for relative encodings has the same complexity as for absolute encodings, thus diminishing the benefit
+\end{itemize}
+
+\section{Encoder Decoder RNNs}
+\subsection*{Description}
+\emph{Task} --- Generate embeddings, perform sequence-to-sequence tasks
+
+{\color{black}\hrule height 0.001mm}
+
+\subsection*{Formulation}
+\emph{Formulation} --- 
+\begin{itemize}
+    \item Model architecture: 
+    \begin{itemize}
+        \item Inputs fed into encoder in reverse order
+        \item Encoder: 
+        \begin{itemize}
+            \item Sequence-to-vector
+            \item Hidden states $\boldsymbol{h}_n^{(e)} = f ( \boldsymbol{W}_1^{(e)} \boldsymbol{h}_{n-1}^{(e)} + \boldsymbol{W}_2 \boldsymbol{w}_{n} )$ where 
+            \begin{itemize}
+                \item $f$ is activation function
+                \item $\boldsymbol{w}_{n}$ is input token embedding at time step $n$ in input sequence
+                \item $\boldsymbol{h}_{n-1}^{(e)}$ is encoder hidden state from previous time step
+            \end{itemize}
+        \end{itemize}
+        \item Outputs from encoder to decoder are weighted by attention weights:
+        \begin{itemize}
+            \item Context vector $\boldsymbol{z}_m = \sum_{n=1}^N \alpha_{m,n} \boldsymbol{h}_n^{(e)}$ where 
+            \begin{itemize}
+                \item $\boldsymbol{h}_n^{(e)}$ is the encoder hidden state (= $V$)
+                \item $\alpha_{m,n}$ is attention weight at decoder time step $m$ for encoder hidden state at time step $n$
+                \item $\alpha_{m,n} = \textrm{softmax}(\boldsymbol{h}_{m-1}^{(d)} \times [\boldsymbol{h}_1^{(e)}, ..., \boldsymbol{h}_N^{(e)}])$ where
+                \begin{itemize}
+                    \item $\boldsymbol{h}_{m-1}^{(d)}$ is previous decoder hidden state (= $Q$)
+                    \item $[\boldsymbol{h}_1^{(e)}, ..., \boldsymbol{h}_N^{(e)}]^\intercal$ are the final encoder hidden states at each time step (= $K$)
+                \end{itemize}
+            \end{itemize}
+        \end{itemize}
+        \item Alongside context vectors, target sequence inputs are fed into decoder with one time step lag during training
+        \item Decoder: 
+        \begin{itemize}
+            \item Vector-to-sequence
+            \item Hidden states $\boldsymbol{h}_m^{(d)} = f ( \boldsymbol{W}_3^{(d)} \boldsymbol{h}_{m-1}^{(d)} + \boldsymbol{W}_2^{(d)} \boldsymbol{w'}_{m-1} + \boldsymbol{W}_1^{(d)} \boldsymbol{z}_m )$ where
+            \begin{itemize}
+                \item $f$ is activation function
+                \item $\boldsymbol{w'}_{m-1}$ is target token embedding at time step $m-1$ in target sequence
+                \item $\boldsymbol{h}_{m-1}^{(d)}$ is decoder hidden state from previous time step with $\boldsymbol{h}_0^{(d)} = \boldsymbol{h}_N^{(e)}$, i.e. last encoder output is first decoder input
+                \item $\boldsymbol{z}_m$ is cross-attention
+            \end{itemize} 
+        \end{itemize}
+    \end{itemize}
+    \item Runtime analysis:
+    \begin{itemize}
+        \item Let $\boldsymbol{W}^{(e)} \boldsymbol{h}$ be in $((N \times d) \times (d \times d))$ resp. $\boldsymbol{W}^{(d)} \boldsymbol{h}$ in $((M \times d) \times (d \times d))$
+        \item Let number of encoder resp. decoder layers be $l_e, l_d$
+        \item We perform $\boldsymbol{z}_m = \sum_{n=1}^N \alpha_{m,n} \boldsymbol{h}_n^{(e)}$ for $M$ decoder time steps, summing over $N$ encoder outputs $\boldsymbol{h}_n^{(e)}$ of dimensionality $d$
+        \item Encoder: $O(l_e N d^2)$ from hidden states
+        \item Decoder: $O(l_d M d^2 + l_d  d N M)$
+        \begin{itemize}
+            \item $O(l_d M d^2)$ from hidden states
+            \item $O(l_d d N M)$ from cross-attention
+        \end{itemize}
+    \end{itemize}
+    \item Challenge: Sequential, cannot be parallelized. Solution: Transformers
+\end{itemize}
+
+{\color{black}\hrule height 0.001mm}
+
+\subsection*{Optimization}
+\emph{Parameters} --- Find parameters $\theta = \boldsymbol{W}_1^{(e)}, \boldsymbol{W}_2^{(e)}, \boldsymbol{W}_1^{(d)}, \boldsymbol{W}_2^{(d)}, \boldsymbol{W}_3^{(d)}$ 
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Objective function} --- 
+\begin{itemize}
+    \item Maximize log likelihood
+\end{itemize}
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Optimization} ---
+\begin{itemize}
+    \item Perform \emph{forward pass} with randomly initialized parameters, to calculate loss
+    \item Perform backpropagation, to calculate gradient
+    \item Gradient with regard to encoder output:
+    \begin{itemize}
+        \item $\nabla_{\boldsymbol{h}_1^{(e)}} L = \frac{\partial L}{\partial \boldsymbol{h}_m^{(d)}} ) \frac{\partial \boldsymbol{h}_m^{(d)}}{\partial \boldsymbol{h}_{n}^{(e)}}$
+        \item $\frac{\partial \boldsymbol{h}_m^{(d)}}{\partial \boldsymbol{h}_{n}^{(e)}} = \frac{\partial}{\partial \boldsymbol{h}_{n}^{(e)}} \boldsymbol{W}_3^{(d)} \boldsymbol{h}_{m-1}^{(d)}
+        \times \frac{\partial}{\partial \boldsymbol{h}_{n}^{(e)}} \boldsymbol{W}_1^{(d)} \boldsymbol{z}_m
+        \times \frac{\partial}{\partial \boldsymbol{h}_{n}^{(e)}} f ( \boldsymbol{W}_3^{(d)} \boldsymbol{h}_{m-1}^{(d)} + \boldsymbol{W}_2^{(d)} \boldsymbol{w'}_{m-1} + \boldsymbol{W}_1^{(d)} \boldsymbol{z}_m )$
+        \item We can further decompose $\frac{\partial}{\partial \boldsymbol{h}_{n}^{(e)}} \boldsymbol{W}_1^{(d)} \boldsymbol{z}_m$:
+        \begin{itemize}
+            \item $
+            =\frac{\partial}{\partial \boldsymbol{h}_n^{(e)}} \alpha_{m,n} \boldsymbol{h}_n^{(e)} + \frac{\partial}{\partial \boldsymbol{h}_n^{(e)}} \sum_{i \neq n}^N \alpha_{m,i} \boldsymbol{h}_i^{(e)}
+            $\\
+            $
+            = \alpha_{m,n} + \frac{\partial}{\partial \boldsymbol{h}_n^{(e)}} \alpha_{m,n}\boldsymbol{h}_n^{(e)} + \frac{\partial}{\partial \boldsymbol{h}_n^{(e)}} \sum_{i \neq n}^N \alpha_{m,i} \boldsymbol{h}_i^{(e)}
+            $ due to product rule for $\alpha_{m,n} \boldsymbol{h}_n^{(e)}$\\
+            $
+            = \Phi_{m,n} + \Phi'_{m,n} \boldsymbol{h}_n^{(e)} + \sum_{i \neq n}^N \left[\Phi_{m,i} \frac{\partial \boldsymbol{h}_i^{(e)}}{\partial \boldsymbol{h}_n^{(e)}} + \Phi'_{m,i} \boldsymbol{h}_i^{(e)} \right]
+            $ due to product rule for $\alpha_{m,i} \boldsymbol{h}_i^{(e)}$ and by replacing $\alpha_{m,n}$ with $\Phi_{m,n}$
+        \end{itemize}
+        \item Runtime analysis:
+        \begin{itemize}
+            \item $\frac{\partial}{\partial \boldsymbol{h}_{n}^{(e)}} \boldsymbol{W}_3^{(d)} \boldsymbol{h}_{m-1}^{(d)}$ is in $O(m \times N + N-n)$:
+            \begin{itemize}
+                \item Taking derivatives of $m$ decoder steps, due to attention $\boldsymbol{z}_m$ which is applied over $N$ encoder outputs, takes $O(m \times N)$
+                \item Taking derivatives of $N-n$ encoder steps takes $O(N-n)$
+            \end{itemize}
+            \item $\frac{\partial}{\partial \boldsymbol{h}_{n}^{(e)}} \boldsymbol{W}_1^{(d)} \boldsymbol{z}_m$ is in $O(N)$:
+            \item $\frac{\partial}{\partial \boldsymbol{h}_{n}^{(e)}} f(...)$ is in $O(N)$:
+            \begin{itemize}
+                \item $\Phi_{m,n}$ and $\Phi'_{m,n}$ are in $O(1)$, since they don't contain $\boldsymbol{h}_{n}^{(e)}$
+                \item $\sum_{i \neq n}^N \Phi_{m,i} \frac{\partial \boldsymbol{h}_i^{(e)}}{\partial \boldsymbol{h}_n^{(e)}}$ is in $O(N-n)$ if we reuse terms in chain rule by factorizing, since the derivative is only non-null for $N-n$ encoder steps 
+                \item $\sum_{i \neq n}^N  \Phi'_{m,i} \boldsymbol{h}_i^{(e)} $ is in $O(N)$, since here we're summing over all $N$ encoder steps
+            \end{itemize}
+            \begin{itemize}
+                \item $\boldsymbol{W}_3^{(d)} \boldsymbol{h}_{m-1}^{(d)}$ and $\boldsymbol{W}_2^{(d)} \boldsymbol{w'}_{m-1}$ are in $O(1)$, since they don't contain $\boldsymbol{h}_{n}^{(e)}$ 
+                \item $\boldsymbol{W}_1^{(d)} \boldsymbol{z}_m$ is in $O(N)$, since it represents the attention applied over $N$ encoder outputs
+            \end{itemize}
+        \end{itemize}
+    \end{itemize}
+    \item Perform gradient descent to find best weights 
+\end{itemize}
+
+{\color{black}\hrule height 0.001mm}
+
+\subsection*{Variants}
+\emph{Variants} --- 
+\begin{itemize}
+    \item ELMO: Bi-directional LSTM
+\end{itemize}
+
+\section{Encoder Decoder Transformers}
+\subsection*{Description}
+\emph{Task} --- Generate embeddings, perform sequence-to-sequence tasks
+
+{\color{black}\hrule height 0.001mm}
+
+\subsection*{Formulation}
+\emph{Formulation} --- 
+\begin{itemize}
+    \item Model architecture: 
+    \begin{itemize}
+        \item Inputs fed into encoder in reverse order
+        \item Encoder: 
+        \begin{itemize}
+            \item Sequence-to-vector
+            \item Takes in input sequence token embeddings (semantic vector, $\boldsymbol{X}$ in $(N \times d_{model})$) and positional embeddings (sinusoidal pointer vector for word position, given that model is not sequential, $\boldsymbol{P}$ in $(N \times d_{model})$) and adds them:
+            $\boldsymbol{H}_0^{(e)} = \boldsymbol{X} + \boldsymbol{P}$
+            \item Multi-head self-attention, applied to all tokens jointly, where $\boldsymbol{Q,K,V}$ are tokens in input sequence:
+            \begin{itemize}
+                \item $\boldsymbol{Q} = \boldsymbol{H}_{(l-1)}^{(e)} \boldsymbol{W}_q$
+                \item $\boldsymbol{K} = \boldsymbol{H}_{(l-1)}^{(e)} \boldsymbol{W}_k$
+                \item $\boldsymbol{V} = \boldsymbol{H}_{(l-1)}^{(e)} \boldsymbol{W}_v$
+                \item $\text{Attention} \ \boldsymbol{Z} = \text{softmax}\left(\frac{\boldsymbol{Q} \boldsymbol{K}^\top}{\sqrt{d_k}}\right) \boldsymbol{V}$
+                \item $\text{Multi Head Attention} \ \boldsymbol{Z} = \text{Concat}(\boldsymbol{Z}_{\text{head}_1}, \ldots, \boldsymbol{Z}_{\text{head}_h}) \boldsymbol{W}_O + \boldsymbol{b}_O$
+            \end{itemize}
+            \item Addition and normalization: Skip connections (from token + positional embeddings) added back and normalized: $\boldsymbol{H}_l^{(e)} = \text{Layer Norm}(\text{Multi Head Attention}(\boldsymbol{Q}, \boldsymbol{K}, \boldsymbol{V}) + \boldsymbol{H}_{(l-1)}^{(e)})$
+            \item Feed-forward network, parallel for each token: $\text{FFN}(\boldsymbol{H}_l^{(e)}) = \textrm{ReLU}(\boldsymbol{H}_l^{(e)} \boldsymbol{W}_1 + \boldsymbol{b}_1)\boldsymbol{W}_2 + \boldsymbol{b}_2$ where
+            \begin{itemize}
+                \item $\boldsymbol{W}_1 \in \mathbb{R}^{(d_v \times r)}$
+                \item $\boldsymbol{b}_1 \in \mathbb{R}^{(1 \times r)}$
+                \item $\boldsymbol{W}_2 \in \mathbb{R}^{(r \times d_v)}$
+                \item $\boldsymbol{b}_2 \in \mathbb{R}^{(1 \times d_v)}$
+            \end{itemize}
+            \item Addition and normalization: Skip connections (from first addition and normalization) added back and normalized: $\boldsymbol{H}_l^{(e)} = \text{Layer Norm}(\text{FFN}(\boldsymbol{H}_l^{(e)}) + \boldsymbol{H}_l^{(e)})$
+            \item Generates hidden states $\boldsymbol{h}_n^{(e)}$
+        \end{itemize}
+        \item Decoder: 
+        \begin{itemize}
+            \item Vector-to-sequence
+            \item Target sequence inputs are fed into decoder with one time step lag (masked self-attention): 
+            \begin{itemize}
+                \item Takes in target sequence token embeddings (semantic vector, $\boldsymbol{Y}$ in $(M \times d_{model})$) and positional embeddings (sinusoidal pointer vector for word position, given that model is not sequential, $\boldsymbol{P}$ in $(M \times d_{model})$) and adds them:
+                $\boldsymbol{H}_0^{(d)} = \boldsymbol{Y} + \boldsymbol{P}$
+                \item Masked self-attention, applied to all tokens jointly, where $\boldsymbol{Q,K,V}$ are tokens in target sequence:
+                \begin{itemize}
+                    \item $\boldsymbol{Q} = \boldsymbol{H}_{(l-1)}^{(d)} \boldsymbol{W}_q$
+                    \item $\boldsymbol{K} = \boldsymbol{H}_{(l-1)}^{(d)} \boldsymbol{W}_k$
+                    \item $\boldsymbol{V} = \boldsymbol{H}_{(l-1)}^{(d)} \boldsymbol{W}_v$
+                    \item $\text{Masked Attention}(\boldsymbol{Q}, \boldsymbol{K}, \boldsymbol{V}) = \text{softmax}\left(\frac{\boldsymbol{Q} \boldsymbol{K}^\top}{\sqrt{d_k}} + \textrm{mask}\right) \boldsymbol{V}$ where mask covers tokens in positions $m \geq t$
+                \end{itemize}
+                \item Addition and normalization: Skip connections (from token + positional embeddings) added back and normalized: $\boldsymbol{H}_l^{(d)} = \text{Layer Norm}(\text{Masked Attention}(\boldsymbol{Q}, \boldsymbol{K}, \boldsymbol{V}) + \boldsymbol{H}_{(l-1)}^{(d)})$
+            \end{itemize}
+            \item Encoder outputs are fed into decoder with cross-attention: 
+            \begin{itemize}
+                \item Cross-attention:
+                \begin{itemize}
+                    \item $\boldsymbol{Q} = \boldsymbol{H}_l^{(d)} \boldsymbol{W}_q$
+                    \item $\boldsymbol{K} = \boldsymbol{H}_{(N)}^{(e)} \boldsymbol{W}_k$
+                    \item $\boldsymbol{V} = \boldsymbol{H}_{(N)}^{(e)} \boldsymbol{W}_v$
+                    \item $\text{Cross Attention}(\boldsymbol{Q}, \boldsymbol{K}, \boldsymbol{V}) = \text{softmax}\left(\frac{\boldsymbol{Q} \boldsymbol{K}^\top}{\sqrt{d_k}}\right) \boldsymbol{V}$
+                \end{itemize}
+                \item Addition and normalization: Skip connections (from first addition and normalization) added back and normalized: $\boldsymbol{H}_l^{(d)} = \text{Layer Norm}(\text{Cross Attention}(\boldsymbol{Q}, \boldsymbol{K}, \boldsymbol{V}) + \boldsymbol{H}_l^{(d)})$
+            \end{itemize}
+            \item Feed-forward network, parallel for each token: $\text{FFN}(\boldsymbol{H}_l^{(d)}) = \textrm{ReLU}(\boldsymbol{H}_l^{(d)} \boldsymbol{W}_1 + \boldsymbol{b}_1)\boldsymbol{W}_2 + \boldsymbol{b}_2$ where
+            \begin{itemize}
+                \item $\boldsymbol{W}_1 \in \mathbb{R}^{(d_v \times r)}$
+                \item $\boldsymbol{b}_1 \in \mathbb{R}^{(1 \times r)}$
+                \item $\boldsymbol{W}_2 \in \mathbb{R}^{(r \times d_v)}$
+                \item $\boldsymbol{b}_2 \in \mathbb{R}^{(1 \times d_v)}$
+            \end{itemize}
+            \item Addition and normalization: Skip connections (from second addition and normalization) added back and normalized: $\boldsymbol{H}_l^{(d)} = \text{Layer Norm}(\text{FFN}(\boldsymbol{H}_l^{(d)}) + \boldsymbol{H}_l^{(d)})$
+            \item Generates hidden states $\boldsymbol{h}_m^{(d)}$
+        \end{itemize}
+        \item Linear layer applied to $\boldsymbol{h}_M^{(d)}$
+        \item Softmax layer applied to select token with highest probability:
+        \begin{itemize}
+            \item Neural networks make no independence assumption, i.e. output $y_t$ is conditioned on entire history (non-Markovian structure: $\boldsymbol{x},\boldsymbol{y}_{<t}$) rather than window of size $n$ (Markovian structure: $\boldsymbol{x},\langle y_t, ..., y_{t-1} \rangle$)
+            \item This results in runtime of $O(|\Sigma|^n)$ rather than $O(|\Sigma| \times n)$
+            \item Since it is intractable to search for best sequence overall (explore), we turn to deterministic or stochastic variants (exploit): 
+            \begin{itemize}
+                \item Greedy decoding: Select highest-probability token at each step
+                \item Beam search: Keep $n$-highest-probability tokens in memory (beam size) and return $k$-most-likely sequences (top beams)
+                \item Nucleus sampling: Sample tokens from items that cover $p\%$ of PMF
+            \end{itemize}
+        \end{itemize}
+    \end{itemize}
+    \item Runtime analysis: Cross-attention:
+    \begin{itemize}
+        \item Computing $\boldsymbol{Q}$ with $O(m \times h \times d_k)$, $\boldsymbol{K}$ with $O(n \times h \times d_k)$, $\boldsymbol{V}$ with $O(n \times h \times d_v)$
+        \item Assume $m = n$ and $d_k = d_v = d$
+         \item Computing $\boldsymbol{A}$ with $O(m \times d_k \times n)$, computing $\boldsymbol{Z}$ with $O(m \times d_k \times n \times d_v)$
+         \item Assume $m = 1$ (for one specific query) and $d_v = d$
+         \item Total runtime for single layer: $O(n \times h \times d + h \times n \times d)$
+    \end{itemize}
+    \item Advantage: 
+    \begin{itemize}
+        \item Relies on attention to obtain a fixed-size representation of a sequence (in contrast to RNN)
+        \item Allows to learn longer-range dependencies than RNNs
+        \item Allows for parallelization, whereas RNNs must run sequentially
+    \end{itemize}
+\end{itemize}
+
+{\color{black}\hrule height 0.001mm}
+
+\subsection*{Variants}
+\emph{Variants} --- 
+\begin{itemize}
+    \item GPT: Uni-directional, decoder-only transformer, predicts next word in sequence
+    \item BERT: Bi-directional, encoder-only transformer, predicts masked word from context
+\end{itemize}
+
+\section{Connection CNN and Multi Head Self Attention}
+Theorem: A multi-head self-attention layer operating on $K^2$ heads of dimension $n$ and output dimension $d_v$, employing a relative positional encoding of dimension $d_p \geq 3$, can express any convolutional layer of kernel size $K \times K$ and $d_v$ output channels\\
+Theorem part 1:
+\begin{itemize}
+    \item Given a multi-head self-attention layer with $n_{heads} = K^2$ and $n \geq d_v$
+    \item Given a convolutional layer with a $K \times K$ kernel and $d_v$ output channels
+    \item Let $f : [n_{heads}] \to \Delta_K$ be a bijective map between heads and shifts
+    \item Assume $\text{softmax} \left( \boldsymbol{A} \right) =
+    \begin{cases} 
+    1 & \text{if } f(h) = \boldsymbol{q} - \boldsymbol{k} = \boldsymbol{\delta} \\
+    0 & \text{otherwise}
+    \end{cases}$
+    \item Then, for any convolutional layer, there exists a corresponding weight per head $\boldsymbol{W}_v$ such that the multi-head self-attention equals the convolution
+    \item Proof:
+    \begin{itemize}
+        \item Contribution of each head in multi-head self-attention is given by: $\boldsymbol{W} = \boldsymbol{W}_v \boldsymbol{W}_{\text{out}}^{(h)}$ where $\boldsymbol{W}_{\text{out}}^{(h)}$ is the portion of $\boldsymbol{W}_{\text{out}}$ associated with head $h$
+        \item This means, we can rewrite $\text{Multi Head Attention} \ \boldsymbol{Z} = \sum_{h \in n_{heads}} \text{softmax}(\boldsymbol{A}^{(h)}) \boldsymbol{Z} \boldsymbol{W}^{(h)} + \boldsymbol{b}_O$
+        \item This matches $\text{Convolution} \ \boldsymbol{Z} = \sum_{(u, v) \in \Delta_K} \boldsymbol{X}_{i', j'} \boldsymbol{W}_{u, v} + \boldsymbol{b}$
+    \end{itemize}
+\end{itemize}
+Theorem part 2:
+\begin{itemize}
+    \item It is possible to construct a relative encoding scheme $\boldsymbol{r}_\delta$ using parameters $\boldsymbol{W}_q$, $\boldsymbol{W}_k$, $\widetilde{\boldsymbol{W}}_k$, and $\boldsymbol{u}$ so that, for every shift $\in \Delta_K$, there exists a vector $\boldsymbol{v}$ that yields the mapping $f : [n_{heads}] \to \Delta_K$
+    \item Assume $\boldsymbol{A} = -\alpha \left( \|\boldsymbol{\delta} - \boldsymbol{\Delta}\|^2 + c \right)$
+    \item Behavior for $\boldsymbol{\delta} = \boldsymbol{\Delta}$ resp. $\boldsymbol{\delta} \neq \boldsymbol{\Delta}$:
+    \begin{itemize}
+        \item Softmax is given by:
+        $\text{softmax}(\boldsymbol{A}) = \frac{\exp\left(-\alpha \left( \|\boldsymbol{\delta} - \boldsymbol{\Delta}\|^2 + c \right)\right)}{\sum_{k'} \exp\left(-\alpha \left( \|\boldsymbol{\delta}' - \boldsymbol{\Delta}\|^2 + c \right)\right)}$
+        \item In numerator:
+        \begin{itemize}
+            \item If $\boldsymbol{\delta} = \boldsymbol{\Delta}$, $\exp(\boldsymbol{A}) = \exp(-\alpha c)$
+            \item If $\boldsymbol{\delta} \neq \boldsymbol{\Delta}$, $\exp(\boldsymbol{A}) \to 0$ as $\alpha \to \infty$, since entire term inside exponent grows very negative
+        \end{itemize}
+        \item In denominator: $\exp(\boldsymbol{A}) \to \exp(-\alpha c)$ as $\alpha \to \infty$, since only the term corresponding to $\boldsymbol{\delta} = \boldsymbol{\Delta}$ contributes significantly
+        \item Then,
+        \begin{itemize}
+            \item If $\boldsymbol{\delta} = \boldsymbol{\Delta}$, softmax $\to 1$
+            \item If $\boldsymbol{\delta} \neq \boldsymbol{\Delta}$, softmax $\to 0$
+        \end{itemize}
+        \item This proves assumption in part 1 of theorem
+    \end{itemize}
+    \item Constant $c$ is given by $c = \max_{\boldsymbol{\delta} \neq \boldsymbol{\Delta}} \|\boldsymbol{\delta} - \boldsymbol{\Delta}\|^2$:
+    \begin{itemize}
+        \item $\boldsymbol{A} = -\alpha \left( \|\boldsymbol{\delta} - \boldsymbol{\Delta}\|^2 + c \right)$
+        \item To ensure proper softmax behavior $-\alpha c$ must dominate over $-\alpha \|\boldsymbol{\delta} - \boldsymbol{\Delta}\|^2$
+        \item Then, we require $\|\boldsymbol{\delta} - \boldsymbol{\Delta}\|^2 + c \gg 0$ for $\boldsymbol{\delta} \neq \boldsymbol{\Delta}$
+    \end{itemize}
+\end{itemize}

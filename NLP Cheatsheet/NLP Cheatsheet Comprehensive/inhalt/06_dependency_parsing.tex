@@ -117,10 +117,9 @@ Assign syntactic structure to a string by breaking it down into a hierarchy of d
 Construct tree:
 \begin{itemize}
     \item $N$ nodes plus 1 extra root node
-    \item $N-1$ edges
-    \item Number of undirected spanning trees: $N^{(N-2)}$
-    \item Number of ways to label edges: $N^{(N-1)}$
-    \item Number of valid spanning trees, including labeling of edges: $N^{(N-2)} \times N^{(N-1)} = N^{(2N-3)}$
+    \item $N-1$ edges, of which $1$ edge is fixed (root) 
+    \item Number of directed spanning trees: $N^{(N-1)}$
+    \item Number of directed spanning trees, including labeling of edges: $N^{(N-1)} \times x$ where $x$ is given by the number of the destination nodes (e.g. $N$) raised to the power of the number of edges that can vary (e.g. $N-1-1 = N-2$), i.e. $N^{(N-2)}$
 \end{itemize}
 
 Decode tree:

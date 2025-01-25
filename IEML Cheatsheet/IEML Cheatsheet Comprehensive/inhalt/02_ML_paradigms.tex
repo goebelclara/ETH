@@ -1,0 +1,261 @@
+\section{ML Paradigms}
+\subsection*{Frequentism}
+\emph{Description} --- 
+\begin{itemize}
+    \item Parametric approach
+    \item $\boldsymbol{\theta}$ as fixed, unknown quantity, $\boldsymbol{X}$ as random, and known quantity
+    \item Makes point estimate
+    \item Focuses on maximizing likelihood $p(\boldsymbol{X}|\boldsymbol{\theta})$ to infer posterior $p(\boldsymbol{\theta}|\boldsymbol{X})$
+    \item Only requires differentiation methods
+    \item High variance, but low bias
+\end{itemize}
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{MLE estimator}
+\begin{itemize}
+    \item Maximizes log-likelihood: $\hat{\boldsymbol{\theta}} = \arg\max_{\boldsymbol{\theta}}(L) = \arg\max_{\boldsymbol{\theta}}(p(y_1, ..., y_n |\boldsymbol{x_i}, \boldsymbol{\theta})) = \arg\max_{\boldsymbol{\theta}}(\prod_{i=1}^n p(y_i |\boldsymbol{x_i}, \boldsymbol{\theta})) = \arg\max_{\boldsymbol{\theta}}(\sum_{i=1}^n log(p(y_i |\boldsymbol{x_i}, \boldsymbol{\theta})))$
+    \item In discrete case:
+    \begin{itemize}
+        \item $\hat{\boldsymbol{\theta}} = \arg\max_{\boldsymbol{\theta}}(L) = \arg\max_{\boldsymbol{\theta}}(\prod_{i=1}^n p(y_i |\boldsymbol{x_i}, \boldsymbol{\theta})) = \arg\max_{\boldsymbol{\theta}}\prod_{j=1}^k p_j^{N_j} = \arg\max_{\boldsymbol{\theta}} \sum_{i=1}^n N_j log(p_j)$ where
+        \begin{itemize}
+            \item $j = 1, ..., k$ is the number of classes
+            \item $N_j$ county how often the outcome class $j$ appears in $\boldsymbol{y}$
+            \item $p_j = p(y_i = j |\boldsymbol{x_i}, \boldsymbol{\theta})$
+        \end{itemize}
+        \item We can further expand to $\hat{\boldsymbol{\theta}} = \arg\max_{\boldsymbol{\theta}}(L) = \arg\max_{\boldsymbol{\theta}} \sum_{i=1}^n N_j log(p_j) = \arg\max_{\boldsymbol{\theta}} \sum_{i=1}^n \frac{N_j}{n} log(p_j) = \arg\max_{\boldsymbol{\theta}} \sum_{i=1}^n \frac{N_j}{n} (log(\frac{p_j}{N_j/n}) + log(N_j/n)) = \arg\max_{\boldsymbol{\theta}} \sum_{i=1}^n \frac{N_j}{n} log(\frac{p_j}{N_j/n}) = \arg\min_{\boldsymbol{\theta}} \sum_{i=1}^n \frac{N_j}{n} log(\frac{N_j/n}{p_j}) = \arg\min_{\boldsymbol{\theta}} \sum_{i=1}^n \tilde{p}_j log(\frac{\tilde{p}_j}{p_j})$
+        \item This is the KL divergence between the empirical distribution and the model distribution 
+        \item This can be solved using constrained optimization with strong duality subject to $\sum_j p_j = 1$
+        \item We then get $\theta_{MLE} = N_j/n$ which minimizes the KL divergence when $\tilde{p}_j = p_j$
+    \end{itemize}
+    \item \emph{Score}: 
+    \begin{itemize}
+        \item The score is the derivative of the log-likelihood: $\Lambda = \frac{\partial}{\partial \boldsymbol{\theta}} log(p(y |\boldsymbol{x}, \boldsymbol{\theta})) = \frac{ \frac{\partial}{\partial \boldsymbol{\theta}} p(y |\boldsymbol{x}, \boldsymbol{\theta})}{ p(y |\boldsymbol{x}, \boldsymbol{\theta}) }$
+        \item The expected score is given by: $\mathbb{E}(\Lambda) = \int p(y |\boldsymbol{x}, \boldsymbol{\theta}) \frac{ \frac{\partial}{\partial \boldsymbol{\theta}} p(y |\boldsymbol{x}, \boldsymbol{\theta})}{ p(y |\boldsymbol{x}, \boldsymbol{\theta}) } dx = \frac{\partial}{\partial \boldsymbol{\theta}} \int p(y |\boldsymbol{x}, \boldsymbol{\theta}) dx = \frac{\partial}{\partial \boldsymbol{\theta}} \times 1 = 0$
+    \end{itemize}
+    \item Advantages:
+    \begin{itemize}
+        \item \emph{Consistent}: $\hat{\boldsymbol{\theta}} \rightarrow \boldsymbol{\theta}$ as $n \rightarrow \infty$
+        \item \emph{Asymptotically normal}: $\frac{1}{\sqrt{n}} (\hat{\boldsymbol{\theta}} - \boldsymbol{\theta})$ converges to $\mathcal{N}(0 , \boldsymbol{J}^{-1} (\boldsymbol{\theta}) \boldsymbol{I}(\boldsymbol{\theta}) \boldsymbol{J}^{-1} (\boldsymbol{\theta}) )$ where $\boldsymbol{J} = -\mathbb{E}[ \frac{ \partial^2 log( p(y |\boldsymbol{x}, \boldsymbol{\theta}) ) }{ \partial \boldsymbol{\theta} \partial \boldsymbol{\theta}^\intercal } ]$ and where $\boldsymbol{I}$ is the Fisher information
+        \item \emph{Asymptotically efficient}: $\hat{\boldsymbol{\theta}}$ minimizes $\mathbb{E} [ ( \hat{\boldsymbol{\theta}} - \boldsymbol{\theta} )^2 ] \to \frac{1}{\boldsymbol{I}_n(\boldsymbol{\theta})}$ as $n \rightarrow \infty$ where $\boldsymbol{I}$ is the Fisher information 
+        \begin{itemize}
+            \item Nonetheless, n necessarily the best estimator, especially for small samples in a multivariate context, where the \emph{Stein estimator} outperforms
+            \item Cf. Rao-Cramer bound
+        \end{itemize}
+        \item \emph{Equivariant}: If $\hat{\boldsymbol{\theta}}$ is MLE of $\boldsymbol{\theta}$, then $g(\hat{\boldsymbol{\theta}})$ is MLE of $g(\boldsymbol{\theta})$
+    \end{itemize}
+    \item Proofs of advantages:
+    \begin{itemize}
+        \item Asymptotically normal: 
+        \begin{itemize}
+            \item We start with the score and set it to 0 for optimization with regard to $\boldsymbol{\theta}$: 
+            $\Lambda = \frac{\partial}{\partial \boldsymbol{\theta}} log(p(y |\boldsymbol{x}, \boldsymbol{\theta})) = 0$
+            \item With a Taylor expansion, we can show that $( \hat{\boldsymbol{\theta}} - \boldsymbol{\theta} ) \sqrt{n} = \frac{1}{\sqrt{n}} \Lambda [ -\frac{1}{n} \frac{\partial^2}{\partial \boldsymbol{\theta} \partial \boldsymbol{\theta}^\intercal} \sum_{i=1}^n p(y_i |\boldsymbol{x_i}, \boldsymbol{\theta})) ]^{-1}$ where $\Lambda$ is the score 
+            \item We set $\boldsymbol{J} = [ -\frac{1}{n} \frac{\partial^2}{\partial \boldsymbol{\theta} \partial \boldsymbol{\theta}^\intercal} \sum_{i=1}^n p(y_i |\boldsymbol{x_i}, \boldsymbol{\theta})) ]$
+            \item $\frac{1}{\sqrt{n}} \Lambda$ is a random vector with covariance matrix $\boldsymbol{I}$ and converges to the normal distribution $\sim \mathcal{N}(0,\boldsymbol{I})$
+            \item Then, $( \hat{\boldsymbol{\theta}} - \boldsymbol{\theta} ) \sqrt{n} = \boldsymbol{J}^{-1} \frac{1}{\sqrt{n}} \Lambda \sim \boldsymbol{J}^{-1}\mathcal{N}(0,\boldsymbol{I})$
+            \item $\mathbb{V}(\boldsymbol{J}^{-1} \frac{1}{\sqrt{n}} \Lambda) = \mathbb{E}[\boldsymbol{J}^{-1}  \boldsymbol{I} \boldsymbol{J}^{-1}]$ 
+            \item This equality is given because $\mathbb{V}(x) = \mathbb{E}[x-\mathbb{E}(x)] = \mathbb{E}[x]$ if $\mathbb{E}(x) = 0$, which is the case here, given that the expected score is $0$
+            \item So we have shown that $(\hat{\boldsymbol{\theta}} - \boldsymbol{\theta} ) \sqrt{n} = \boldsymbol{J}^{-1} \frac{1}{\sqrt{n}} \Lambda \sim \mathcal{N}(0,\boldsymbol{J}^{-1}\boldsymbol{I}\boldsymbol{J}^{-1})$
+        \end{itemize}
+        \item Equivariant: 
+        \begin{itemize}
+            \item Let $t = g(\boldsymbol{\theta})$ and $h = g^{-1}$ 
+            \item Then, $\boldsymbol{\theta} = h(t) = h(g(\boldsymbol{\theta}))$
+            \item For all $t$ we have: $L(t) = \prod_i p(y_i |\boldsymbol{x_i}, h(t))) = p(y_i |\boldsymbol{x_i}, \boldsymbol{\theta}) = L(\boldsymbol{\theta})$
+            \item Hence, for all $t$ we can say: $L(t) = L(\boldsymbol{\theta})$ and $L(\hat{t}) = L(\hat{\boldsymbol{\theta})}$
+        \end{itemize}
+    \end{itemize}
+    \item Equivalent to minimizing KL divergence between observed distribution of the data $\hat{p}(x)$ and the family of distributions over the parameter space $q(x|\theta)$:
+    \begin{itemize}
+        \item MLE estimator given by $\hat{\theta}_{MLE} = \arg\min_{\theta} \prod_{i=1}^n q(x_i|\theta) = \arg\min_{\theta}\sum_{i=1}^n \log q(x_i|\theta)$
+        \item KL estimator given by $\hat{\theta}_{KL} = \arg\min_{\theta} D_{KL}(\hat{p}(x) \| q(x|\theta))$ where
+        $D_{KL}(\hat{p}(x) \| q(x|\theta)) = \mathbb{E} \left[ \log \frac{\hat{p}(x)}{q(x|\theta)} \right]$
+        \item $D_{KL}(\hat{p}(x) \| q(x|\theta)) = \frac{1}{n} \sum_{i=1}^n \log \frac{\hat{p}(x_i)}{q(x_i|\theta)} = \frac{1}{n} \sum_{i=1}^n \log \hat{p}(x_i) - \frac{1}{n} \sum_{i=1}^n \log q(x_i|\theta)$
+        \item The term $\frac{1}{n} \sum_{i=1}^n \log \hat{p}(x_i)$ does not depend on $\theta$, so minimizing $D_{KL}$ is equivalent to maximizing:
+        $\frac{1}{n} \sum_{i=1}^n \log q(x_i|\theta)$
+        \item This is equivalent to the log-likelihood maximization criterion for MLE
+        \item Therefore, $\hat{\theta}_{KL} = \hat{\theta}_{MLE}$ as $n \to \infty$ due to the law of large numbers
+    \end{itemize}
+    \item In the case of classification for $2$ classes, log loss is equivalent to binary cross entropy:
+    \begin{itemize}
+        \item Given two classes $y \in \{0, 1\}$:
+            \begin{itemize}
+                \item Predicted probability for class 1: $p_1 = \sigma(z) = \frac{1}{1 + e^{-z}}$
+                \item Predicted probability for class 0: $p_0 = 1 - p_1$
+            \end{itemize}
+        \item Binary cross entropy: $\text{BCE}(y, p_1) = -[ y \log(p_1) + (1 - y) \log(1 - p_1) ]$
+        \begin{itemize}
+            \item When $y = 1$: $\text{BCE}(1, p_1) = -\log(p_1)$
+            \item When $y = 0$: $\text{BCE}(0, p_1) = -\log(1 - p_1)$
+        \end{itemize}
+        \item Log loss:$\text{LL}(y, p) = - \log(p_y)$
+        \begin{itemize}
+            \item When $y = 1$: $\text{LL}(y, p) = -\log(p_1)$
+            \item When $y = 0$: $\text{LL}(y, p) = -\log(p_0) = -\log(1 - p_1)$
+        \end{itemize}
+    \end{itemize}
+\end{itemize}
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Probably Approximately Correct (PAC) estimator}
+Framework provides guarantees about the generalization ability of a learning algorithm\\
+Setting:
+\begin{itemize}
+    \item \emph{Hypothesis class $\mathcal{H}$}: Set of functions that can be expressed by the algorithm
+    \item \emph{Concept class $\mathcal{C}$}: Set of possible target functions that represent true mappings from input to output
+    \item \emph{Specific concept $c$}:
+    \begin{itemize}
+        \item True function $c$ that maps inputs to outputs
+        \item Estimated function $\hat{c}$
+    \end{itemize}
+    \item \emph{Learning algorithm $\mathcal{A}$}:
+    \begin{itemize}
+        \item Receives samples $\mathcal{Z} = \{(x_1, y_1), \ldots, (x_n, y_n)\}$ as inputs
+        \item $c(x_i) = y_i$ for all $i$
+        \item $\mathcal{A}$ outputs $\hat{c} \in \mathcal{C}$
+    \end{itemize}
+\end{itemize}
+PAC learning model:
+\begin{itemize}
+    \item $\mathcal{A}$ can learn $c$ from $\mathcal{C}$ if, given a sufficiently large sample, it outputs $\hat{c}$ that generalizes well with high probability\\
+    resp.\\
+    if given $\mathcal{Z}$ of size $n > \textrm{poly}\big(1/\epsilon, 1/\delta, \textrm{size}(c)\big)$, it outputs $\hat{c}$ such that:
+    $
+    P(\mathcal{R}(\hat{c}) \leq \epsilon) \geq 1 - \delta
+    $
+    where:
+    \begin{itemize}
+        \item $\epsilon$: Error tolerance (how much $\hat{c}$ deviates from $c$), is between $0$ and $0.5$
+        \item $\delta$: Confidence (how likely $\hat{c}$ generalizes well), is between $0$ and $0.5$
+        \item $\textrm{size}(c)$: Complexity of the concept
+    \end{itemize}
+    \item A concept class $\mathcal{C}$ is \emph{PAC-learnable} from a hypothesis class $\mathcal{H}$ if there is an algorithm $\mathcal{A}$ that can learn any concept in $\mathcal{C}$
+    \item If algorithm $\mathcal{A}$ runs in time polynomial in $1/\epsilon$ and $1/\delta$, then $\mathcal{C}$ is \emph{efficiently PAC-learnable}
+    \item \emph{Strong PAC learning}: Demand arbitrarily small error $\epsilon$ with high probability $1 - \delta$
+    \item \emph{Weak PAC learning}: Demand that risk is bounded for large (not trivial) error $\epsilon$, used frequently in ensemble learning
+\end{itemize}
+
+{\color{black}\hrule height 0.001mm}
+
+\subsection*{Bayesianism}
+\emph{Description} --- 
+\begin{itemize}
+    \item Parametric approach
+    \item $\boldsymbol{\theta}$ as random, unknown quantity, $\boldsymbol{X}$ as random, and known quantity
+    \item Makes estimate in form of distribution
+    \item Leverages prior and likelihood to infer posterior: $p(\boldsymbol{\theta}|\boldsymbol{X}, \boldsymbol{y}) = \frac{p(\boldsymbol{\theta})p(\boldsymbol{y}|\boldsymbol{X}, \boldsymbol{\theta})}{p(\boldsymbol{y}|\boldsymbol{X})} = \frac{p(\boldsymbol{\theta})p(\boldsymbol{y}|\boldsymbol{X}, \boldsymbol{\theta})}{\int p(\boldsymbol{\theta}) p(\boldsymbol{y}|\boldsymbol{X}, \boldsymbol{\theta}) d\boldsymbol{\theta}} \propto p(\boldsymbol{\theta})p(\boldsymbol{y}|\boldsymbol{X}, \boldsymbol{\theta}) = p(\boldsymbol{\theta}, \boldsymbol{y} |\boldsymbol{X})$ 
+    \item Focuses on minimizing cost function $\mathbb{E}[k(\boldsymbol{\theta}',\boldsymbol{\Theta}) | \boldsymbol{X}, \boldsymbol{y}] = \int_{\boldsymbol{\theta}} p(\boldsymbol{\theta} | \boldsymbol{X}, \boldsymbol{y}) \times k(\boldsymbol{\theta}',\boldsymbol{\theta}) d\boldsymbol{\theta} \propto \int_{\boldsymbol{\theta}} p(\boldsymbol{\theta}, \boldsymbol{y} | \boldsymbol{X}) \times k(\boldsymbol{\theta}',\boldsymbol{\theta}) d\boldsymbol{\theta}$ resp. $\sum p(\boldsymbol{\theta} | \boldsymbol{X}, \boldsymbol{y}) \times k(\boldsymbol{\theta}',\boldsymbol{\theta})$
+    \item Requires integration methods for normalizing constant in denominator, which can be intractable, in which case mean / MAP estimator can provide an alternative
+    \item Low variance, but high bias 
+\end{itemize}
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{MMSE estimator}
+\begin{itemize}
+    \item Minimizes mean squared error as cost function $k(\hat{\boldsymbol{\theta}},\boldsymbol{\theta}) = | \hat{\boldsymbol{\theta}} - \boldsymbol{\theta} |^2$
+    \item The resulting estimate is the mean of the posterior: $\hat{\boldsymbol{\theta}} = \mathbb{E}[ \boldsymbol{\theta} | \boldsymbol{X}, \boldsymbol{y} ]$\\
+    Proof:
+    \begin{itemize}
+        \item $
+        \mathbb{E}[| \hat{\boldsymbol{\theta}} - \boldsymbol{\theta} |^2 | \boldsymbol{y}] = \int (\hat{\boldsymbol{\theta}} - \boldsymbol{\theta})^2 p(\boldsymbol{\theta} \mid \boldsymbol{y}) \, d\boldsymbol{\theta} = \hat{\boldsymbol{\theta}}^2 - 2 \hat{\boldsymbol{\theta}} \int \boldsymbol{\theta} p(\boldsymbol{\theta} \mid \boldsymbol{y}) \, d\boldsymbol{\theta} + \int \boldsymbol{\theta}^2 p(\boldsymbol{\theta} \mid \boldsymbol{y}) \, d\boldsymbol{\theta}
+        $
+        \item Taking the derivative with respect to $\hat{\boldsymbol{\theta}}$:
+        $
+        \frac{\partial \mathbb{E}[| \hat{\boldsymbol{\theta}} - \boldsymbol{\theta} |^2 | \boldsymbol{y}]}{\partial \hat{\boldsymbol{\theta}}} = 2 \hat{\boldsymbol{\theta}} - 2 \int \boldsymbol{\theta} p(\boldsymbol{\theta} \mid \boldsymbol{y}) \, d\boldsymbol{\theta}
+        $
+        \item Setting the derivative to zero:
+        $
+        \hat{\boldsymbol{\theta}} = \int \boldsymbol{\theta} p(\boldsymbol{\theta} \mid \boldsymbol{y}) \, d\boldsymbol{\theta} = \mathbb{E}[\boldsymbol{\theta} \mid \boldsymbol{y}]
+        $
+    \end{itemize}
+    \item Returns single point estimate
+\end{itemize}
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Median estimator}
+\begin{itemize}
+    \item Minimizes mean absolute error as cost function $k(\hat{\boldsymbol{\theta}},\boldsymbol{\theta}) = | \hat{\boldsymbol{\theta}} - \boldsymbol{\theta} |$
+    \item The resulting estimate is the median of the posterior\\
+    Proof:
+    \begin{itemize}
+        \item Bayesian cost function given by:
+        $
+        \mathbb{E}[| \hat{\boldsymbol{\theta}} - \boldsymbol{\theta} | | \boldsymbol{y}] = \int |\hat{\boldsymbol{\theta}} - \boldsymbol{\theta}| p(\boldsymbol{\theta} \mid \boldsymbol{y}) \, d\boldsymbol{\theta}
+        $
+        \item The integral splits into two parts:
+        $
+        = \int_{-\infty}^{\hat{\boldsymbol{\theta}}} (\hat{\boldsymbol{\theta}} - \boldsymbol{\theta}) p(\boldsymbol{\theta} \mid \boldsymbol{y}) \, d\boldsymbol{\theta} + \int_{\hat{\boldsymbol{\theta}}}^{\infty} (\boldsymbol{\theta} - \hat{\boldsymbol{\theta}}) p(\boldsymbol{\theta} \mid \boldsymbol{y}) \, d\boldsymbol{\theta}
+        $
+        \item Taking the derivative with respect to $\hat{\boldsymbol{\theta}}$: $\frac{\partial \mathbb{E}[| \hat{\boldsymbol{\theta}} - \boldsymbol{\theta} | | \boldsymbol{y}]}{\partial \hat{\boldsymbol{\theta}}}$ for each term separately
+        \item $\frac{\partial}{\partial\hat{\boldsymbol{\theta}}} \int_{-\infty}^{\hat{\boldsymbol{\theta}}} (\hat{\boldsymbol{\theta}} - \boldsymbol{\theta}) p(\boldsymbol{\theta} \mid \boldsymbol{y}) \, d\boldsymbol{\theta} = \int_{-\infty}^{\hat{\boldsymbol{\theta}}} p(\boldsymbol{\theta} \mid \boldsymbol{y}) \, d\boldsymbol{\theta} - \hat{\boldsymbol{\theta}} p(\hat{\boldsymbol{\theta}} \mid \boldsymbol{y})$
+        \item $\frac{\partial}{\partial\hat{\boldsymbol{\theta}}} \int_{\hat{\boldsymbol{\theta}}}^{\infty} (\boldsymbol{\theta} - \hat{\boldsymbol{\theta}}) p(\boldsymbol{\theta} \mid \boldsymbol{y}) \, d\boldsymbol{\theta} = -\int_{\hat{\boldsymbol{\theta}}}^{\infty} p(\boldsymbol{\theta} \mid \boldsymbol{y}) \, d\boldsymbol{\theta} - \hat{\boldsymbol{\theta}} p(\hat{\boldsymbol{\theta}} \mid \boldsymbol{y})$
+        \item Combining the two derivatives, we get:
+        $ \int_{-\infty}^{\hat{\boldsymbol{\theta}}} p(\boldsymbol{\theta} \mid \boldsymbol{y}) \, d\boldsymbol{\theta} - \int_{\hat{\boldsymbol{\theta}}}^{\infty} p(\boldsymbol{\theta} \mid \boldsymbol{y}) \, d\boldsymbol{\theta}$
+        \item Setting the derivative to zero:
+        $\int_{-\infty}^{\hat{\boldsymbol{\theta}}} p(\boldsymbol{\theta} \mid \boldsymbol{y}) \, d\boldsymbol{\theta} = \int_{\hat{\boldsymbol{\theta}}}^{\infty} p(\boldsymbol{\theta} \mid \boldsymbol{y}) \, d\boldsymbol{\theta}$
+        \item Since the total probability is 1, this implies:
+        $\int_{-\infty}^{\hat{\boldsymbol{\theta}}} p(\boldsymbol{\theta} \mid \boldsymbol{y}) \, d\boldsymbol{\theta} = 0.5$
+    \end{itemize}
+    \item Returns single point estimate
+\end{itemize}
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{MAP estimator}
+\begin{itemize}
+    \item Maximizes posterior: $\hat{\boldsymbol{\theta}} = \arg\max_{\boldsymbol{\theta}}( p(\boldsymbol{\theta}|\boldsymbol{X}) ) \propto \arg\max_{\boldsymbol{\theta}}p(\boldsymbol{\theta}|\boldsymbol{X}) p(\boldsymbol{X})$ 
+    \item In discrete case:
+    \begin{itemize}
+        \item MAP minimizes zero-one loss as cost function:\\ $k(\hat{\boldsymbol{\theta}},\boldsymbol{\theta})  = 
+        \left\{
+            \begin{aligned}
+                 & 1 \quad & \hat{\boldsymbol{\theta}} \neq \boldsymbol{\theta} \\
+                 & 0 \quad & \hat{\boldsymbol{\theta}} = \boldsymbol{\theta}
+            \end{aligned}
+        \right.$\\
+        Proof:
+        \begin{itemize}
+            \item Bayesian cost function given by:
+            $
+            R(\hat{x}) = \sum_{x} \kappa(\hat{x}, x) P(X = x \mid Y = y)
+            $
+            \item If we substitute $\kappa(\hat{x}, x) $ we get:
+            $
+            R(\hat{x}) = \sum_{x \neq \hat{x}} P(X = x \mid Y = y)
+            $ since when $\kappa(\hat{x}, x) = 0$ (i.e., $x = \hat{x}$), the term contributes nothing
+            \item We need to minimize $\sum_{x \neq \hat{x}} P(X = x \mid Y = y) = 1 - P(X = \hat{x} \mid Y = y) $
+            \item This is equivalent to maximizing $P(X = \hat{x} \mid Y = y)$, which is the MAP estimate
+        \end{itemize}
+        \item We can make $\theta_{MLE} = N_j/n$ more robust by setting a prior $p(\boldsymbol{\theta}) \propto \prod_{i=1}^n p_j^v$ with parameter $0 < v \leq 1$
+        \item $\hat{\boldsymbol{\theta}} = \arg\max_{\boldsymbol{\theta}}(p(\boldsymbol{\theta} | \boldsymbol{y})) = \arg\max_{\boldsymbol{\theta}}(p(\boldsymbol{y} |\boldsymbol{\theta}) p(\boldsymbol{\theta})) = \arg\max_{\boldsymbol{\theta}}\prod_{j=1}^k p_j^{N_j} \prod_{j=1}^k p_j^{v} = \arg\max_{\boldsymbol{\theta}} \prod_{j=1}^k p_j^{N_j + v} = \arg\max_{\boldsymbol{\theta}} \sum_{j=1}^k (N_j + v) \log(p_j) = \arg\max_{\boldsymbol{\theta}} \sum_{j=1}^k \frac{N_j + v}{n + kv} \log(\frac{p_j}{(N_j + v)/(n + kv)}) = \arg\min_{\boldsymbol{\theta}} \sum_{j=1}^k \frac{N_j + v}{n + kv} \log(\frac{(N_j + v)/(n + kv)}{p_j}) = \arg\min_{\boldsymbol{\theta}} \sum_{j=1}^k \tilde{p}_j \log(\frac{\tilde{p}_j}{p_j})$
+        \item This is the KL divergence 
+        \item This can be solved using constrained optimization with strong duality subject to $\sum_j p_j = 1$
+        \item We then get $\theta_{MAP} = (N_j + v)/(n + kv)$ which minimizes the KL divergence when $\tilde{p}_j = p_j$
+    \end{itemize}
+    \item The resulting estimate is the mode of the posterior 
+    \item Returns single point estimate
+\end{itemize}
+
+{\color{black}\hrule height 0.001mm}
+
+\subsection*{Statistical Learning}
+\emph{Description} --- 
+\begin{itemize}
+    \item We want to minimize expected risk $\mathcal{R}(f) = \mathbb{E}_{X,Y}[1{f(X) \neq Y}]$, but this is difficult because
+    \begin{itemize}
+        \item We don't have access to the joint distribution of $X,Y$
+        \item We cannot find $f$, without any assumptions on its structure
+        \item It's unclear how to minimize the expected value
+    \end{itemize}
+    \item Therefore, we make following choices:
+    \begin{itemize}
+        \item We collect sample $Z$
+        \item We restrict space of possible choices of $f$ to a set $\mathcal{H}$
+        \item We use a loss function to approximate the expected value
+    \end{itemize}
+    \item With these choices, we approximate the expected risk via the empirical risk $\hat{\mathcal{R}}(f) = \hat{L}(Z,f) = \frac{1}{n} \sum_i L(y_i, f(x_i))$
+\end{itemize}

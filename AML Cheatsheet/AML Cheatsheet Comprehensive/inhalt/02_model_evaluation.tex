@@ -1,0 +1,111 @@
+\section{Model Evaluation}
+\subsection*{Estimator Evaluation Criteria}
+\emph{Criteria} --- 
+\begin{itemize}
+    \item Consistency: $\hat{\boldsymbol{\theta}} \rightarrow \boldsymbol{\theta}$ as $n \rightarrow \infty$
+    \item Bias: $\mathbb{E}(\hat{\boldsymbol{\theta}}) - \boldsymbol{\theta}$
+    \begin{itemize}
+        \item Unbiased: $\mathbb{E}(\hat{\boldsymbol{\theta}}) = \boldsymbol{\theta}$
+        \item Asymptotically unbiased: $\mathbb{E} [ ( \hat{\boldsymbol{\theta}} - \boldsymbol{\theta} )^2 ] = 0$ as $n \rightarrow \infty$ 
+        \item Asymptotically efficient: $\mathbb{E} [ ( \hat{\boldsymbol{\theta}} - \boldsymbol{\theta} )^2 ] = I$ as $n \rightarrow \infty$  where $I$ is Fisher information 
+    \end{itemize}
+\end{itemize}
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Fisher information} --- 
+\begin{itemize}
+    \item $\boldsymbol{I} = \mathbb{E} [(\Lambda)^2] = \mathbb{E} [ ( \frac{\partial}{ \partial \boldsymbol{\theta} } log( p ( \boldsymbol{x} | \boldsymbol{\theta} ) ) )^2 ] = \mathbb{V} ( \frac{ \partial log( p(\boldsymbol{x} | \boldsymbol{\theta}) ) }{ \partial \boldsymbol{\theta}} )$ where $\Lambda$ is the score\\
+    Proof:\\
+    $\mathbb{V}(x) = \mathbb{E}[(x-\mathbb{E}(x))^2] = \mathbb{E}[x^2]$ if $\mathbb{E}(x) = 0$, which is the case here, given that the expected score is $0$
+    \item For $n$ iid samples, we have $\boldsymbol{I}_n = n \times \boldsymbol{I}$\\
+    Proof:
+    \begin{itemize}
+        \item $\mathbb{E} [ ( \frac{\partial}{ \partial \boldsymbol{\theta} } log( p ( \boldsymbol{x}^{(1)}, ..., \boldsymbol{x}^{(n)} | \boldsymbol{\theta} ) ) )^2 ] = \mathbb{E} [ ( \frac{\partial}{ \partial \boldsymbol{\theta} } log( \prod_{i=1}^n p ( \boldsymbol{x}^{(i)} | \boldsymbol{\theta} ) ) )^2 ] = \mathbb{E} [ ( \sum_{i=1}^n \frac{\partial}{ \partial \boldsymbol{\theta} } log( p ( \boldsymbol{x}^{(i)} | \boldsymbol{\theta} ) ) )^2 ] = \mathbb{E} [ \sum_{i=1}^n (\frac{\partial}{ \partial \boldsymbol{\theta} } log( p ( \boldsymbol{x}^{(i)} | \boldsymbol{\theta} ) ) )^2 + \sum_{i \neq j} (\frac{\partial}{ \partial \boldsymbol{\theta} } log( p ( \boldsymbol{x}^{(i)} | \boldsymbol{\theta} ) ) \times \frac{\partial}{ \partial \boldsymbol{\theta} } log( p ( \boldsymbol{x}^{(j)} | \boldsymbol{\theta} ) ) ) ]$
+        \item $= \mathbb{E} [ \sum_{i=1}^n (\frac{\partial}{ \partial \boldsymbol{\theta} } log( p ( \boldsymbol{x}^{(i)} | \boldsymbol{\theta} ) ) )^2 ] +  \mathbb{E} [\sum_{i \neq j} (\frac{\partial}{ \partial \boldsymbol{\theta} } log( p ( \boldsymbol{x}^{(i)} | \boldsymbol{\theta} ) )] \times  \mathbb{E} [\frac{\partial}{ \partial \boldsymbol{\theta} } log( p ( \boldsymbol{x}^{(j)} | \boldsymbol{\theta} ) ) ) ]$ since cross-terms are independent
+        \item $= \mathbb{E} [ \sum_{i=1}^n (\frac{\partial}{ \partial \boldsymbol{\theta} } log( p ( \boldsymbol{x}^{(i)} | \boldsymbol{\theta} ) ) )^2 ]$ since expected value of score is $0$
+        \item $= \sum_{i=1}^n\mathbb{E} [ (\frac{\partial}{ \partial \boldsymbol{\theta} } log( p ( \boldsymbol{x}^{(i)} | \boldsymbol{\theta} ) ) )^2 ] = n \times \mathbb{E} [ (\frac{\partial}{ \partial \boldsymbol{\theta} } log( p ( \boldsymbol{x}^{(i)} | \boldsymbol{\theta} ) ) )^2 ]$
+    \end{itemize}
+    \item The smaller the variance of a distribution, the larger the Fisher information, the lower the Rao-Cramer bound, and the lower the MSE
+\end{itemize}
+
+{\color{lightgray}\hrule height 0.001mm}
+
+\emph{Rao-Cramer bound} --- 
+\begin{itemize}
+    \item Shows that there does not exist an asymptotically unbiased parameter estimator
+    \item For each unbiased estimator, $\mathbb{E} [ ( \hat{\boldsymbol{\theta}} - \boldsymbol{\theta} )^2 ] \geq \frac{1}{I}$ where $I$ is the Fisher information
+    \item For estimators in general, $\frac{(\frac{\partial}{\partial \boldsymbol{\theta}} \textrm{bias} + 1)^2}{\boldsymbol{I}} + \textrm{bias}^2 \leq \mathbb{E}[(\hat{\boldsymbol{\theta}}-\boldsymbol{\theta})^2]$, so there is a trade off if the bias derivative is negative and the squared bias is positive, whereby a biased estimator may produce better results than an unbiased estimator
+\end{itemize}
+Proof: 
+\begin{itemize}
+    \item Given Cauchy Schwarz inequality, we can say:
+    $\mathbb{E}[ (\Lambda - \mathbb{E}((\Lambda)) (\hat{\boldsymbol{\theta}} - \mathbb{E}(\hat{\boldsymbol{\theta}})) ]^2 \leq \mathbb{E}[(\Lambda - \mathbb{E}((\Lambda))^2] \mathbb{E}[(\hat{\boldsymbol{\theta}} - \mathbb{E}(\hat{\boldsymbol{\theta}}))^2]$ where $\Lambda$ is the score
+    \item We know that $\mathbb{E}(\Lambda) = 0$
+    \item Let's look at the LHS of the equation:
+    \begin{itemize}
+        \item Since $\mathbb{E}(\Lambda) = 0$, we can simplify to $\mathbb{E}[ \Lambda (\hat{\boldsymbol{\theta}} - \mathbb{E}(\hat{\boldsymbol{\theta}})) ] = \mathbb{E}[ \Lambda \hat{\boldsymbol{\theta}}] - \mathbb{E}[\Lambda] \mathbb{E}[\hat{\boldsymbol{\theta}}] = \mathbb{E}[ \Lambda \hat{\boldsymbol{\theta}}] - 0$
+        \item This can be developed to: $\mathbb{E}[ \Lambda \hat{\boldsymbol{\theta}}] = \int p( \boldsymbol{x} | \boldsymbol{\theta}) \frac{ \frac{\partial}{\partial \boldsymbol{\theta}} p( \boldsymbol{x} | \boldsymbol{\theta})}{ p( \boldsymbol{x} | \boldsymbol{\theta}) } \hat{\boldsymbol{\theta}} dx = \frac{\partial}{\partial \boldsymbol{\theta}} (\int p( \boldsymbol{x} | \boldsymbol{\theta}) \hat{\boldsymbol{\theta}} dx - \boldsymbol{\theta}) + 1$ where the last part ($- \boldsymbol{\theta}) + 1$) can be added, because $\frac{\partial}{\partial \boldsymbol{\theta}} -\boldsymbol{\theta} = -1$ and we compensate this with $+1$
+        \item This is equal to the derivative of the bias + 1: $\frac{\partial}{\partial \boldsymbol{\theta}} (\int p( \boldsymbol{x} | \boldsymbol{\theta}) \hat{\boldsymbol{\theta}} dx - \boldsymbol{\theta}) + 1 = \frac{\partial}{\partial \boldsymbol{\theta}} (\mathbb{E}[\hat{\boldsymbol{\theta}}] - \boldsymbol{\theta}) + 1 = \frac{\partial}{\partial \boldsymbol{\theta}} \textrm{bias} + 1$
+    \end{itemize}
+    \item Let's look at the RHS of the equation: Since $\mathbb{E}(\Lambda) = 0$, first term is $\mathbb{E}(\Lambda^2) = \boldsymbol{I}$ where $\boldsymbol{I}$ is the Fisher information
+    \item Then, we have: $(\frac{\partial}{\partial \boldsymbol{\theta}} \textrm{bias} + 1)^2 \leq \boldsymbol{I} \times \mathbb{E}[(\hat{\boldsymbol{\theta}}-\mathbb{E}(\hat{\boldsymbol{\theta}}))^2] = \boldsymbol{I} \times \mathbb{E}[(\hat{\boldsymbol{\theta}} - \boldsymbol{\theta} - \mathbb{E}(\hat{\boldsymbol{\theta}}) + \boldsymbol{\theta})^2] = ... = \boldsymbol{I} \times \mathbb{E}[(\hat{\boldsymbol{\theta}} - \boldsymbol{\theta})^2] - \textrm{bias}^2$
+    \item Then, we have $\frac{(\frac{\partial}{\partial \boldsymbol{\theta}} \textrm{bias} + 1)^2}{\boldsymbol{I}} + \textrm{bias}^2 \leq \mathbb{E}[(\hat{\boldsymbol{\theta}}-\boldsymbol{\theta})^2]$
+\end{itemize}
+
+{\color{black}\hrule height 0.001mm}
+
+\subsection*{Bias Variance Tradeoff}
+\begin{itemize}
+    \item Mean squared error $\mathbb{E}[ (\hat{f}(\boldsymbol{X}) - \boldsymbol{y})^2 ]$ can be decomposed into: $( \mathbb{E}[\hat{f}(\boldsymbol{X})] - f(\boldsymbol{X}) )^2 + \mathbb{V}(\hat{f}(\boldsymbol{X})) + \mathbb{E}[\epsilon^2] = \textrm{bias}^2 + \textrm{variance} + \textrm{irreducible error}$\\
+    Proof:
+    \begin{itemize}
+        \item $\boldsymbol{y} = f(\boldsymbol{X}) + \epsilon$
+        \item $\mathbb{E}[ (\hat{f}(\boldsymbol{X}) - \boldsymbol{y})^2 ] = \mathbb{E}[ (\hat{f}(\boldsymbol{X}) - \mathbb{E}[\hat{f}(\boldsymbol{X})] + \mathbb{E}[\hat{f}(\boldsymbol{X})] - f(\boldsymbol{X}) + \epsilon)^2 ] = \mathbb{E}[ (\hat{f}(\boldsymbol{X}) - \mathbb{E}[\hat{f}(\boldsymbol{X})] )^2 ] + \mathbb{E}[(\mathbb{E}[\hat{f}(\boldsymbol{X})] - f(\boldsymbol{X}))^2] + \mathbb{E}[\epsilon^2] - 2 \mathbb{E}[ (\hat{f}(\boldsymbol{X}) - \mathbb{E} [ \hat{f}(\boldsymbol{X}) ] ) ( \mathbb{E} [ \hat{f}(\boldsymbol{X}) ] - f(\boldsymbol{X}) + \epsilon ) ]$
+        \item Third term $\mathbb{E}[\epsilon^2]$ is the variance of $\boldsymbol{y}$: $ = \mathbb{E}[\epsilon^2] - \mathbb{E}[\epsilon]^2 = \mathbb{V}(\boldsymbol{y}) = \sigma^2$
+        \item Fourth term $2 \mathbb{E}[ (\hat{f}(\boldsymbol{X}) - \mathbb{E} [ \hat{f}(\boldsymbol{X}) ] ) ( \mathbb{E} [ \hat{f}(\boldsymbol{X}) ] - f(\boldsymbol{X}) + \epsilon ) ]$ equals 0:
+        \begin{itemize}
+            \item $2 \mathbb{E}[ (\hat{f}(\boldsymbol{X}) - \mathbb{E} [ \hat{f}(\boldsymbol{X}) ] ) ( \mathbb{E} [ \hat{f}(\boldsymbol{X}) ] - f(\boldsymbol{X}) + \epsilon ) ] = 2( \mathbb{E} [ \hat{f}(\boldsymbol{X}) ] - f(\boldsymbol{X}) + \epsilon ) \mathbb{E}[ (\hat{f}(\boldsymbol{X}) - \mathbb{E} [ \hat{f}(\boldsymbol{X}) ] ) ]$ because $( \mathbb{E} [ \hat{f}(\boldsymbol{X}) ] - f(\boldsymbol{X}) + \epsilon ) $ is deterministic
+            \item In last equation, second term equals 0, so whole equation is 0
+        \end{itemize}
+        \item Then, we are left with: $\textrm{variance} + \textrm{bias}^2 + \textrm{irreducible error}$
+    \end{itemize}
+    \item \emph{Bias}: Error generated by the fact that we approximate a complex relationship via a simpler model (small function class) with a certain presupposed parametric form
+    \item \emph{Variance}: Error generated by the fact that we estimate the model parameters with a noisy training sample (small sample), rather than the population
+    \item \emph{Irreducible error}: Error generated by measurement error and the fact that we estimate $\boldsymbol{y}$ as a function of $\boldsymbol{X}$, when it is a function of many other factors
+    \item \emph{Bias variance tradeoff}: Bias and variance cannot be reduced simultaneously
+    \begin{itemize}
+        \item High variance associated with overfitting: Model corresponds too closely to particular training set resp. performs poorly on unseen data, but well on training set 
+        \item High bias associated with underfitting: Model fails to capture underlying relationships resp. performs poorly on both training set and unseen data
+    \end{itemize}    
+\end{itemize}
+
+{\color{black}\hrule height 0.001mm}
+
+\subsection*{Approximating Generalisation Loss via Empirical Loss}
+\emph{Via resampling methods} --- \\
+\emph{Cross-validation}:
+\begin{itemize}
+    \item Partition data $\mathcal{Z}$ into $K$ equally sized disjoint subsets: $\mathcal{Z} = \mathcal{Z}_1 \cup \mathcal{Z}_2 \cup ... \cup \mathcal{Z}_K$
+    \item Produce estimator $\hat{f}^{-v}$ from $\mathcal{Z} \backslash \mathcal{Z}_v$ for $v \leq K$
+    \item Empirical loss given by: $\hat{\mathcal{R}}^{cv} = \frac{1}{n} \sum_{i\leq n} LO(y_i - \hat{f}^{-k(i)} (x_i))$ where $k(i)$ maps $i$ to partition $\mathcal{Z}_{k(i)}$ where $(x_i,y_i)$ belongs
+\end{itemize}
+
+Bootstrapping:
+\begin{itemize}
+    \item Draw $B$ samples with replacement of size $n$ from data $\mathcal{Z}$: $\mathcal{Z}^{*b}$
+    \item Compute estimate $S( \mathcal{Z}^{*b} )$ for each bootstrap sample
+    \item For each estimate $S( \mathcal{Z}^{*b} )$, we can give a mean and variance:
+    \begin{itemize}
+        \item $\bar{S} = \frac{1}{B} \sum_b S( \mathcal{Z}^{*b} )$
+        \item $\sigma^2(S) = \frac{1}{B-1} \sum_b ( S( \mathcal{Z}^{*b} ) - \bar{S})^2$
+    \end{itemize}
+    \item Out-of-bag loss given by: $\hat{\mathcal{R}}^{bs} = \frac{1}{n} \sum_{i=1}^n \frac{1}{| C^{-i} |} \sum_{b \in C^{-i}} LO(y_i - \hat{f}^{*b} (x_i))$ where $C^{-i}$ contains all bootstrap indices $b$ so that $\mathcal{Z}^{*b}$ does not contain $(x_i,y_i)$
+    \item Empirical loss given by: $\hat{\mathcal{R}}(\mathcal{A}) = \frac{1}{B} \sum_{b=1}^B \frac{1}{n} \sum_{i=1}^n LO(y_i - \hat{f}^{*b} (x_i))$ 
+    \item Empirical loss of bootstrap uses training data to estimate $\hat{\mathcal{R}}$, i.e. it is generally too optimistic. We can correct this by combining the empirical and out-of-bag loss:
+    \begin{itemize}
+        \item Probability that $(x_i,y_i)$ is not in sample $\mathcal{Z}^{*b}$ of size $n$ is given by $(1-\frac{1}{n})^n = \frac{1}{e} \textrm{ as } n \rightarrow \infty \approx \frac{1}{3}$
+        \item Probability that $(x_i,y_i)$ is in sample $\mathcal{Z}^{*b}$ of size $n$ is given by $1 - \frac{1}{e} \textrm{ as } n \rightarrow \infty \approx \frac{2}{3}$
+        \item We then define: $\hat{\mathcal{R}}^{(0.632)} = 0.368 \hat{\mathcal{R}}(\mathcal{A}) + 0.632 \hat{\mathcal{R}}^{bs}$
+    \end{itemize}
+\end{itemize}
